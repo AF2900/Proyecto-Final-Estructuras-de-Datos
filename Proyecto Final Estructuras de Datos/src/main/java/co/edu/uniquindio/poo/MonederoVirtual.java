@@ -9,6 +9,8 @@ import co.edu.uniquindio.poo.model.BeneficioCanjeado;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Notificacion;
+import co.edu.uniquindio.poo.model.ReporteCliente;
+import co.edu.uniquindio.poo.model.ReporteSistema;
 import co.edu.uniquindio.poo.model.Transaccion;
 import co.edu.uniquindio.poo.model.TransaccionProgramada;
 import co.edu.uniquindio.poo.service.*;
@@ -48,6 +50,9 @@ public class MonederoVirtual {
 
     private final GestorProgramadas
             gestorProgramadas;
+
+    private final GestorReportes
+            gestorReportes;
 
 
     public MonederoVirtual() {
@@ -107,6 +112,18 @@ public class MonederoVirtual {
                 new GestorProgramadas(
                         gestorClientes,
                         gestorTransacciones
+                );
+
+
+        gestorReportes =
+                new GestorReportes(
+                        gestorClientes,
+                        gestorPuntos,
+                        gestorPatronesGasto,
+                        gestorGrafos,
+                        gestorBeneficios,
+                        gestorNotificaciones,
+                        gestorIntegridad
                 );
     }
 
@@ -173,8 +190,7 @@ public class MonederoVirtual {
     }
 
 
-    public List<Cliente>
-    obtenerClientes() {
+    public List<Cliente> obtenerClientes() {
 
         return gestorClientes
                 .obtenerClientes();
@@ -888,6 +904,27 @@ public class MonederoVirtual {
                         identificacionCliente,
                         tipo
                 );
+    }
+
+
+    // ---------------------------------------------------------
+    // REPORTES
+    // ---------------------------------------------------------
+
+    public ReporteCliente generarReporteCliente(
+            String identificacionCliente) {
+
+        return gestorReportes
+                .generarReporteCliente(
+                        identificacionCliente
+                );
+    }
+
+
+    public ReporteSistema generarReporteSistema() {
+
+        return gestorReportes
+                .generarReporteSistema();
     }
 
 
