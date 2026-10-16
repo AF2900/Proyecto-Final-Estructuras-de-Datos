@@ -127,7 +127,8 @@ public class GestorIntegridad {
 
 
         /*
-         * Validar la transacción actual.
+         * Validar estructura y datos
+         * de la transacción actual.
          */
         if (!transaccionValidaParaCliente(
                 identificacionCliente,
@@ -139,8 +140,9 @@ public class GestorIntegridad {
 
 
         /*
-         * El código no puede repetirse
-         * dentro del historial del cliente.
+         * Cada código debe aparecer
+         * una sola vez dentro del historial
+         * del mismo cliente.
          */
         if (codigos.contains(
                 transaccion.getCodigo()
@@ -155,10 +157,6 @@ public class GestorIntegridad {
         );
 
 
-        /*
-         * Llamada recursiva:
-         * validar la siguiente transacción.
-         */
         return verificarHistorialRecursivo(
                 identificacionCliente,
                 historial,
@@ -169,7 +167,7 @@ public class GestorIntegridad {
 
 
     // ---------------------------------------------------------
-    // VALIDACIÓN SEGÚN EL TIPO
+    // VALIDACIÓN GENERAL
     // ---------------------------------------------------------
 
     private boolean transaccionValidaParaCliente(
@@ -206,7 +204,8 @@ public class GestorIntegridad {
         }
 
 
-        if (transaccion.getPuntosGenerados()
+        if (transaccion
+                .getPuntosGenerados()
                 < 0) {
 
             return false;
@@ -423,10 +422,6 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * La transferencia debe pertenecer
-         * al historial del origen o del destino.
-         */
         boolean perteneceAlCliente =
                 identificacionCliente.equals(
                         transaccion
@@ -443,10 +438,6 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * No se puede transferir exactamente
-         * al mismo monedero de origen.
-         */
         boolean mismaCuenta =
                 transaccion
                         .getIdentificacionOrigen()
@@ -531,8 +522,8 @@ public class GestorIntegridad {
 
 
         /*
-         * El enunciado no establece
-         * puntos para gastos.
+         * El enunciado no define
+         * generación de puntos para gastos.
          */
         return transaccion
                 .getPuntosGenerados()
@@ -541,7 +532,7 @@ public class GestorIntegridad {
 
 
     // ---------------------------------------------------------
-    // CALCULAR PUNTOS ESPERADOS
+    // PUNTOS ESPERADOS
     // ---------------------------------------------------------
 
     private int calcularPuntosEsperados(
@@ -589,11 +580,16 @@ public class GestorIntegridad {
         }
 
 
+        Set<String> codigos =
+                new HashSet<>();
+
+
         return contarValidasRecursivo(
                 cliente.getIdentificacion(),
                 cliente
                         .obtenerHistorialTransacciones(),
-                0
+                0,
+                codigos
         );
     }
 
@@ -601,10 +597,12 @@ public class GestorIntegridad {
     private int contarValidasRecursivo(
             String identificacionCliente,
             List<Transaccion> historial,
-            int indice) {
+            int indice,
+            Set<String> codigos) {
 
         /*
-         * Caso base.
+         * Caso base:
+         * ya se recorrió todo el historial.
          */
         if (indice ==
                 historial.size()) {
@@ -619,27 +617,46 @@ public class GestorIntegridad {
                 );
 
 
-        int valorActual = 0;
-
-
-        if (transaccionValidaParaCliente(
-                identificacionCliente,
-                actual
-        )) {
-
-            valorActual = 1;
-        }
+        boolean valida =
+                transaccionValidaParaCliente(
+                        identificacionCliente,
+                        actual
+                );
 
 
         /*
-         * Resultado actual +
-         * resultado del resto del historial.
+         * Si el código ya apareció antes,
+         * esta transacción se considera inválida.
          */
+        boolean codigoRepetido =
+                valida &&
+                        codigos.contains(
+                                actual.getCodigo()
+                        );
+
+
+        int valorActual =
+                valida &&
+                        !codigoRepetido
+                        ? 1
+                        : 0;
+
+
+        if (valida &&
+                !codigoRepetido) {
+
+            codigos.add(
+                    actual.getCodigo()
+            );
+        }
+
+
         return valorActual +
                 contarValidasRecursivo(
                         identificacionCliente,
                         historial,
-                        indice + 1
+                        indice + 1,
+                        codigos
                 );
     }
 
@@ -657,11 +674,16 @@ public class GestorIntegridad {
         }
 
 
+        Set<String> codigos =
+                new HashSet<>();
+
+
         return buscarInvalidaRecursivo(
                 cliente.getIdentificacion(),
                 cliente
                         .obtenerHistorialTransacciones(),
-                0
+                0,
+                codigos
         );
     }
 
@@ -670,7 +692,8 @@ public class GestorIntegridad {
     buscarInvalidaRecursivo(
             String identificacionCliente,
             List<Transaccion> historial,
-            int indice) {
+            int indice,
+            Set<String> codigos) {
 
         /*
          * Caso base:
@@ -698,10 +721,29 @@ public class GestorIntegridad {
         }
 
 
+        /*
+         * Si el código ya fue utilizado
+         * anteriormente, esta es la primera
+         * transacción inválida.
+         */
+        if (codigos.contains(
+                actual.getCodigo()
+        )) {
+
+            return actual;
+        }
+
+
+        codigos.add(
+                actual.getCodigo()
+        );
+
+
         return buscarInvalidaRecursivo(
                 identificacionCliente,
                 historial,
-                indice + 1
+                indice + 1,
+                codigos
         );
     }
 }
