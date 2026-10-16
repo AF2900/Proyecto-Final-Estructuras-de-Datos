@@ -17,21 +17,32 @@ import java.util.List;
 
 public class MonederoVirtual {
 
-    private final GestorClientes gestorClientes;
+    private final GestorClientes
+            gestorClientes;
 
-    private final GestorPuntos gestorPuntos;
+    private final GestorPuntos
+            gestorPuntos;
 
-    private final GestorNotificaciones gestorNotificaciones;
+    private final GestorNotificaciones
+            gestorNotificaciones;
 
-    private final GestorGrafos gestorGrafos;
+    private final GestorGrafos
+            gestorGrafos;
 
-    private final GestorPatronesGasto gestorPatronesGasto;
+    private final GestorPatronesGasto
+            gestorPatronesGasto;
 
-    private final GestorReversiones gestorReversiones;
+    private final GestorIntegridad
+            gestorIntegridad;
 
-    private final GestorTransacciones gestorTransacciones;
+    private final GestorReversiones
+            gestorReversiones;
 
-    private final GestorProgramadas gestorProgramadas;
+    private final GestorTransacciones
+            gestorTransacciones;
+
+    private final GestorProgramadas
+            gestorProgramadas;
 
 
     public MonederoVirtual() {
@@ -54,6 +65,10 @@ public class MonederoVirtual {
 
         gestorPatronesGasto =
                 new GestorPatronesGasto();
+
+
+        gestorIntegridad =
+                new GestorIntegridad();
 
 
         gestorReversiones =
@@ -140,7 +155,8 @@ public class MonederoVirtual {
     }
 
 
-    public List<Cliente> obtenerClientes() {
+    public List<Cliente>
+    obtenerClientes() {
 
         return gestorClientes
                 .obtenerClientes();
@@ -728,6 +744,68 @@ public class MonederoVirtual {
 
         return cliente
                 .obtenerHistorialTransacciones();
+    }
+
+
+    // ---------------------------------------------------------
+    // INTEGRIDAD RECURSIVA
+    // ---------------------------------------------------------
+
+    public boolean verificarIntegridadCliente(
+            String identificacionCliente) {
+
+        Cliente cliente =
+                buscarCliente(
+                        identificacionCliente
+                );
+
+
+        return gestorIntegridad
+                .verificarIntegridadCliente(
+                        cliente
+                );
+    }
+
+
+    public boolean verificarIntegridadSistema() {
+
+        return gestorIntegridad
+                .verificarIntegridadSistema(
+                        obtenerClientes()
+                );
+    }
+
+
+    public int contarTransaccionesValidas(
+            String identificacionCliente) {
+
+        Cliente cliente =
+                buscarCliente(
+                        identificacionCliente
+                );
+
+
+        return gestorIntegridad
+                .contarTransaccionesValidas(
+                        cliente
+                );
+    }
+
+
+    public Transaccion
+    buscarPrimeraTransaccionInvalida(
+            String identificacionCliente) {
+
+        Cliente cliente =
+                buscarCliente(
+                        identificacionCliente
+                );
+
+
+        return gestorIntegridad
+                .buscarPrimeraTransaccionInvalida(
+                        cliente
+                );
     }
 
 
