@@ -24,6 +24,8 @@ public class Transaccion {
 
     private int puntosGenerados;
 
+    private boolean revertida;
+
 
     public Transaccion(
             String codigo,
@@ -58,6 +60,8 @@ public class Transaccion {
 
         this.puntosGenerados =
                 puntosGenerados;
+
+        this.revertida = false;
     }
 
 
@@ -106,6 +110,17 @@ public class Transaccion {
     }
 
 
+    public boolean isRevertida() {
+        return revertida;
+    }
+
+
+    public void marcarRevertida() {
+
+        this.revertida = true;
+    }
+
+
     @Override
     public String toString() {
 
@@ -124,6 +139,8 @@ public class Transaccion {
                 monederoDestino + '\'' +
                 ", puntosGenerados=" +
                 puntosGenerados +
+                ", revertida=" +
+                revertida +
                 '}';
     }
 }

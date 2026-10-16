@@ -5,6 +5,7 @@ import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Transaccion;
 import co.edu.uniquindio.poo.service.GestorClientes;
+import co.edu.uniquindio.poo.service.GestorReversiones;
 import co.edu.uniquindio.poo.service.GestorTransacciones;
 
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ public class MonederoVirtual {
     private final GestorClientes
             gestorClientes;
 
+    private final GestorReversiones
+            gestorReversiones;
+
     private final GestorTransacciones
             gestorTransacciones;
 
@@ -24,9 +28,17 @@ public class MonederoVirtual {
         gestorClientes =
                 new GestorClientes();
 
+
+        gestorReversiones =
+                new GestorReversiones(
+                        gestorClientes
+                );
+
+
         gestorTransacciones =
                 new GestorTransacciones(
-                        gestorClientes
+                        gestorClientes,
+                        gestorReversiones
                 );
     }
 
@@ -101,9 +113,11 @@ public class MonederoVirtual {
                         idMonedero
                 );
 
+
         if (monedero == null) {
             return null;
         }
+
 
         return monedero.getSaldo();
     }
@@ -160,6 +174,42 @@ public class MonederoVirtual {
 
 
     // ---------------------------------------------------------
+    // REVERSIONES
+    // ---------------------------------------------------------
+
+    public Transaccion
+    verUltimaTransaccionReversible() {
+
+        return gestorReversiones
+                .verUltimaTransaccion();
+    }
+
+
+    public Transaccion
+    revertirUltimaTransaccion() {
+
+        return gestorReversiones
+                .revertirUltimaTransaccion();
+    }
+
+
+    public int
+    cantidadTransaccionesReversibles() {
+
+        return gestorReversiones
+                .cantidadTransacciones();
+    }
+
+
+    public boolean
+    pilaReversionesVacia() {
+
+        return gestorReversiones
+                .estaVacia();
+    }
+
+
+    // ---------------------------------------------------------
     // HISTORIAL
     // ---------------------------------------------------------
 
@@ -172,10 +222,12 @@ public class MonederoVirtual {
                         identificacionCliente
                 );
 
+
         if (cliente == null) {
 
             return new ArrayList<>();
         }
+
 
         return cliente
                 .obtenerHistorialTransacciones();
@@ -194,9 +246,11 @@ public class MonederoVirtual {
                         identificacionCliente
                 );
 
+
         if (cliente == null) {
             return null;
         }
+
 
         return cliente.getPuntos();
     }
@@ -210,9 +264,11 @@ public class MonederoVirtual {
                         identificacionCliente
                 );
 
+
         if (cliente == null) {
             return null;
         }
+
 
         return cliente.getRango();
     }

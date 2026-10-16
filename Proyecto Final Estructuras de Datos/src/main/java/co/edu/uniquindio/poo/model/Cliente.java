@@ -165,6 +165,29 @@ public class Cliente {
 
         puntos += puntosGenerados;
 
+        actualizarRango();
+    }
+
+
+    public void restarPuntos(
+            int puntosARestar) {
+
+        if (puntosARestar <= 0) {
+            return;
+        }
+
+        puntos -= puntosARestar;
+
+        if (puntos < 0) {
+            puntos = 0;
+        }
+
+        actualizarRango();
+    }
+
+
+    private void actualizarRango() {
+
         rango =
                 RangoCliente
                         .calcularRango(

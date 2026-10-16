@@ -12,14 +12,21 @@ public class GestorTransacciones {
     private final GestorClientes
             gestorClientes;
 
+    private final GestorReversiones
+            gestorReversiones;
+
     private int consecutivo;
 
 
     public GestorTransacciones(
-            GestorClientes gestorClientes) {
+            GestorClientes gestorClientes,
+            GestorReversiones gestorReversiones) {
 
         this.gestorClientes =
                 gestorClientes;
+
+        this.gestorReversiones =
+                gestorReversiones;
 
         this.consecutivo = 1;
     }
@@ -38,28 +45,34 @@ public class GestorTransacciones {
             return null;
         }
 
+
         Cliente cliente =
                 gestorClientes.buscarCliente(
                         identificacionCliente
                 );
 
+
         if (cliente == null) {
             return null;
         }
+
 
         Monedero monedero =
                 cliente.buscarMonedero(
                         idMonedero
                 );
 
+
         if (monedero == null) {
             return null;
         }
+
 
         boolean depositoRealizado =
                 monedero.depositar(
                         monto
                 );
+
 
         if (!depositoRealizado) {
             return null;
@@ -91,9 +104,20 @@ public class GestorTransacciones {
                 puntos
         );
 
+
         cliente.registrarTransaccion(
                 transaccion
         );
+
+
+        /*
+         * Toda transacción válida se agrega
+         * al tope de la pila de reversiones.
+         */
+        gestorReversiones
+                .registrarTransaccionReversible(
+                        transaccion
+                );
 
 
         return transaccion;
@@ -113,28 +137,34 @@ public class GestorTransacciones {
             return null;
         }
 
+
         Cliente cliente =
                 gestorClientes.buscarCliente(
                         identificacionCliente
                 );
 
+
         if (cliente == null) {
             return null;
         }
+
 
         Monedero monedero =
                 cliente.buscarMonedero(
                         idMonedero
                 );
 
+
         if (monedero == null) {
             return null;
         }
+
 
         boolean retiroRealizado =
                 monedero.retirar(
                         monto
                 );
+
 
         if (!retiroRealizado) {
             return null;
@@ -166,9 +196,16 @@ public class GestorTransacciones {
                 puntos
         );
 
+
         cliente.registrarTransaccion(
                 transaccion
         );
+
+
+        gestorReversiones
+                .registrarTransaccionReversible(
+                        transaccion
+                );
 
 
         return transaccion;
@@ -237,7 +274,6 @@ public class GestorTransacciones {
 
 
         if (origen.getSaldo() < monto) {
-
             return null;
         }
 
@@ -253,9 +289,24 @@ public class GestorTransacciones {
         }
 
 
-        destino.depositar(
-                monto
-        );
+        boolean depositoRealizado =
+                destino.depositar(
+                        monto
+                );
+
+
+        if (!depositoRealizado) {
+
+            /*
+             * Si por alguna razón falla el depósito,
+             * se devuelve el dinero al origen.
+             */
+            origen.depositar(
+                    monto
+            );
+
+            return null;
+        }
 
 
         int puntos =
@@ -279,30 +330,16 @@ public class GestorTransacciones {
                 );
 
 
-        /*
-         * Los puntos pertenecen al cliente
-         * que realizó la transferencia.
-         */
         clienteOrigen.agregarPuntos(
                 puntos
         );
 
 
-        /*
-         * Se registra en el historial
-         * del cliente origen.
-         */
         clienteOrigen.registrarTransaccion(
                 transaccion
         );
 
 
-        /*
-         * También se registra en el historial
-         * del cliente que recibió el dinero,
-         * porque la transferencia afecta
-         * uno de sus monederos.
-         */
         if (clienteOrigen != clienteDestino) {
 
             clienteDestino
@@ -310,6 +347,12 @@ public class GestorTransacciones {
                             transaccion
                     );
         }
+
+
+        gestorReversiones
+                .registrarTransaccionReversible(
+                        transaccion
+                );
 
 
         return transaccion;
@@ -354,7 +397,7 @@ public class GestorTransacciones {
 
 
     // ---------------------------------------------------------
-    // CÓDIGO DE TRANSACCIÓN
+    // CÓDIGO
     // ---------------------------------------------------------
 
     private String generarCodigo() {
