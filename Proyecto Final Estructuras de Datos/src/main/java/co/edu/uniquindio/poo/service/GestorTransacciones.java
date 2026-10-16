@@ -1,5 +1,6 @@
 package co.edu.uniquindio.poo.service;
 
+import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.enums.TipoTransaccion;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
@@ -8,6 +9,16 @@ import co.edu.uniquindio.poo.model.Transaccion;
 import java.time.LocalDateTime;
 
 public class GestorTransacciones {
+
+    /*
+     * Valor definido para esta implementación.
+     *
+     * El documento exige alertas por saldo bajo,
+     * pero no establece un límite específico.
+     */
+    private static final double
+            LIMITE_SALDO_BAJO = 100.0;
+
 
     private final GestorClientes
             gestorClientes;
@@ -18,13 +29,17 @@ public class GestorTransacciones {
     private final GestorPuntos
             gestorPuntos;
 
+    private final GestorNotificaciones
+            gestorNotificaciones;
+
     private int consecutivo;
 
 
     public GestorTransacciones(
             GestorClientes gestorClientes,
             GestorReversiones gestorReversiones,
-            GestorPuntos gestorPuntos) {
+            GestorPuntos gestorPuntos,
+            GestorNotificaciones gestorNotificaciones) {
 
         this.gestorClientes =
                 gestorClientes;
@@ -34,6 +49,9 @@ public class GestorTransacciones {
 
         this.gestorPuntos =
                 gestorPuntos;
+
+        this.gestorNotificaciones =
+                gestorNotificaciones;
 
         this.consecutivo = 1;
     }
@@ -213,6 +231,12 @@ public class GestorTransacciones {
                 );
 
 
+        verificarSaldoBajo(
+                cliente,
+                monedero
+        );
+
+
         return transaccion;
     }
 
@@ -348,7 +372,39 @@ public class GestorTransacciones {
                 );
 
 
+        verificarSaldoBajo(
+                clienteOrigen,
+                origen
+        );
+
+
         return transaccion;
+    }
+
+
+    // ---------------------------------------------------------
+    // ALERTA SALDO BAJO
+    // ---------------------------------------------------------
+
+    private void verificarSaldoBajo(
+            Cliente cliente,
+            Monedero monedero) {
+
+        if (monedero.getSaldo()
+                < LIMITE_SALDO_BAJO) {
+
+            gestorNotificaciones
+                    .enviarNotificacion(
+                            cliente
+                                    .getIdentificacion(),
+                            TipoNotificacion
+                                    .SALDO_BAJO,
+                            "El monedero "
+                                    + monedero.getNombre()
+                                    + " tiene saldo bajo: "
+                                    + monedero.getSaldo()
+                    );
+        }
     }
 
 

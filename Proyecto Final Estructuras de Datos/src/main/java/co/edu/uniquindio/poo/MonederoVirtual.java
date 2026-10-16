@@ -1,11 +1,14 @@
 package co.edu.uniquindio.poo;
 
 import co.edu.uniquindio.poo.enums.RangoCliente;
+import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
+import co.edu.uniquindio.poo.model.Notificacion;
 import co.edu.uniquindio.poo.model.Transaccion;
 import co.edu.uniquindio.poo.model.TransaccionProgramada;
 import co.edu.uniquindio.poo.service.GestorClientes;
+import co.edu.uniquindio.poo.service.GestorNotificaciones;
 import co.edu.uniquindio.poo.service.GestorProgramadas;
 import co.edu.uniquindio.poo.service.GestorPuntos;
 import co.edu.uniquindio.poo.service.GestorReversiones;
@@ -22,6 +25,9 @@ public class MonederoVirtual {
 
     private final GestorPuntos
             gestorPuntos;
+
+    private final GestorNotificaciones
+            gestorNotificaciones;
 
     private final GestorReversiones
             gestorReversiones;
@@ -43,6 +49,10 @@ public class MonederoVirtual {
                 new GestorPuntos();
 
 
+        gestorNotificaciones =
+                new GestorNotificaciones();
+
+
         gestorReversiones =
                 new GestorReversiones(
                         gestorClientes,
@@ -54,7 +64,8 @@ public class MonederoVirtual {
                 new GestorTransacciones(
                         gestorClientes,
                         gestorReversiones,
-                        gestorPuntos
+                        gestorPuntos,
+                        gestorNotificaciones
                 );
 
 
@@ -88,6 +99,12 @@ public class MonederoVirtual {
         gestorPuntos.registrarCliente(
                 cliente
         );
+
+
+        gestorNotificaciones
+                .registrarCliente(
+                        cliente.getIdentificacion()
+                );
 
 
         return true;
@@ -222,15 +239,32 @@ public class MonederoVirtual {
             LocalDateTime fechaEjecucion,
             int frecuenciaDias) {
 
-        return gestorProgramadas
-                .programarDeposito(
-                        codigo,
-                        identificacionCliente,
-                        idMonedero,
-                        monto,
-                        fechaEjecucion,
-                        frecuenciaDias
-                );
+        boolean programada =
+                gestorProgramadas
+                        .programarDeposito(
+                                codigo,
+                                identificacionCliente,
+                                idMonedero,
+                                monto,
+                                fechaEjecucion,
+                                frecuenciaDias
+                        );
+
+
+        if (programada) {
+
+            gestorNotificaciones
+                    .enviarNotificacion(
+                            identificacionCliente,
+                            TipoNotificacion
+                                    .TRANSACCION_PROGRAMADA,
+                            "Depósito programado para "
+                                    + fechaEjecucion
+                    );
+        }
+
+
+        return programada;
     }
 
 
@@ -244,17 +278,34 @@ public class MonederoVirtual {
             LocalDateTime fechaEjecucion,
             int frecuenciaDias) {
 
-        return gestorProgramadas
-                .programarTransferencia(
-                        codigo,
-                        identificacionOrigen,
-                        monederoOrigen,
-                        identificacionDestino,
-                        monederoDestino,
-                        monto,
-                        fechaEjecucion,
-                        frecuenciaDias
-                );
+        boolean programada =
+                gestorProgramadas
+                        .programarTransferencia(
+                                codigo,
+                                identificacionOrigen,
+                                monederoOrigen,
+                                identificacionDestino,
+                                monederoDestino,
+                                monto,
+                                fechaEjecucion,
+                                frecuenciaDias
+                        );
+
+
+        if (programada) {
+
+            gestorNotificaciones
+                    .enviarNotificacion(
+                            identificacionOrigen,
+                            TipoNotificacion
+                                    .TRANSACCION_PROGRAMADA,
+                            "Transferencia programada para "
+                                    + fechaEjecucion
+                    );
+        }
+
+
+        return programada;
     }
 
 
@@ -292,8 +343,7 @@ public class MonederoVirtual {
     }
 
 
-    public boolean
-    programadasVacia() {
+    public boolean programadasVacia() {
 
         return gestorProgramadas
                 .estaVacia();
@@ -317,6 +367,68 @@ public class MonederoVirtual {
         return gestorProgramadas
                 .procesarHasta(
                         fechaActual
+                );
+    }
+
+
+    // ---------------------------------------------------------
+    // NOTIFICACIONES
+    // ---------------------------------------------------------
+
+    public Notificacion enviarNotificacion(
+            String identificacionCliente,
+            TipoNotificacion tipo,
+            String mensaje) {
+
+        return gestorNotificaciones
+                .enviarNotificacion(
+                        identificacionCliente,
+                        tipo,
+                        mensaje
+                );
+    }
+
+
+    public Notificacion
+    verSiguienteNotificacion(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .verSiguienteNotificacion(
+                        identificacionCliente
+                );
+    }
+
+
+    public List<Notificacion>
+    obtenerNotificaciones(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .obtenerNotificaciones(
+                        identificacionCliente
+                );
+    }
+
+
+    public int cantidadNotificaciones(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .cantidadNotificaciones(
+                        identificacionCliente
+                );
+    }
+
+
+    public boolean marcarNotificacionComoLeida(
+            String identificacionCliente,
+            String codigoNotificacion) {
+
+        return gestorNotificaciones
+                .marcarComoLeida(
+                        identificacionCliente,
+                        codigoNotificacion
                 );
     }
 
@@ -349,8 +461,7 @@ public class MonederoVirtual {
     }
 
 
-    public boolean
-    pilaReversionesVacia() {
+    public boolean pilaReversionesVacia() {
 
         return gestorReversiones
                 .estaVacia();
