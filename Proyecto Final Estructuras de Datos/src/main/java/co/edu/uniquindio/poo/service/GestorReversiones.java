@@ -13,45 +13,37 @@ public class GestorReversiones {
     private final GestorClientes
             gestorClientes;
 
-    /*
-     * La estructura Deque se utiliza como una pila.
-     *
-     * push -> agrega al tope.
-     * peek -> consulta el tope.
-     * pop  -> retira el tope.
-     *
-     * Su comportamiento es LIFO:
-     * Last In, First Out.
-     */
+    private final GestorPuntos
+            gestorPuntos;
+
     private final Deque<Transaccion>
             pilaTransacciones;
 
 
     public GestorReversiones(
-            GestorClientes gestorClientes) {
+            GestorClientes gestorClientes,
+            GestorPuntos gestorPuntos) {
 
         this.gestorClientes =
                 gestorClientes;
 
-        this.pilaTransacciones =
+        this.gestorPuntos =
+                gestorPuntos;
+
+        pilaTransacciones =
                 new ArrayDeque<>();
     }
 
 
-    // ---------------------------------------------------------
-    // PILA
-    // ---------------------------------------------------------
-
     public void registrarTransaccionReversible(
             Transaccion transaccion) {
 
-        if (transaccion == null) {
+        if (transaccion == null ||
+                transaccion.isRevertida()) {
+
             return;
         }
 
-        if (transaccion.isRevertida()) {
-            return;
-        }
 
         pilaTransacciones.push(
                 transaccion
@@ -78,15 +70,12 @@ public class GestorReversiones {
     }
 
 
-    // ---------------------------------------------------------
-    // REVERTIR
-    // ---------------------------------------------------------
-
     public Transaccion
     revertirUltimaTransaccion() {
 
         Transaccion transaccion =
                 pilaTransacciones.peek();
+
 
         if (transaccion == null) {
             return null;
@@ -103,20 +92,16 @@ public class GestorReversiones {
                     revertirDeposito(
                             transaccion
                     );
-        }
 
-
-        else if (transaccion.getTipo() ==
+        } else if (transaccion.getTipo() ==
                 TipoTransaccion.RETIRO) {
 
             revertida =
                     revertirRetiro(
                             transaccion
                     );
-        }
 
-
-        else if (transaccion.getTipo() ==
+        } else if (transaccion.getTipo() ==
                 TipoTransaccion.TRANSFERENCIA) {
 
             revertida =
@@ -131,10 +116,6 @@ public class GestorReversiones {
         }
 
 
-        /*
-         * Solo se elimina del tope
-         * cuando la reversión fue exitosa.
-         */
         pilaTransacciones.pop();
 
         transaccion.marcarRevertida();
@@ -142,10 +123,6 @@ public class GestorReversiones {
         return transaccion;
     }
 
-
-    // ---------------------------------------------------------
-    // REVERTIR DEPÓSITO
-    // ---------------------------------------------------------
 
     private boolean revertirDeposito(
             Transaccion transaccion) {
@@ -174,35 +151,28 @@ public class GestorReversiones {
         }
 
 
-        /*
-         * Para revertir el depósito hay que
-         * retirar nuevamente el dinero que
-         * había sido depositado.
-         */
-        boolean retiroRealizado =
-                monedero.retirar(
-                        transaccion.getMonto()
-                );
+        if (!monedero.retirar(
+                transaccion.getMonto()
+        )) {
 
-
-        if (!retiroRealizado) {
             return false;
         }
 
 
-        cliente.restarPuntos(
-                transaccion
-                        .getPuntosGenerados()
-        );
+        if (transaccion.getPuntosGenerados()
+                > 0) {
+
+            gestorPuntos.restarPuntos(
+                    cliente,
+                    transaccion
+                            .getPuntosGenerados()
+            );
+        }
 
 
         return true;
     }
 
-
-    // ---------------------------------------------------------
-    // REVERTIR RETIRO
-    // ---------------------------------------------------------
 
     private boolean revertirRetiro(
             Transaccion transaccion) {
@@ -231,34 +201,28 @@ public class GestorReversiones {
         }
 
 
-        /*
-         * Un retiro se revierte devolviendo
-         * el dinero al monedero.
-         */
-        boolean depositoRealizado =
-                monedero.depositar(
-                        transaccion.getMonto()
-                );
+        if (!monedero.depositar(
+                transaccion.getMonto()
+        )) {
 
-
-        if (!depositoRealizado) {
             return false;
         }
 
 
-        cliente.restarPuntos(
-                transaccion
-                        .getPuntosGenerados()
-        );
+        if (transaccion.getPuntosGenerados()
+                > 0) {
+
+            gestorPuntos.restarPuntos(
+                    cliente,
+                    transaccion
+                            .getPuntosGenerados()
+            );
+        }
 
 
         return true;
     }
 
-
-    // ---------------------------------------------------------
-    // REVERTIR TRANSFERENCIA
-    // ---------------------------------------------------------
 
     private boolean revertirTransferencia(
             Transaccion transaccion) {
@@ -305,37 +269,18 @@ public class GestorReversiones {
         }
 
 
-        /*
-         * Para revertir la transferencia:
-         *
-         * 1. Se retira el dinero del destino.
-         * 2. Se devuelve al origen.
-         */
-        boolean retiroDestino =
-                monederoDestino.retirar(
-                        transaccion.getMonto()
-                );
+        if (!monederoDestino.retirar(
+                transaccion.getMonto()
+        )) {
 
-
-        if (!retiroDestino) {
             return false;
         }
 
 
-        boolean depositoOrigen =
-                monederoOrigen.depositar(
-                        transaccion.getMonto()
-                );
+        if (!monederoOrigen.depositar(
+                transaccion.getMonto()
+        )) {
 
-
-        if (!depositoOrigen) {
-
-            /*
-             * Restauración defensiva:
-             * si ocurriera un error al devolver
-             * el dinero al origen, se regresa
-             * nuevamente al destino.
-             */
             monederoDestino.depositar(
                     transaccion.getMonto()
             );
@@ -344,14 +289,15 @@ public class GestorReversiones {
         }
 
 
-        /*
-         * Los puntos de una transferencia
-         * pertenecen al cliente que la realizó.
-         */
-        clienteOrigen.restarPuntos(
-                transaccion
-                        .getPuntosGenerados()
-        );
+        if (transaccion.getPuntosGenerados()
+                > 0) {
+
+            gestorPuntos.restarPuntos(
+                    clienteOrigen,
+                    transaccion
+                            .getPuntosGenerados()
+            );
+        }
 
 
         return true;

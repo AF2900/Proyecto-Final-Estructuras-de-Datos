@@ -5,6 +5,7 @@ import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Transaccion;
 import co.edu.uniquindio.poo.service.GestorClientes;
+import co.edu.uniquindio.poo.service.GestorPuntos;
 import co.edu.uniquindio.poo.service.GestorReversiones;
 import co.edu.uniquindio.poo.service.GestorTransacciones;
 
@@ -15,6 +16,9 @@ public class MonederoVirtual {
 
     private final GestorClientes
             gestorClientes;
+
+    private final GestorPuntos
+            gestorPuntos;
 
     private final GestorReversiones
             gestorReversiones;
@@ -29,16 +33,22 @@ public class MonederoVirtual {
                 new GestorClientes();
 
 
+        gestorPuntos =
+                new GestorPuntos();
+
+
         gestorReversiones =
                 new GestorReversiones(
-                        gestorClientes
+                        gestorClientes,
+                        gestorPuntos
                 );
 
 
         gestorTransacciones =
                 new GestorTransacciones(
                         gestorClientes,
-                        gestorReversiones
+                        gestorReversiones,
+                        gestorPuntos
                 );
     }
 
@@ -50,10 +60,24 @@ public class MonederoVirtual {
     public boolean registrarCliente(
             Cliente cliente) {
 
-        return gestorClientes
-                .registrarCliente(
-                        cliente
-                );
+        boolean registrado =
+                gestorClientes
+                        .registrarCliente(
+                                cliente
+                        );
+
+
+        if (!registrado) {
+            return false;
+        }
+
+
+        gestorPuntos.registrarCliente(
+                cliente
+        );
+
+
+        return true;
     }
 
 
@@ -235,24 +259,16 @@ public class MonederoVirtual {
 
 
     // ---------------------------------------------------------
-    // PUNTOS Y RANGO
+    // PUNTOS Y RANGOS
     // ---------------------------------------------------------
 
     public Integer consultarPuntos(
             String identificacionCliente) {
 
-        Cliente cliente =
-                buscarCliente(
+        return gestorPuntos
+                .consultarPuntos(
                         identificacionCliente
                 );
-
-
-        if (cliente == null) {
-            return null;
-        }
-
-
-        return cliente.getPuntos();
     }
 
 
@@ -271,5 +287,35 @@ public class MonederoVirtual {
 
 
         return cliente.getRango();
+    }
+
+
+    public List<Cliente>
+    obtenerClientesOrdenadosPorPuntosBST() {
+
+        return gestorPuntos
+                .obtenerClientesOrdenadosPorPuntosBST();
+    }
+
+
+    public List<Cliente>
+    obtenerClientesOrdenadosPorPuntosAVL() {
+
+        return gestorPuntos
+                .obtenerClientesOrdenadosPorPuntosAVL();
+    }
+
+
+    public int obtenerAlturaBST() {
+
+        return gestorPuntos
+                .obtenerAlturaBST();
+    }
+
+
+    public int obtenerAlturaAVL() {
+
+        return gestorPuntos
+                .obtenerAlturaAVL();
     }
 }

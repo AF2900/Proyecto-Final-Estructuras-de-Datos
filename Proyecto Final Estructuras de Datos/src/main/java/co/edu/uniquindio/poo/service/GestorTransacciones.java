@@ -15,18 +15,25 @@ public class GestorTransacciones {
     private final GestorReversiones
             gestorReversiones;
 
+    private final GestorPuntos
+            gestorPuntos;
+
     private int consecutivo;
 
 
     public GestorTransacciones(
             GestorClientes gestorClientes,
-            GestorReversiones gestorReversiones) {
+            GestorReversiones gestorReversiones,
+            GestorPuntos gestorPuntos) {
 
         this.gestorClientes =
                 gestorClientes;
 
         this.gestorReversiones =
                 gestorReversiones;
+
+        this.gestorPuntos =
+                gestorPuntos;
 
         this.consecutivo = 1;
     }
@@ -68,13 +75,10 @@ public class GestorTransacciones {
         }
 
 
-        boolean depositoRealizado =
-                monedero.depositar(
-                        monto
-                );
+        if (!monedero.depositar(
+                monto
+        )) {
 
-
-        if (!depositoRealizado) {
             return null;
         }
 
@@ -100,9 +104,13 @@ public class GestorTransacciones {
                 );
 
 
-        cliente.agregarPuntos(
-                puntos
-        );
+        if (puntos > 0) {
+
+            gestorPuntos.agregarPuntos(
+                    cliente,
+                    puntos
+            );
+        }
 
 
         cliente.registrarTransaccion(
@@ -110,10 +118,6 @@ public class GestorTransacciones {
         );
 
 
-        /*
-         * Toda transacción válida se agrega
-         * al tope de la pila de reversiones.
-         */
         gestorReversiones
                 .registrarTransaccionReversible(
                         transaccion
@@ -160,13 +164,10 @@ public class GestorTransacciones {
         }
 
 
-        boolean retiroRealizado =
-                monedero.retirar(
-                        monto
-                );
+        if (!monedero.retirar(
+                monto
+        )) {
 
-
-        if (!retiroRealizado) {
             return null;
         }
 
@@ -192,9 +193,13 @@ public class GestorTransacciones {
                 );
 
 
-        cliente.agregarPuntos(
-                puntos
-        );
+        if (puntos > 0) {
+
+            gestorPuntos.agregarPuntos(
+                    cliente,
+                    puntos
+            );
+        }
 
 
         cliente.registrarTransaccion(
@@ -273,34 +278,18 @@ public class GestorTransacciones {
         }
 
 
-        if (origen.getSaldo() < monto) {
+        if (!origen.retirar(
+                monto
+        )) {
+
             return null;
         }
 
 
-        boolean retiroRealizado =
-                origen.retirar(
-                        monto
-                );
+        if (!destino.depositar(
+                monto
+        )) {
 
-
-        if (!retiroRealizado) {
-            return null;
-        }
-
-
-        boolean depositoRealizado =
-                destino.depositar(
-                        monto
-                );
-
-
-        if (!depositoRealizado) {
-
-            /*
-             * Si por alguna razón falla el depósito,
-             * se devuelve el dinero al origen.
-             */
             origen.depositar(
                     monto
             );
@@ -330,9 +319,13 @@ public class GestorTransacciones {
                 );
 
 
-        clienteOrigen.agregarPuntos(
-                puntos
-        );
+        if (puntos > 0) {
+
+            gestorPuntos.agregarPuntos(
+                    clienteOrigen,
+                    puntos
+            );
+        }
 
 
         clienteOrigen.registrarTransaccion(
@@ -408,7 +401,9 @@ public class GestorTransacciones {
                         consecutivo
                 );
 
+
         consecutivo++;
+
 
         return codigo;
     }
