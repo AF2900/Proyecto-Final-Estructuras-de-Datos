@@ -19,6 +19,9 @@ public class GestorReversiones {
     private final GestorGrafos
             gestorGrafos;
 
+    private final GestorPatronesGasto
+            gestorPatronesGasto;
+
     private final Deque<Transaccion>
             pilaTransacciones;
 
@@ -26,7 +29,8 @@ public class GestorReversiones {
     public GestorReversiones(
             GestorClientes gestorClientes,
             GestorPuntos gestorPuntos,
-            GestorGrafos gestorGrafos) {
+            GestorGrafos gestorGrafos,
+            GestorPatronesGasto gestorPatronesGasto) {
 
         this.gestorClientes =
                 gestorClientes;
@@ -36,6 +40,9 @@ public class GestorReversiones {
 
         this.gestorGrafos =
                 gestorGrafos;
+
+        this.gestorPatronesGasto =
+                gestorPatronesGasto;
 
         pilaTransacciones =
                 new ArrayDeque<>();
@@ -113,6 +120,14 @@ public class GestorReversiones {
 
             revertida =
                     revertirTransferencia(
+                            transaccion
+                    );
+
+        } else if (transaccion.getTipo() ==
+                TipoTransaccion.GASTO) {
+
+            revertida =
+                    revertirGasto(
                             transaccion
                     );
         }
@@ -320,6 +335,73 @@ public class GestorReversiones {
                         transaccion
                                 .getMonto()
                 );
+
+
+        return true;
+    }
+
+
+    private boolean revertirGasto(
+            Transaccion transaccion) {
+
+        Cliente cliente =
+                gestorClientes.buscarCliente(
+                        transaccion
+                                .getIdentificacionOrigen()
+                );
+
+
+        if (cliente == null) {
+            return false;
+        }
+
+
+        Monedero monedero =
+                cliente.buscarMonedero(
+                        transaccion
+                                .getMonederoOrigen()
+                );
+
+
+        if (monedero == null) {
+            return false;
+        }
+
+
+        if (!monedero.depositar(
+                transaccion.getMonto()
+        )) {
+
+            return false;
+        }
+
+
+        boolean patronRevertido =
+                gestorPatronesGasto
+                        .revertirGasto(
+                                transaccion
+                                        .getIdentificacionOrigen(),
+                                transaccion
+                                        .getCategoriaGasto(),
+                                transaccion
+                                        .getCategoriaAnterior(),
+                                transaccion
+                                        .getMonto()
+                        );
+
+
+        /*
+         * Si fallara la actualización del patrón,
+         * se devuelve el monedero al estado previo.
+         */
+        if (!patronRevertido) {
+
+            monedero.retirar(
+                    transaccion.getMonto()
+            );
+
+            return false;
+        }
 
 
         return true;

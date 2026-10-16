@@ -1,5 +1,6 @@
 package co.edu.uniquindio.poo.model;
 
+import co.edu.uniquindio.poo.enums.CategoriaGasto;
 import co.edu.uniquindio.poo.enums.TipoTransaccion;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,15 @@ public class Transaccion {
 
     private boolean revertida;
 
+    private CategoriaGasto categoriaGasto;
 
+    private CategoriaGasto categoriaAnterior;
+
+
+    /*
+     * Constructor utilizado por depósito,
+     * retiro y transferencia.
+     */
     public Transaccion(
             String codigo,
             LocalDateTime fecha,
@@ -38,13 +47,51 @@ public class Transaccion {
             String monederoDestino,
             int puntosGenerados) {
 
-        this.codigo = codigo;
+        this(
+                codigo,
+                fecha,
+                tipo,
+                monto,
+                identificacionOrigen,
+                monederoOrigen,
+                identificacionDestino,
+                monederoDestino,
+                puntosGenerados,
+                null,
+                null
+        );
+    }
 
-        this.fecha = fecha;
 
-        this.tipo = tipo;
+    /*
+     * Constructor completo.
+     *
+     * Se utiliza también para los gastos.
+     */
+    public Transaccion(
+            String codigo,
+            LocalDateTime fecha,
+            TipoTransaccion tipo,
+            double monto,
+            String identificacionOrigen,
+            String monederoOrigen,
+            String identificacionDestino,
+            String monederoDestino,
+            int puntosGenerados,
+            CategoriaGasto categoriaGasto,
+            CategoriaGasto categoriaAnterior) {
 
-        this.monto = monto;
+        this.codigo =
+                codigo;
+
+        this.fecha =
+                fecha;
+
+        this.tipo =
+                tipo;
+
+        this.monto =
+                monto;
 
         this.identificacionOrigen =
                 identificacionOrigen;
@@ -61,7 +108,14 @@ public class Transaccion {
         this.puntosGenerados =
                 puntosGenerados;
 
-        this.revertida = false;
+        this.revertida =
+                false;
+
+        this.categoriaGasto =
+                categoriaGasto;
+
+        this.categoriaAnterior =
+                categoriaAnterior;
     }
 
 
@@ -115,6 +169,16 @@ public class Transaccion {
     }
 
 
+    public CategoriaGasto getCategoriaGasto() {
+        return categoriaGasto;
+    }
+
+
+    public CategoriaGasto getCategoriaAnterior() {
+        return categoriaAnterior;
+    }
+
+
     public void marcarRevertida() {
 
         this.revertida = true;
@@ -139,6 +203,8 @@ public class Transaccion {
                 monederoDestino + '\'' +
                 ", puntosGenerados=" +
                 puntosGenerados +
+                ", categoriaGasto=" +
+                categoriaGasto +
                 ", revertida=" +
                 revertida +
                 '}';

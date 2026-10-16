@@ -1,5 +1,6 @@
 package co.edu.uniquindio.poo;
 
+import co.edu.uniquindio.poo.enums.CategoriaGasto;
 import co.edu.uniquindio.poo.enums.RangoCliente;
 import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.estructuras.grafo.AristaGrafo;
@@ -23,6 +24,8 @@ public class MonederoVirtual {
     private final GestorNotificaciones gestorNotificaciones;
 
     private final GestorGrafos gestorGrafos;
+
+    private final GestorPatronesGasto gestorPatronesGasto;
 
     private final GestorReversiones gestorReversiones;
 
@@ -49,11 +52,16 @@ public class MonederoVirtual {
                 new GestorGrafos();
 
 
+        gestorPatronesGasto =
+                new GestorPatronesGasto();
+
+
         gestorReversiones =
                 new GestorReversiones(
                         gestorClientes,
                         gestorPuntos,
-                        gestorGrafos
+                        gestorGrafos,
+                        gestorPatronesGasto
                 );
 
 
@@ -63,7 +71,8 @@ public class MonederoVirtual {
                         gestorReversiones,
                         gestorPuntos,
                         gestorNotificaciones,
-                        gestorGrafos
+                        gestorGrafos,
+                        gestorPatronesGasto
                 );
 
 
@@ -105,9 +114,16 @@ public class MonederoVirtual {
                 );
 
 
-        gestorGrafos.registrarCliente(
-                cliente.getIdentificacion()
-        );
+        gestorGrafos
+                .registrarCliente(
+                        cliente.getIdentificacion()
+                );
+
+
+        gestorPatronesGasto
+                .registrarCliente(
+                        cliente.getIdentificacion()
+                );
 
 
         return true;
@@ -239,6 +255,22 @@ public class MonederoVirtual {
                         identificacionDestino,
                         monederoDestino,
                         monto
+                );
+    }
+
+
+    public Transaccion realizarGasto(
+            String identificacionCliente,
+            String idMonedero,
+            double monto,
+            CategoriaGasto categoria) {
+
+        return gestorTransacciones
+                .realizarGasto(
+                        identificacionCliente,
+                        idMonedero,
+                        monto,
+                        categoria
                 );
     }
 
@@ -443,6 +475,86 @@ public class MonederoVirtual {
                 .marcarComoLeida(
                         identificacionCliente,
                         codigoNotificacion
+                );
+    }
+
+
+    // ---------------------------------------------------------
+    // GASTOS Y PATRONES
+    // ---------------------------------------------------------
+
+    public double obtenerTotalGastos(
+            String identificacionCliente) {
+
+        return gestorPatronesGasto
+                .obtenerTotalGastos(
+                        identificacionCliente
+                );
+    }
+
+
+    public double obtenerTotalCategoria(
+            String identificacionCliente,
+            CategoriaGasto categoria) {
+
+        return gestorPatronesGasto
+                .obtenerTotalCategoria(
+                        identificacionCliente,
+                        categoria
+                );
+    }
+
+
+    public CategoriaGasto obtenerCategoriaMayorGasto(
+            String identificacionCliente) {
+
+        return gestorPatronesGasto
+                .obtenerCategoriaMayorGasto(
+                        identificacionCliente
+                );
+    }
+
+
+    public CategoriaGasto obtenerUltimaCategoriaGasto(
+            String identificacionCliente) {
+
+        return gestorPatronesGasto
+                .obtenerUltimaCategoria(
+                        identificacionCliente
+                );
+    }
+
+
+    public double obtenerMontoTransicionCategorias(
+            CategoriaGasto origen,
+            CategoriaGasto destino) {
+
+        return gestorPatronesGasto
+                .obtenerMontoTransicion(
+                        origen,
+                        destino
+                );
+    }
+
+
+    public int obtenerCantidadTransicionesCategorias(
+            CategoriaGasto origen,
+            CategoriaGasto destino) {
+
+        return gestorPatronesGasto
+                .obtenerCantidadTransiciones(
+                        origen,
+                        destino
+                );
+    }
+
+
+    public String obtenerSiguienteCategoriaPrincipal(
+            CategoriaGasto categoria) {
+
+        return gestorPatronesGasto
+                .obtenerSiguienteCategoriaPrincipal(
+                        categoria
                 );
     }
 

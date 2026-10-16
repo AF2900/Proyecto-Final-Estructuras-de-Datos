@@ -1,5 +1,6 @@
 package co.edu.uniquindio.poo.service;
 
+import co.edu.uniquindio.poo.enums.CategoriaGasto;
 import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.enums.TipoTransaccion;
 import co.edu.uniquindio.poo.model.Cliente;
@@ -29,6 +30,9 @@ public class GestorTransacciones {
     private final GestorGrafos
             gestorGrafos;
 
+    private final GestorPatronesGasto
+            gestorPatronesGasto;
+
     private int consecutivo;
 
 
@@ -37,7 +41,8 @@ public class GestorTransacciones {
             GestorReversiones gestorReversiones,
             GestorPuntos gestorPuntos,
             GestorNotificaciones gestorNotificaciones,
-            GestorGrafos gestorGrafos) {
+            GestorGrafos gestorGrafos,
+            GestorPatronesGasto gestorPatronesGasto) {
 
         this.gestorClientes =
                 gestorClientes;
@@ -53,6 +58,9 @@ public class GestorTransacciones {
 
         this.gestorGrafos =
                 gestorGrafos;
+
+        this.gestorPatronesGasto =
+                gestorPatronesGasto;
 
         this.consecutivo = 1;
     }
@@ -386,6 +394,104 @@ public class GestorTransacciones {
         verificarSaldoBajo(
                 clienteOrigen,
                 origen
+        );
+
+
+        return transaccion;
+    }
+
+
+    // ---------------------------------------------------------
+    // GASTO
+    // ---------------------------------------------------------
+
+    public Transaccion realizarGasto(
+            String identificacionCliente,
+            String idMonedero,
+            double monto,
+            CategoriaGasto categoria) {
+
+        if (monto <= 0 ||
+                categoria == null) {
+
+            return null;
+        }
+
+
+        Cliente cliente =
+                gestorClientes.buscarCliente(
+                        identificacionCliente
+                );
+
+
+        if (cliente == null) {
+            return null;
+        }
+
+
+        Monedero monedero =
+                cliente.buscarMonedero(
+                        idMonedero
+                );
+
+
+        if (monedero == null) {
+            return null;
+        }
+
+
+        if (!monedero.retirar(
+                monto
+        )) {
+
+            return null;
+        }
+
+
+        CategoriaGasto categoriaAnterior =
+                gestorPatronesGasto
+                        .registrarGasto(
+                                identificacionCliente,
+                                categoria,
+                                monto
+                        );
+
+
+        /*
+         * El documento no define puntos
+         * para los gastos, por lo tanto
+         * se registran con cero puntos.
+         */
+        Transaccion transaccion =
+                new Transaccion(
+                        generarCodigo(),
+                        LocalDateTime.now(),
+                        TipoTransaccion.GASTO,
+                        monto,
+                        identificacionCliente,
+                        idMonedero,
+                        null,
+                        null,
+                        0,
+                        categoria,
+                        categoriaAnterior
+                );
+
+
+        cliente.registrarTransaccion(
+                transaccion
+        );
+
+
+        gestorReversiones
+                .registrarTransaccionReversible(
+                        transaccion
+                );
+
+
+        verificarSaldoBajo(
+                cliente,
+                monedero
         );
 
 
