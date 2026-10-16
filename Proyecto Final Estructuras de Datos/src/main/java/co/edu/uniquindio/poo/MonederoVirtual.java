@@ -2,8 +2,10 @@ package co.edu.uniquindio.poo;
 
 import co.edu.uniquindio.poo.enums.CategoriaGasto;
 import co.edu.uniquindio.poo.enums.RangoCliente;
+import co.edu.uniquindio.poo.enums.TipoBeneficio;
 import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.estructuras.grafo.AristaGrafo;
+import co.edu.uniquindio.poo.model.BeneficioCanjeado;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Notificacion;
@@ -34,6 +36,9 @@ public class MonederoVirtual {
 
     private final GestorIntegridad
             gestorIntegridad;
+
+    private final GestorBeneficios
+            gestorBeneficios;
 
     private final GestorReversiones
             gestorReversiones;
@@ -69,6 +74,13 @@ public class MonederoVirtual {
 
         gestorIntegridad =
                 new GestorIntegridad();
+
+
+        gestorBeneficios =
+                new GestorBeneficios(
+                        gestorClientes,
+                        gestorPuntos
+                );
 
 
         gestorReversiones =
@@ -136,6 +148,12 @@ public class MonederoVirtual {
 
 
         gestorPatronesGasto
+                .registrarCliente(
+                        cliente.getIdentificacion()
+                );
+
+
+        gestorBeneficios
                 .registrarCliente(
                         cliente.getIdentificacion()
                 );
@@ -805,6 +823,70 @@ public class MonederoVirtual {
         return gestorIntegridad
                 .buscarPrimeraTransaccionInvalida(
                         cliente
+                );
+    }
+
+
+    // ---------------------------------------------------------
+    // BENEFICIOS
+    // ---------------------------------------------------------
+
+    public BeneficioCanjeado canjearBeneficio(
+            String identificacionCliente,
+            TipoBeneficio tipo,
+            String idMonedero) {
+
+        return gestorBeneficios
+                .canjearBeneficio(
+                        identificacionCliente,
+                        tipo,
+                        idMonedero
+                );
+    }
+
+
+    public List<BeneficioCanjeado>
+    obtenerBeneficios(
+            String identificacionCliente) {
+
+        return gestorBeneficios
+                .obtenerBeneficios(
+                        identificacionCliente
+                );
+    }
+
+
+    public int cantidadBeneficios(
+            String identificacionCliente) {
+
+        return gestorBeneficios
+                .cantidadBeneficios(
+                        identificacionCliente
+                );
+    }
+
+
+    public boolean tieneBeneficioActivo(
+            String identificacionCliente,
+            TipoBeneficio tipo) {
+
+        return gestorBeneficios
+                .tieneBeneficioActivo(
+                        identificacionCliente,
+                        tipo
+                );
+    }
+
+
+    public LocalDateTime
+    obtenerVencimientoBeneficio(
+            String identificacionCliente,
+            TipoBeneficio tipo) {
+
+        return gestorBeneficios
+                .obtenerVencimientoBeneficio(
+                        identificacionCliente,
+                        tipo
                 );
     }
 
