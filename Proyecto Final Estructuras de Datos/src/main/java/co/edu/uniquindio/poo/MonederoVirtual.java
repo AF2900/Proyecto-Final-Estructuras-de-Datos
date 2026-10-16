@@ -4,11 +4,14 @@ import co.edu.uniquindio.poo.enums.RangoCliente;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Transaccion;
+import co.edu.uniquindio.poo.model.TransaccionProgramada;
 import co.edu.uniquindio.poo.service.GestorClientes;
+import co.edu.uniquindio.poo.service.GestorProgramadas;
 import co.edu.uniquindio.poo.service.GestorPuntos;
 import co.edu.uniquindio.poo.service.GestorReversiones;
 import co.edu.uniquindio.poo.service.GestorTransacciones;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,9 @@ public class MonederoVirtual {
 
     private final GestorTransacciones
             gestorTransacciones;
+
+    private final GestorProgramadas
+            gestorProgramadas;
 
 
     public MonederoVirtual() {
@@ -49,6 +55,13 @@ public class MonederoVirtual {
                         gestorClientes,
                         gestorReversiones,
                         gestorPuntos
+                );
+
+
+        gestorProgramadas =
+                new GestorProgramadas(
+                        gestorClientes,
+                        gestorTransacciones
                 );
     }
 
@@ -193,6 +206,117 @@ public class MonederoVirtual {
                         identificacionDestino,
                         monederoDestino,
                         monto
+                );
+    }
+
+
+    // ---------------------------------------------------------
+    // TRANSACCIONES PROGRAMADAS
+    // ---------------------------------------------------------
+
+    public boolean programarDeposito(
+            String codigo,
+            String identificacionCliente,
+            String idMonedero,
+            double monto,
+            LocalDateTime fechaEjecucion,
+            int frecuenciaDias) {
+
+        return gestorProgramadas
+                .programarDeposito(
+                        codigo,
+                        identificacionCliente,
+                        idMonedero,
+                        monto,
+                        fechaEjecucion,
+                        frecuenciaDias
+                );
+    }
+
+
+    public boolean programarTransferencia(
+            String codigo,
+            String identificacionOrigen,
+            String monederoOrigen,
+            String identificacionDestino,
+            String monederoDestino,
+            double monto,
+            LocalDateTime fechaEjecucion,
+            int frecuenciaDias) {
+
+        return gestorProgramadas
+                .programarTransferencia(
+                        codigo,
+                        identificacionOrigen,
+                        monederoOrigen,
+                        identificacionDestino,
+                        monederoDestino,
+                        monto,
+                        fechaEjecucion,
+                        frecuenciaDias
+                );
+    }
+
+
+    public TransaccionProgramada
+    verSiguienteProgramada() {
+
+        return gestorProgramadas
+                .verSiguienteProgramada();
+    }
+
+
+    public TransaccionProgramada
+    buscarProgramada(
+            String codigo) {
+
+        return gestorProgramadas
+                .buscarProgramada(
+                        codigo
+                );
+    }
+
+
+    public List<TransaccionProgramada>
+    obtenerProgramadasEnOrden() {
+
+        return gestorProgramadas
+                .obtenerProgramadasEnOrden();
+    }
+
+
+    public int cantidadProgramadas() {
+
+        return gestorProgramadas
+                .cantidadProgramadas();
+    }
+
+
+    public boolean
+    programadasVacia() {
+
+        return gestorProgramadas
+                .estaVacia();
+    }
+
+
+    public boolean cancelarProgramada(
+            String codigo) {
+
+        return gestorProgramadas
+                .cancelarProgramada(
+                        codigo
+                );
+    }
+
+
+    public List<Transaccion>
+    procesarTransaccionesProgramadas(
+            LocalDateTime fechaActual) {
+
+        return gestorProgramadas
+                .procesarHasta(
+                        fechaActual
                 );
     }
 
