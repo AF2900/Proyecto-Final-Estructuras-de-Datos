@@ -4,6 +4,7 @@ import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Notificacion;
+import co.edu.uniquindio.poo.model.Transaccion;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,7 +72,7 @@ public class PruebaNotificaciones {
 
         // -----------------------------------------------------
         // NOTIFICACIÓN GENERAL
-        // -----------------------------------------------------
+        // ---------------------------------------------------------
 
         Notificacion general =
                 sistema.enviarNotificacion(
@@ -91,13 +92,31 @@ public class PruebaNotificaciones {
                 sistema.cantidadNotificaciones(
                         "C001"
                 ) == 1,
-                "Cliente tiene una notificación"
+                "Historial contiene una notificación"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 1,
+                "Cola contiene una notificación pendiente"
+        );
+
+
+        verificar(
+                sistema
+                        .verSiguienteNotificacionPendiente(
+                                "C001"
+                        )
+                        == general,
+                "Primera pendiente es la primera recibida"
         );
 
 
         // -----------------------------------------------------
         // TRANSACCIÓN PROGRAMADA
-        // -----------------------------------------------------
+        // ---------------------------------------------------------
 
         LocalDateTime fecha =
                 LocalDateTime.of(
@@ -126,13 +145,21 @@ public class PruebaNotificaciones {
                 sistema.cantidadNotificaciones(
                         "C001"
                 ) == 2,
-                "Programación genera notificación automática"
+                "Programación genera notificación"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 2,
+                "Programación entra en cola de pendientes"
         );
 
 
         // -----------------------------------------------------
         // SALDO BAJO
-        // -----------------------------------------------------
+        // ---------------------------------------------------------
 
         sistema.depositar(
                 "C001",
@@ -161,7 +188,15 @@ public class PruebaNotificaciones {
                 sistema.cantidadNotificaciones(
                         "C001"
                 ) == 3,
-                "Saldo bajo genera alerta automática"
+                "Saldo bajo genera notificación"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 3,
+                "Las tres notificaciones están pendientes"
         );
 
 
@@ -181,8 +216,8 @@ public class PruebaNotificaciones {
 
 
         // -----------------------------------------------------
-        // COMPROBAR CIRCULARIDAD
-        // -----------------------------------------------------
+        // LISTA CIRCULAR
+        // ---------------------------------------------------------
 
         Notificacion primera =
                 sistema.verSiguienteNotificacion(
@@ -210,23 +245,23 @@ public class PruebaNotificaciones {
 
         verificar(
                 primera == vuelvePrimera,
-                "Lista vuelve al primer nodo"
+                "Lista circular vuelve al primer nodo"
         );
 
 
         verificar(
                 primera != segunda &&
                         segunda != tercera,
-                "Recorrido avanza entre notificaciones"
+                "Lista circular avanza entre nodos"
         );
 
 
         // -----------------------------------------------------
         // MARCAR COMO LEÍDA
-        // -----------------------------------------------------
+        // ---------------------------------------------------------
 
         verificar(
-                !primera.isLeida(),
+                !general.isLeida(),
                 "Notificación inicia como no leída"
         );
 
@@ -235,37 +270,247 @@ public class PruebaNotificaciones {
                 sistema
                         .marcarNotificacionComoLeida(
                                 "C001",
-                                primera.getCodigo()
+                                general.getCodigo()
                         ),
-                "Marcar notificación como leída"
+                "Marcar primera notificación como leída"
         );
 
 
         verificar(
-                primera.isLeida(),
-                "Notificación queda leída"
+                general.isLeida(),
+                "Primera notificación queda leída"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificaciones(
+                        "C001"
+                ) == 3,
+                "Historial conserva la notificación leída"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 2,
+                "Notificación leída sale de la Queue"
         );
 
 
         // -----------------------------------------------------
-        // CLIENTE SIN NOTIFICACIONES
+        // FIFO
+        // ---------------------------------------------------------
+
+        Notificacion siguientePendiente =
+                sistema
+                        .verSiguienteNotificacionPendiente(
+                                "C001"
+                        );
+
+
+        verificar(
+                siguientePendiente
+                        == segunda,
+                "Queue conserva orden FIFO"
+        );
+
+
+        Notificacion atendida =
+                sistema
+                        .atenderSiguienteNotificacion(
+                                "C001"
+                        );
+
+
+        verificar(
+                atendida == segunda,
+                "Se atiende la primera pendiente"
+        );
+
+
+        verificar(
+                atendida.isLeida(),
+                "Notificación atendida queda leída"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 1,
+                "Queue queda con una pendiente"
+        );
+
+
+        verificar(
+                sistema
+                        .verSiguienteNotificacionPendiente(
+                                "C001"
+                        )
+                        == tercera,
+                "Saldo bajo queda al frente de la Queue"
+        );
+
+
         // -----------------------------------------------------
+        // EJECUTAR TRANSACCIÓN PROGRAMADA
+        // ---------------------------------------------------------
+
+        List<Transaccion> ejecutadas =
+                sistema
+                        .procesarTransaccionesProgramadas(
+                                fecha.plusMinutes(
+                                        1
+                                )
+                        );
+
+
+        verificar(
+                ejecutadas.size()
+                        == 1,
+                "Se ejecuta depósito programado"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificaciones(
+                        "C001"
+                ) == 4,
+                "Ejecución genera recordatorio automático"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 2,
+                "Recordatorio entra al final de la Queue"
+        );
+
+
+        List<Notificacion> pendientes =
+                sistema
+                        .obtenerNotificacionesPendientes(
+                                "C001"
+                        );
+
+
+        verificar(
+                pendientes.get(0)
+                        == tercera,
+                "Primera pendiente sigue siendo saldo bajo"
+        );
+
+
+        verificar(
+                pendientes.get(1)
+                        .getTipo()
+                        ==
+                        TipoNotificacion
+                                .TRANSACCION_PROGRAMADA,
+                "Recordatorio ejecutado queda después en la cola"
+        );
+
+
+        // -----------------------------------------------------
+        // ATENDER TODA LA COLA
+        // ---------------------------------------------------------
+
+        Notificacion pendiente1 =
+                sistema
+                        .atenderSiguienteNotificacion(
+                                "C001"
+                        );
+
+
+        Notificacion pendiente2 =
+                sistema
+                        .atenderSiguienteNotificacion(
+                                "C001"
+                        );
+
+
+        verificar(
+                pendiente1 != null &&
+                        pendiente2 != null,
+                "Se atienden las dos pendientes"
+        );
+
+
+        verificar(
+                sistema.cantidadNotificacionesPendientes(
+                        "C001"
+                ) == 0,
+                "Queue queda vacía"
+        );
+
+
+        verificar(
+                !sistema
+                        .tieneNotificacionesPendientes(
+                                "C001"
+                        ),
+                "Cliente ya no tiene pendientes"
+        );
+
+
+        verificar(
+                sistema
+                        .atenderSiguienteNotificacion(
+                                "C001"
+                        )
+                        == null,
+                "poll sobre Queue vacía retorna null"
+        );
+
+
+        /*
+         * Aunque la cola quedó vacía,
+         * la lista circular conserva
+         * las cuatro notificaciones.
+         */
+        verificar(
+                sistema.cantidadNotificaciones(
+                        "C001"
+                ) == 4,
+                "Historial circular conserva todas"
+        );
+
+
+        // -----------------------------------------------------
+        // SEGUNDO CLIENTE
+        // ---------------------------------------------------------
 
         verificar(
                 sistema.cantidadNotificaciones(
                         "C002"
                 ) == 0,
-                "Segundo cliente inicia sin notificaciones"
+                "Segundo cliente no tiene historial"
         );
 
 
         verificar(
-                sistema.verSiguienteNotificacion(
+                sistema.cantidadNotificacionesPendientes(
                         "C002"
-                ) == null,
-                "Lista circular vacía retorna null"
+                ) == 0,
+                "Segundo cliente no tiene pendientes"
         );
 
+
+        verificar(
+                sistema
+                        .verSiguienteNotificacionPendiente(
+                                "C002"
+                        )
+                        == null,
+                "Queue vacía retorna null"
+        );
+
+
+        // -----------------------------------------------------
+        // RESULTADO
+        // ---------------------------------------------------------
 
         System.out.println(
                 "\n======================================"

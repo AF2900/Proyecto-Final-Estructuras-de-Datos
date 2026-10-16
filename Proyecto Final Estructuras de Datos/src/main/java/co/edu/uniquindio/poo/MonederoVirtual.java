@@ -461,10 +461,36 @@ public class MonederoVirtual {
     procesarTransaccionesProgramadas(
             LocalDateTime fechaActual) {
 
-        return gestorProgramadas
-                .procesarHasta(
-                        fechaActual
-                );
+        List<Transaccion> realizadas =
+                gestorProgramadas
+                        .procesarHasta(
+                                fechaActual
+                        );
+
+
+        /*
+         * Después de ejecutar una transacción
+         * programada se genera automáticamente
+         * una notificación para el cliente.
+         */
+        for (Transaccion transaccion :
+                realizadas) {
+
+            gestorNotificaciones
+                    .enviarNotificacion(
+                            transaccion
+                                    .getIdentificacionOrigen(),
+                            TipoNotificacion
+                                    .TRANSACCION_PROGRAMADA,
+                            "Se ejecutó correctamente la transacción programada "
+                                    + transaccion.getCodigo()
+                                    + " de tipo "
+                                    + transaccion.getTipo()
+                    );
+        }
+
+
+        return realizadas;
     }
 
 
@@ -486,6 +512,9 @@ public class MonederoVirtual {
     }
 
 
+    /*
+     * Recorrido utilizando la lista circular.
+     */
     public Notificacion verSiguienteNotificacion(
             String identificacionCliente) {
 
@@ -525,6 +554,63 @@ public class MonederoVirtual {
                 .marcarComoLeida(
                         identificacionCliente,
                         codigoNotificacion
+                );
+    }
+
+
+    /*
+     * Operaciones propias de la Queue
+     * de notificaciones pendientes.
+     */
+    public Notificacion
+    verSiguienteNotificacionPendiente(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .verSiguientePendiente(
+                        identificacionCliente
+                );
+    }
+
+
+    public Notificacion
+    atenderSiguienteNotificacion(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .atenderSiguientePendiente(
+                        identificacionCliente
+                );
+    }
+
+
+    public List<Notificacion>
+    obtenerNotificacionesPendientes(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .obtenerPendientes(
+                        identificacionCliente
+                );
+    }
+
+
+    public int cantidadNotificacionesPendientes(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .cantidadPendientes(
+                        identificacionCliente
+                );
+    }
+
+
+    public boolean tieneNotificacionesPendientes(
+            String identificacionCliente) {
+
+        return gestorNotificaciones
+                .tienePendientes(
+                        identificacionCliente
                 );
     }
 
