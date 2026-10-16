@@ -10,12 +10,6 @@ import java.time.LocalDateTime;
 
 public class GestorTransacciones {
 
-    /*
-     * Valor definido para esta implementación.
-     *
-     * El documento exige alertas por saldo bajo,
-     * pero no establece un límite específico.
-     */
     private static final double
             LIMITE_SALDO_BAJO = 100.0;
 
@@ -32,6 +26,9 @@ public class GestorTransacciones {
     private final GestorNotificaciones
             gestorNotificaciones;
 
+    private final GestorGrafos
+            gestorGrafos;
+
     private int consecutivo;
 
 
@@ -39,7 +36,8 @@ public class GestorTransacciones {
             GestorClientes gestorClientes,
             GestorReversiones gestorReversiones,
             GestorPuntos gestorPuntos,
-            GestorNotificaciones gestorNotificaciones) {
+            GestorNotificaciones gestorNotificaciones,
+            GestorGrafos gestorGrafos) {
 
         this.gestorClientes =
                 gestorClientes;
@@ -52,6 +50,9 @@ public class GestorTransacciones {
 
         this.gestorNotificaciones =
                 gestorNotificaciones;
+
+        this.gestorGrafos =
+                gestorGrafos;
 
         this.consecutivo = 1;
     }
@@ -366,6 +367,16 @@ public class GestorTransacciones {
         }
 
 
+        gestorGrafos
+                .registrarTransferencia(
+                        identificacionOrigen,
+                        monederoOrigen,
+                        identificacionDestino,
+                        monederoDestino,
+                        monto
+                );
+
+
         gestorReversiones
                 .registrarTransaccionReversible(
                         transaccion
@@ -383,7 +394,7 @@ public class GestorTransacciones {
 
 
     // ---------------------------------------------------------
-    // ALERTA SALDO BAJO
+    // SALDO BAJO
     // ---------------------------------------------------------
 
     private void verificarSaldoBajo(

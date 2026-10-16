@@ -2,17 +2,13 @@ package co.edu.uniquindio.poo;
 
 import co.edu.uniquindio.poo.enums.RangoCliente;
 import co.edu.uniquindio.poo.enums.TipoNotificacion;
+import co.edu.uniquindio.poo.estructuras.grafo.AristaGrafo;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Notificacion;
 import co.edu.uniquindio.poo.model.Transaccion;
 import co.edu.uniquindio.poo.model.TransaccionProgramada;
-import co.edu.uniquindio.poo.service.GestorClientes;
-import co.edu.uniquindio.poo.service.GestorNotificaciones;
-import co.edu.uniquindio.poo.service.GestorProgramadas;
-import co.edu.uniquindio.poo.service.GestorPuntos;
-import co.edu.uniquindio.poo.service.GestorReversiones;
-import co.edu.uniquindio.poo.service.GestorTransacciones;
+import co.edu.uniquindio.poo.service.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,23 +16,19 @@ import java.util.List;
 
 public class MonederoVirtual {
 
-    private final GestorClientes
-            gestorClientes;
+    private final GestorClientes gestorClientes;
 
-    private final GestorPuntos
-            gestorPuntos;
+    private final GestorPuntos gestorPuntos;
 
-    private final GestorNotificaciones
-            gestorNotificaciones;
+    private final GestorNotificaciones gestorNotificaciones;
 
-    private final GestorReversiones
-            gestorReversiones;
+    private final GestorGrafos gestorGrafos;
 
-    private final GestorTransacciones
-            gestorTransacciones;
+    private final GestorReversiones gestorReversiones;
 
-    private final GestorProgramadas
-            gestorProgramadas;
+    private final GestorTransacciones gestorTransacciones;
+
+    private final GestorProgramadas gestorProgramadas;
 
 
     public MonederoVirtual() {
@@ -53,10 +45,15 @@ public class MonederoVirtual {
                 new GestorNotificaciones();
 
 
+        gestorGrafos =
+                new GestorGrafos();
+
+
         gestorReversiones =
                 new GestorReversiones(
                         gestorClientes,
-                        gestorPuntos
+                        gestorPuntos,
+                        gestorGrafos
                 );
 
 
@@ -65,7 +62,8 @@ public class MonederoVirtual {
                         gestorClientes,
                         gestorReversiones,
                         gestorPuntos,
-                        gestorNotificaciones
+                        gestorNotificaciones,
+                        gestorGrafos
                 );
 
 
@@ -107,6 +105,11 @@ public class MonederoVirtual {
                 );
 
 
+        gestorGrafos.registrarCliente(
+                cliente.getIdentificacion()
+        );
+
+
         return true;
     }
 
@@ -121,8 +124,7 @@ public class MonederoVirtual {
     }
 
 
-    public List<Cliente>
-    obtenerClientes() {
+    public List<Cliente> obtenerClientes() {
 
         return gestorClientes
                 .obtenerClientes();
@@ -137,11 +139,25 @@ public class MonederoVirtual {
             String identificacionCliente,
             Monedero monedero) {
 
-        return gestorClientes
-                .crearMonedero(
-                        identificacionCliente,
-                        monedero
-                );
+        boolean creado =
+                gestorClientes
+                        .crearMonedero(
+                                identificacionCliente,
+                                monedero
+                        );
+
+
+        if (creado) {
+
+            gestorGrafos
+                    .registrarMonedero(
+                            identificacionCliente,
+                            monedero.getId()
+                    );
+        }
+
+
+        return creado;
     }
 
 
@@ -317,8 +333,7 @@ public class MonederoVirtual {
     }
 
 
-    public TransaccionProgramada
-    buscarProgramada(
+    public TransaccionProgramada buscarProgramada(
             String codigo) {
 
         return gestorProgramadas
@@ -389,8 +404,7 @@ public class MonederoVirtual {
     }
 
 
-    public Notificacion
-    verSiguienteNotificacion(
+    public Notificacion verSiguienteNotificacion(
             String identificacionCliente) {
 
         return gestorNotificaciones
@@ -434,6 +448,120 @@ public class MonederoVirtual {
 
 
     // ---------------------------------------------------------
+    // GRAFO DE CLIENTES
+    // ---------------------------------------------------------
+
+    public List<AristaGrafo>
+    obtenerRelacionesCliente(
+            String identificacionCliente) {
+
+        return gestorGrafos
+                .obtenerRelacionesCliente(
+                        identificacionCliente
+                );
+    }
+
+
+    public double obtenerMontoTransferido(
+            String origen,
+            String destino) {
+
+        return gestorGrafos
+                .obtenerMontoTransferido(
+                        origen,
+                        destino
+                );
+    }
+
+
+    public int obtenerCantidadTransferencias(
+            String origen,
+            String destino) {
+
+        return gestorGrafos
+                .obtenerCantidadTransferencias(
+                        origen,
+                        destino
+                );
+    }
+
+
+    public double obtenerTotalTransferidoPorCliente(
+            String identificacionCliente) {
+
+        return gestorGrafos
+                .obtenerTotalTransferidoPorCliente(
+                        identificacionCliente
+                );
+    }
+
+
+    public String obtenerPrincipalDestinoCliente(
+            String identificacionCliente) {
+
+        return gestorGrafos
+                .obtenerPrincipalDestinoCliente(
+                        identificacionCliente
+                );
+    }
+
+
+    public List<String> recorridoClientes(
+            String identificacionInicial) {
+
+        return gestorGrafos
+                .recorridoClientes(
+                        identificacionInicial
+                );
+    }
+
+
+    public boolean existeRelacionEntreClientes(
+            String origen,
+            String destino) {
+
+        return gestorGrafos
+                .existeRelacionEntreClientes(
+                        origen,
+                        destino
+                );
+    }
+
+
+    // ---------------------------------------------------------
+    // GRAFO DE MONEDEROS
+    // ---------------------------------------------------------
+
+    public List<AristaGrafo>
+    obtenerRelacionesMonedero(
+            String identificacionCliente,
+            String idMonedero) {
+
+        return gestorGrafos
+                .obtenerRelacionesMonedero(
+                        identificacionCliente,
+                        idMonedero
+                );
+    }
+
+
+    public double obtenerMontoEntreMonederos(
+            String identificacionOrigen,
+            String monederoOrigen,
+            String identificacionDestino,
+            String monederoDestino) {
+
+        return gestorGrafos
+                .obtenerMontoEntreMonederos(
+                        identificacionOrigen,
+                        monederoOrigen,
+                        identificacionDestino,
+                        monederoDestino
+                );
+    }
+
+
+    // ---------------------------------------------------------
     // REVERSIONES
     // ---------------------------------------------------------
 
@@ -453,8 +581,7 @@ public class MonederoVirtual {
     }
 
 
-    public int
-    cantidadTransaccionesReversibles() {
+    public int cantidadTransaccionesReversibles() {
 
         return gestorReversiones
                 .cantidadTransacciones();
@@ -472,8 +599,7 @@ public class MonederoVirtual {
     // HISTORIAL
     // ---------------------------------------------------------
 
-    public List<Transaccion>
-    obtenerHistorial(
+    public List<Transaccion> obtenerHistorial(
             String identificacionCliente) {
 
         Cliente cliente =

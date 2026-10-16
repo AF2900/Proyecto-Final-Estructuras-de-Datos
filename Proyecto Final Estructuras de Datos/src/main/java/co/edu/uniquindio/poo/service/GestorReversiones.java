@@ -16,19 +16,26 @@ public class GestorReversiones {
     private final GestorPuntos
             gestorPuntos;
 
+    private final GestorGrafos
+            gestorGrafos;
+
     private final Deque<Transaccion>
             pilaTransacciones;
 
 
     public GestorReversiones(
             GestorClientes gestorClientes,
-            GestorPuntos gestorPuntos) {
+            GestorPuntos gestorPuntos,
+            GestorGrafos gestorGrafos) {
 
         this.gestorClientes =
                 gestorClientes;
 
         this.gestorPuntos =
                 gestorPuntos;
+
+        this.gestorGrafos =
+                gestorGrafos;
 
         pilaTransacciones =
                 new ArrayDeque<>();
@@ -298,6 +305,21 @@ public class GestorReversiones {
                             .getPuntosGenerados()
             );
         }
+
+
+        gestorGrafos
+                .revertirTransferencia(
+                        transaccion
+                                .getIdentificacionOrigen(),
+                        transaccion
+                                .getMonederoOrigen(),
+                        transaccion
+                                .getIdentificacionDestino(),
+                        transaccion
+                                .getMonederoDestino(),
+                        transaccion
+                                .getMonto()
+                );
 
 
         return true;
