@@ -97,6 +97,14 @@ public class MonederoVirtual {
                 );
 
 
+        /*
+         * GestorTransacciones ahora también
+         * recibe GestorBeneficios.
+         *
+         * Esto permite determinar si debe
+         * aplicar descuentos o eliminar
+         * una comisión.
+         */
         gestorTransacciones =
                 new GestorTransacciones(
                         gestorClientes,
@@ -104,7 +112,8 @@ public class MonederoVirtual {
                         gestorPuntos,
                         gestorNotificaciones,
                         gestorGrafos,
-                        gestorPatronesGasto
+                        gestorPatronesGasto,
+                        gestorBeneficios
                 );
 
 
@@ -468,11 +477,6 @@ public class MonederoVirtual {
                         );
 
 
-        /*
-         * Después de ejecutar una transacción
-         * programada se genera automáticamente
-         * una notificación para el cliente.
-         */
         for (Transaccion transaccion :
                 realizadas) {
 
@@ -512,9 +516,6 @@ public class MonederoVirtual {
     }
 
 
-    /*
-     * Recorrido utilizando la lista circular.
-     */
     public Notificacion verSiguienteNotificacion(
             String identificacionCliente) {
 
@@ -558,10 +559,6 @@ public class MonederoVirtual {
     }
 
 
-    /*
-     * Operaciones propias de la Queue
-     * de notificaciones pendientes.
-     */
     public Notificacion
     verSiguienteNotificacionPendiente(
             String identificacionCliente) {

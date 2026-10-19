@@ -1,6 +1,7 @@
 package co.edu.uniquindio.poo.service;
 
 import co.edu.uniquindio.poo.enums.CategoriaGasto;
+import co.edu.uniquindio.poo.enums.TipoBeneficio;
 import co.edu.uniquindio.poo.enums.TipoNotificacion;
 import co.edu.uniquindio.poo.enums.TipoTransaccion;
 import co.edu.uniquindio.poo.model.Cliente;
@@ -13,6 +14,30 @@ public class GestorTransacciones {
 
     private static final double
             LIMITE_SALDO_BAJO = 100.0;
+
+
+    /*
+     * Decisión de implementación:
+     *
+     * tanto los retiros como las
+     * transferencias tienen una
+     * comisión base del 1%.
+     */
+    private static final double
+            PORCENTAJE_COMISION_RETIRO = 0.01;
+
+
+    private static final double
+            PORCENTAJE_COMISION_TRANSFERENCIA = 0.01;
+
+
+    /*
+     * El beneficio de 100 puntos
+     * reduce un 10% la comisión
+     * calculada para transferencias.
+     */
+    private static final double
+            DESCUENTO_COMISION_TRANSFERENCIA = 0.10;
 
 
     private final GestorClientes
@@ -33,6 +58,9 @@ public class GestorTransacciones {
     private final GestorPatronesGasto
             gestorPatronesGasto;
 
+    private final GestorBeneficios
+            gestorBeneficios;
+
     private int consecutivo;
 
 
@@ -42,7 +70,8 @@ public class GestorTransacciones {
             GestorPuntos gestorPuntos,
             GestorNotificaciones gestorNotificaciones,
             GestorGrafos gestorGrafos,
-            GestorPatronesGasto gestorPatronesGasto) {
+            GestorPatronesGasto gestorPatronesGasto,
+            GestorBeneficios gestorBeneficios) {
 
         this.gestorClientes =
                 gestorClientes;
@@ -61,6 +90,9 @@ public class GestorTransacciones {
 
         this.gestorPatronesGasto =
                 gestorPatronesGasto;
+
+        this.gestorBeneficios =
+                gestorBeneficios;
 
         this.consecutivo = 1;
     }
@@ -127,7 +159,8 @@ public class GestorTransacciones {
                         idMonedero,
                         null,
                         null,
-                        puntos
+                        puntos,
+                        0
                 );
 
 
@@ -191,8 +224,33 @@ public class GestorTransacciones {
         }
 
 
+        /*
+         * Primero se determina la comisión.
+         *
+         * Si el cliente tiene vigente
+         * RETIROS_SIN_CARGO, será cero.
+         */
+        double comision =
+                calcularComisionRetiro(
+                        identificacionCliente,
+                        monto
+                );
+
+
+        double totalADescontar =
+                redondearDosDecimales(
+                        monto + comision
+                );
+
+
+        /*
+         * La operación solo se realiza
+         * si existe saldo suficiente para:
+         *
+         * monto + comisión.
+         */
         if (!monedero.retirar(
-                monto
+                totalADescontar
         )) {
 
             return null;
@@ -216,7 +274,8 @@ public class GestorTransacciones {
                         idMonedero,
                         null,
                         null,
-                        puntos
+                        puntos,
+                        comision
                 );
 
 
@@ -311,20 +370,58 @@ public class GestorTransacciones {
         }
 
 
+        /*
+         * Calcular comisión de transferencia.
+         *
+         * Si el beneficio de 100 puntos
+         * está activo, la comisión se
+         * reduce un 10%.
+         */
+        double comision =
+                calcularComisionTransferencia(
+                        identificacionOrigen,
+                        monto
+                );
+
+
+        double totalADescontar =
+                redondearDosDecimales(
+                        monto + comision
+                );
+
+
+        /*
+         * El origen debe poder pagar
+         * tanto el monto enviado como
+         * la comisión.
+         */
         if (!origen.retirar(
-                monto
+                totalADescontar
         )) {
 
             return null;
         }
 
 
+        /*
+         * El destino recibe únicamente
+         * el monto de la transferencia.
+         *
+         * La comisión no se transfiere.
+         */
         if (!destino.depositar(
                 monto
         )) {
 
+            /*
+             * Restauración defensiva.
+             *
+             * Si falla el depósito en
+             * destino, se devuelve
+             * monto + comisión al origen.
+             */
             origen.depositar(
-                    monto
+                    totalADescontar
             );
 
             return null;
@@ -348,7 +445,8 @@ public class GestorTransacciones {
                         monederoOrigen,
                         identificacionDestino,
                         monederoDestino,
-                        puntos
+                        puntos,
+                        comision
                 );
 
 
@@ -366,6 +464,11 @@ public class GestorTransacciones {
         );
 
 
+        /*
+         * Si los clientes son distintos,
+         * la misma transacción también
+         * queda en el historial del destino.
+         */
         if (clienteOrigen != clienteDestino) {
 
             clienteDestino
@@ -375,6 +478,13 @@ public class GestorTransacciones {
         }
 
 
+        /*
+         * El grafo registra el monto
+         * realmente transferido.
+         *
+         * La comisión no representa una
+         * transferencia hacia el destino.
+         */
         gestorGrafos
                 .registrarTransferencia(
                         identificacionOrigen,
@@ -458,9 +568,11 @@ public class GestorTransacciones {
 
 
         /*
-         * El documento no define puntos
-         * para los gastos, por lo tanto
-         * se registran con cero puntos.
+         * El enunciado no define puntos
+         * para los gastos.
+         *
+         * Tampoco se definió una comisión
+         * para esta operación.
          */
         Transaccion transaccion =
                 new Transaccion(
@@ -472,6 +584,7 @@ public class GestorTransacciones {
                         idMonedero,
                         null,
                         null,
+                        0,
                         0,
                         categoria,
                         categoriaAnterior
@@ -496,6 +609,77 @@ public class GestorTransacciones {
 
 
         return transaccion;
+    }
+
+
+    // ---------------------------------------------------------
+    // COMISIÓN DE RETIRO
+    // ---------------------------------------------------------
+
+    private double calcularComisionRetiro(
+            String identificacionCliente,
+            double monto) {
+
+        /*
+         * Beneficio de 500 puntos:
+         *
+         * un mes sin cargos por retiros.
+         */
+        if (gestorBeneficios
+                .tieneBeneficioActivo(
+                        identificacionCliente,
+                        TipoBeneficio
+                                .RETIROS_SIN_CARGO
+                )) {
+
+            return 0;
+        }
+
+
+        return redondearDosDecimales(
+                monto *
+                        PORCENTAJE_COMISION_RETIRO
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // COMISIÓN DE TRANSFERENCIA
+    // ---------------------------------------------------------
+
+    private double calcularComisionTransferencia(
+            String identificacionCliente,
+            double monto) {
+
+        double comisionBase =
+                redondearDosDecimales(
+                        monto *
+                                PORCENTAJE_COMISION_TRANSFERENCIA
+                );
+
+
+        /*
+         * Beneficio de 100 puntos:
+         *
+         * reducción del 10% sobre
+         * la comisión calculada.
+         */
+        if (gestorBeneficios
+                .tieneBeneficioActivo(
+                        identificacionCliente,
+                        TipoBeneficio
+                                .DESCUENTO_TRANSFERENCIA
+                )) {
+
+            return redondearDosDecimales(
+                    comisionBase *
+                            (1 -
+                                    DESCUENTO_COMISION_TRANSFERENCIA)
+            );
+        }
+
+
+        return comisionBase;
     }
 
 
@@ -533,6 +717,11 @@ public class GestorTransacciones {
             TipoTransaccion tipo,
             double monto) {
 
+        /*
+         * Los puntos se calculan sobre
+         * el monto de la operación,
+         * no sobre la comisión.
+         */
         int bloquesDeCien =
                 (int) (monto / 100);
 
@@ -559,6 +748,19 @@ public class GestorTransacciones {
 
 
         return 0;
+    }
+
+
+    // ---------------------------------------------------------
+    // REDONDEO MONETARIO
+    // ---------------------------------------------------------
+
+    private double redondearDosDecimales(
+            double valor) {
+
+        return Math.round(
+                valor * 100.0
+        ) / 100.0;
     }
 
 

@@ -10,6 +10,16 @@ import java.util.Set;
 
 public class GestorIntegridad {
 
+    private static final double
+            PORCENTAJE_COMISION = 0.01;
+
+    private static final double
+            DESCUENTO_TRANSFERENCIA = 0.10;
+
+    private static final double
+            TOLERANCIA = 0.0001;
+
+
     // ---------------------------------------------------------
     // VERIFICAR UN CLIENTE
     // ---------------------------------------------------------
@@ -63,10 +73,6 @@ public class GestorIntegridad {
             List<Cliente> clientes,
             int indice) {
 
-        /*
-         * Caso base:
-         * todos los clientes fueron revisados.
-         */
         if (indice ==
                 clientes.size()) {
 
@@ -88,10 +94,6 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * Llamada recursiva:
-         * revisar el siguiente cliente.
-         */
         return verificarClientesRecursivo(
                 clientes,
                 indice + 1
@@ -109,10 +111,6 @@ public class GestorIntegridad {
             int indice,
             Set<String> codigos) {
 
-        /*
-         * Caso base:
-         * se llegó al final del historial.
-         */
         if (indice ==
                 historial.size()) {
 
@@ -126,10 +124,6 @@ public class GestorIntegridad {
                 );
 
 
-        /*
-         * Validar estructura y datos
-         * de la transacción actual.
-         */
         if (!transaccionValidaParaCliente(
                 identificacionCliente,
                 transaccion
@@ -139,11 +133,6 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * Cada código debe aparecer
-         * una sola vez dentro del historial
-         * del mismo cliente.
-         */
         if (codigos.contains(
                 transaccion.getCodigo()
         )) {
@@ -206,6 +195,17 @@ public class GestorIntegridad {
 
         if (transaccion
                 .getPuntosGenerados()
+                < 0) {
+
+            return false;
+        }
+
+
+        /*
+         * Una comisión nunca puede
+         * ser negativa.
+         */
+        if (transaccion.getComision()
                 < 0) {
 
             return false;
@@ -322,6 +322,18 @@ public class GestorIntegridad {
         }
 
 
+        /*
+         * Los depósitos no cobran comisión.
+         */
+        if (!sonIguales(
+                transaccion.getComision(),
+                0
+        )) {
+
+            return false;
+        }
+
+
         int puntosEsperados =
                 calcularPuntosEsperados(
                         TipoTransaccion.DEPOSITO,
@@ -373,6 +385,36 @@ public class GestorIntegridad {
                 .getCategoriaGasto()
                 != null) {
 
+            return false;
+        }
+
+
+        /*
+         * Para un retiro existen dos
+         * valores válidos de comisión:
+         *
+         * 1. Comisión normal del 1%.
+         * 2. Cero si tiene el beneficio
+         *    de retiros sin cargo.
+         */
+        double comisionNormal =
+                calcularComisionBase(
+                        transaccion.getMonto()
+                );
+
+
+        boolean comisionValida =
+                sonIguales(
+                        transaccion.getComision(),
+                        comisionNormal
+                ) ||
+                        sonIguales(
+                                transaccion.getComision(),
+                                0
+                        );
+
+
+        if (!comisionValida) {
             return false;
         }
 
@@ -466,6 +508,46 @@ public class GestorIntegridad {
         }
 
 
+        /*
+         * Una transferencia puede tener:
+         *
+         * Comisión normal del 1%.
+         *
+         * o
+         *
+         * Comisión reducida un 10%
+         * por el beneficio.
+         */
+        double comisionNormal =
+                calcularComisionBase(
+                        transaccion.getMonto()
+                );
+
+
+        double comisionConDescuento =
+                redondearDosDecimales(
+                        comisionNormal *
+                                (1 -
+                                        DESCUENTO_TRANSFERENCIA)
+                );
+
+
+        boolean comisionValida =
+                sonIguales(
+                        transaccion.getComision(),
+                        comisionNormal
+                ) ||
+                        sonIguales(
+                                transaccion.getComision(),
+                                comisionConDescuento
+                        );
+
+
+        if (!comisionValida) {
+            return false;
+        }
+
+
         int puntosEsperados =
                 calcularPuntosEsperados(
                         TipoTransaccion.TRANSFERENCIA,
@@ -521,10 +603,15 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * El enunciado no define
-         * generación de puntos para gastos.
-         */
+        if (!sonIguales(
+                transaccion.getComision(),
+                0
+        )) {
+
+            return false;
+        }
+
+
         return transaccion
                 .getPuntosGenerados()
                 == 0;
@@ -532,7 +619,21 @@ public class GestorIntegridad {
 
 
     // ---------------------------------------------------------
-    // PUNTOS ESPERADOS
+    // CALCULAR COMISIÓN BASE
+    // ---------------------------------------------------------
+
+    private double calcularComisionBase(
+            double monto) {
+
+        return redondearDosDecimales(
+                monto *
+                        PORCENTAJE_COMISION
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // CALCULAR PUNTOS ESPERADOS
     // ---------------------------------------------------------
 
     private int calcularPuntosEsperados(
@@ -600,10 +701,6 @@ public class GestorIntegridad {
             int indice,
             Set<String> codigos) {
 
-        /*
-         * Caso base:
-         * ya se recorrió todo el historial.
-         */
         if (indice ==
                 historial.size()) {
 
@@ -624,10 +721,6 @@ public class GestorIntegridad {
                 );
 
 
-        /*
-         * Si el código ya apareció antes,
-         * esta transacción se considera inválida.
-         */
         boolean codigoRepetido =
                 valida &&
                         codigos.contains(
@@ -695,10 +788,6 @@ public class GestorIntegridad {
             int indice,
             Set<String> codigos) {
 
-        /*
-         * Caso base:
-         * no se encontró ninguna inválida.
-         */
         if (indice ==
                 historial.size()) {
 
@@ -721,11 +810,6 @@ public class GestorIntegridad {
         }
 
 
-        /*
-         * Si el código ya fue utilizado
-         * anteriormente, esta es la primera
-         * transacción inválida.
-         */
         if (codigos.contains(
                 actual.getCodigo()
         )) {
@@ -745,5 +829,32 @@ public class GestorIntegridad {
                 indice + 1,
                 codigos
         );
+    }
+
+
+    // ---------------------------------------------------------
+    // COMPARAR DOUBLE
+    // ---------------------------------------------------------
+
+    private boolean sonIguales(
+            double valor1,
+            double valor2) {
+
+        return Math.abs(
+                valor1 - valor2
+        ) <= TOLERANCIA;
+    }
+
+
+    // ---------------------------------------------------------
+    // REDONDEAR
+    // ---------------------------------------------------------
+
+    private double redondearDosDecimales(
+            double valor) {
+
+        return Math.round(
+                valor * 100.0
+        ) / 100.0;
     }
 }

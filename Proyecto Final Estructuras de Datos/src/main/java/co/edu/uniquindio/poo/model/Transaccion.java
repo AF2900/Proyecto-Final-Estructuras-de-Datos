@@ -25,6 +25,17 @@ public class Transaccion {
 
     private int puntosGenerados;
 
+    /*
+     * Comisión realmente cobrada
+     * al ejecutar la operación.
+     *
+     * Depósito: 0
+     * Gasto: 0
+     * Retiro: depende del beneficio
+     * Transferencia: depende del beneficio
+     */
+    private double comision;
+
     private boolean revertida;
 
     private CategoriaGasto categoriaGasto;
@@ -33,8 +44,11 @@ public class Transaccion {
 
 
     /*
-     * Constructor utilizado por depósito,
-     * retiro y transferencia.
+     * Constructor original.
+     *
+     * Se conserva para mantener compatibilidad
+     * con pruebas o código que cree transacciones
+     * sin especificar comisión.
      */
     public Transaccion(
             String codigo,
@@ -57,6 +71,7 @@ public class Transaccion {
                 identificacionDestino,
                 monederoDestino,
                 puntosGenerados,
+                0,
                 null,
                 null
         );
@@ -64,9 +79,8 @@ public class Transaccion {
 
 
     /*
-     * Constructor completo.
-     *
-     * Se utiliza también para los gastos.
+     * Constructor utilizado principalmente
+     * por retiros y transferencias.
      */
     public Transaccion(
             String codigo,
@@ -78,6 +92,76 @@ public class Transaccion {
             String identificacionDestino,
             String monederoDestino,
             int puntosGenerados,
+            double comision) {
+
+        this(
+                codigo,
+                fecha,
+                tipo,
+                monto,
+                identificacionOrigen,
+                monederoOrigen,
+                identificacionDestino,
+                monederoDestino,
+                puntosGenerados,
+                comision,
+                null,
+                null
+        );
+    }
+
+
+    /*
+     * Constructor anterior utilizado
+     * por los gastos.
+     *
+     * Se conserva para mantener
+     * compatibilidad.
+     */
+    public Transaccion(
+            String codigo,
+            LocalDateTime fecha,
+            TipoTransaccion tipo,
+            double monto,
+            String identificacionOrigen,
+            String monederoOrigen,
+            String identificacionDestino,
+            String monederoDestino,
+            int puntosGenerados,
+            CategoriaGasto categoriaGasto,
+            CategoriaGasto categoriaAnterior) {
+
+        this(
+                codigo,
+                fecha,
+                tipo,
+                monto,
+                identificacionOrigen,
+                monederoOrigen,
+                identificacionDestino,
+                monederoDestino,
+                puntosGenerados,
+                0,
+                categoriaGasto,
+                categoriaAnterior
+        );
+    }
+
+
+    /*
+     * Constructor completo.
+     */
+    public Transaccion(
+            String codigo,
+            LocalDateTime fecha,
+            TipoTransaccion tipo,
+            double monto,
+            String identificacionOrigen,
+            String monederoOrigen,
+            String identificacionDestino,
+            String monederoDestino,
+            int puntosGenerados,
+            double comision,
             CategoriaGasto categoriaGasto,
             CategoriaGasto categoriaAnterior) {
 
@@ -107,6 +191,9 @@ public class Transaccion {
 
         this.puntosGenerados =
                 puntosGenerados;
+
+        this.comision =
+                comision;
 
         this.revertida =
                 false;
@@ -164,6 +251,11 @@ public class Transaccion {
     }
 
 
+    public double getComision() {
+        return comision;
+    }
+
+
     public boolean isRevertida() {
         return revertida;
     }
@@ -193,6 +285,7 @@ public class Transaccion {
                 ", fecha=" + fecha +
                 ", tipo=" + tipo +
                 ", monto=" + monto +
+                ", comision=" + comision +
                 ", origen='" +
                 identificacionOrigen + '\'' +
                 ", monederoOrigen='" +

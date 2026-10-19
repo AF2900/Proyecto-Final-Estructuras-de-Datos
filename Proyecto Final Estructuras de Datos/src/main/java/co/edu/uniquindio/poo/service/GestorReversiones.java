@@ -84,6 +84,10 @@ public class GestorReversiones {
     }
 
 
+    // ---------------------------------------------------------
+    // REVERTIR ÚLTIMA
+    // ---------------------------------------------------------
+
     public Transaccion
     revertirUltimaTransaccion() {
 
@@ -146,6 +150,10 @@ public class GestorReversiones {
     }
 
 
+    // ---------------------------------------------------------
+    // REVERTIR DEPÓSITO
+    // ---------------------------------------------------------
+
     private boolean revertirDeposito(
             Transaccion transaccion) {
 
@@ -196,6 +204,10 @@ public class GestorReversiones {
     }
 
 
+    // ---------------------------------------------------------
+    // REVERTIR RETIRO
+    // ---------------------------------------------------------
+
     private boolean revertirRetiro(
             Transaccion transaccion) {
 
@@ -223,8 +235,23 @@ public class GestorReversiones {
         }
 
 
-        if (!monedero.depositar(
+        /*
+         * Se devuelve exactamente lo
+         * que se descontó inicialmente:
+         *
+         * monto + comisión.
+         *
+         * Si el retiro tenía beneficio,
+         * la comisión almacenada será 0.
+         */
+        double totalADevolver =
                 transaccion.getMonto()
+                        +
+                        transaccion.getComision();
+
+
+        if (!monedero.depositar(
+                totalADevolver
         )) {
 
             return false;
@@ -245,6 +272,10 @@ public class GestorReversiones {
         return true;
     }
 
+
+    // ---------------------------------------------------------
+    // REVERTIR TRANSFERENCIA
+    // ---------------------------------------------------------
 
     private boolean revertirTransferencia(
             Transaccion transaccion) {
@@ -291,6 +322,13 @@ public class GestorReversiones {
         }
 
 
+        /*
+         * Del destino únicamente se retira
+         * el monto que realmente recibió.
+         *
+         * La comisión nunca fue enviada
+         * al destino.
+         */
         if (!monederoDestino.retirar(
                 transaccion.getMonto()
         )) {
@@ -299,10 +337,27 @@ public class GestorReversiones {
         }
 
 
-        if (!monederoOrigen.depositar(
+        /*
+         * Al origen se devuelve:
+         *
+         * monto + comisión cobrada.
+         */
+        double totalADevolver =
                 transaccion.getMonto()
+                        +
+                        transaccion.getComision();
+
+
+        if (!monederoOrigen.depositar(
+                totalADevolver
         )) {
 
+            /*
+             * Restauración defensiva:
+             * si no se pudiera devolver
+             * el dinero al origen,
+             * se restaura el destino.
+             */
             monederoDestino.depositar(
                     transaccion.getMonto()
             );
@@ -340,6 +395,10 @@ public class GestorReversiones {
         return true;
     }
 
+
+    // ---------------------------------------------------------
+    // REVERTIR GASTO
+    // ---------------------------------------------------------
 
     private boolean revertirGasto(
             Transaccion transaccion) {
@@ -390,10 +449,6 @@ public class GestorReversiones {
                         );
 
 
-        /*
-         * Si fallara la actualización del patrón,
-         * se devuelve el monedero al estado previo.
-         */
         if (!patronRevertido) {
 
             monedero.retirar(
