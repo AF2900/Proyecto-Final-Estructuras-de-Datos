@@ -12,6 +12,8 @@ public class PruebaTransaccionesProgramadas {
 
     private static int pruebasCorrectas = 0;
 
+    private static final double TOLERANCIA = 0.0001;
+
 
     public static void main(
             String[] args) {
@@ -32,10 +34,6 @@ public class PruebaTransaccionesProgramadas {
         MonederoVirtual sistema =
                 new MonederoVirtual();
 
-
-        // -----------------------------------------------------
-        // CLIENTES
-        // ---------------------------------------------------------
 
         sistema.registrarCliente(
                 new Cliente(
@@ -85,7 +83,7 @@ public class PruebaTransaccionesProgramadas {
 
         // -----------------------------------------------------
         // PROGRAMAR
-        // ---------------------------------------------------------
+        // -----------------------------------------------------
 
         verificar(
                 sistema.programarTransferencia(
@@ -121,10 +119,6 @@ public class PruebaTransaccionesProgramadas {
                 "Dos transacciones programadas"
         );
 
-
-        // -----------------------------------------------------
-        // PRIORITYQUEUE
-        // ---------------------------------------------------------
 
         TransaccionProgramada siguiente =
                 sistema
@@ -163,7 +157,7 @@ public class PruebaTransaccionesProgramadas {
 
         // -----------------------------------------------------
         // AÚN NO HA LLEGADO LA FECHA
-        // ---------------------------------------------------------
+        // -----------------------------------------------------
 
         List<Transaccion> realizadas =
                 sistema
@@ -179,18 +173,19 @@ public class PruebaTransaccionesProgramadas {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 0,
+                ),
+                0,
                 "Saldo permanece sin cambios"
         );
 
 
         // -----------------------------------------------------
         // EJECUTAR DEPÓSITO
-        // ---------------------------------------------------------
+        // -----------------------------------------------------
 
         realizadas =
                 sistema
@@ -207,12 +202,13 @@ public class PruebaTransaccionesProgramadas {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 1000,
-                "Depósito programado modifica el saldo"
+                ),
+                1000,
+                "Depósito programado modifica saldo"
         );
 
 
@@ -227,13 +223,13 @@ public class PruebaTransaccionesProgramadas {
         verificar(
                 sistema.cantidadProgramadas()
                         == 1,
-                "Depósito ejecutado sale de la cola"
+                "Depósito ejecutado sale de cola"
         );
 
 
         // -----------------------------------------------------
         // EJECUTAR TRANSFERENCIA
-        // ---------------------------------------------------------
+        // -----------------------------------------------------
 
         realizadas =
                 sistema
@@ -250,21 +246,37 @@ public class PruebaTransaccionesProgramadas {
         );
 
 
-        verificar(
-                sistema.consultarSaldo(
-                        "C001",
-                        "M001"
-                ) == 700,
-                "Transferencia descuenta saldo origen"
+        Transaccion transferencia =
+                realizadas.get(0);
+
+
+        verificarDouble(
+                transferencia.getComision(),
+                3,
+                "Transferencia programada cobra 1% de comisión"
         );
 
 
-        verificar(
+        /*
+         * 1000 - 300 - 3 = 697
+         */
+        verificarDouble(
+                sistema.consultarSaldo(
+                        "C001",
+                        "M001"
+                ),
+                697,
+                "Transferencia programada descuenta comisión"
+        );
+
+
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C002",
                         "M001"
-                ) == 300,
-                "Transferencia aumenta saldo destino"
+                ),
+                300,
+                "Destino recibe monto programado"
         );
 
 
@@ -284,7 +296,7 @@ public class PruebaTransaccionesProgramadas {
 
         // -----------------------------------------------------
         // TRANSACCIÓN RECURRENTE
-        // ---------------------------------------------------------
+        // -----------------------------------------------------
 
         verificar(
                 sistema.programarDeposito(
@@ -312,11 +324,12 @@ public class PruebaTransaccionesProgramadas {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C002",
                         "M001"
-                ) == 500,
+                ),
+                500,
                 "Depósito recurrente aumenta saldo"
         );
 
@@ -324,7 +337,7 @@ public class PruebaTransaccionesProgramadas {
         verificar(
                 sistema.cantidadProgramadas()
                         == 1,
-                "Operación recurrente vuelve a la cola"
+                "Operación recurrente vuelve a cola"
         );
 
 
@@ -346,10 +359,6 @@ public class PruebaTransaccionesProgramadas {
         );
 
 
-        // -----------------------------------------------------
-        // CÓDIGO DUPLICADO
-        // ---------------------------------------------------------
-
         verificar(
                 !sistema.programarDeposito(
                         "TP003",
@@ -362,10 +371,6 @@ public class PruebaTransaccionesProgramadas {
                 "Código programado no puede repetirse"
         );
 
-
-        // -----------------------------------------------------
-        // CANCELAR
-        // ---------------------------------------------------------
 
         verificar(
                 sistema.cancelarProgramada(
@@ -409,6 +414,67 @@ public class PruebaTransaccionesProgramadas {
             throw new AssertionError(
                     "PRUEBA FALLIDA: "
                             + descripcion
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            Double actual,
+            double esperado,
+            String descripcion) {
+
+        if (actual == null ||
+                Math.abs(
+                        actual - esperado
+                ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            double actual,
+            double esperado,
+            String descripcion) {
+
+        if (Math.abs(
+                actual - esperado
+        ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
             );
         }
 

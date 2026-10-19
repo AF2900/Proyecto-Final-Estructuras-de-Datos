@@ -245,13 +245,34 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * Comisión base:
+         *
+         * 1000 * 1% = 10.
+         */
+        verificarDouble(
+                transferenciaC002.getComision(),
+                10,
+                "Transferencia cobra comisión del 1%"
+        );
+
+
+        /*
+         * Saldo:
+         *
+         * 20000
+         * - 1000 transferencia
+         * -   10 comisión
+         *
+         * = 18990
+         */
         verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
                 ),
-                19000,
-                "Transferencia descuenta saldo origen"
+                18990,
+                "Transferencia descuenta monto y comisión"
         );
 
 
@@ -290,6 +311,18 @@ public class PruebaSistemaCompleto {
         verificar(
                 transferenciaInterna != null,
                 "Transferencia entre monederos propios"
+        );
+
+
+        /*
+         * Comisión:
+         *
+         * 2000 * 1% = 20.
+         */
+        verificarDouble(
+                transferenciaInterna.getComision(),
+                20,
+                "Transferencia interna cobra comisión del 1%"
         );
 
 
@@ -401,13 +434,37 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * Comisión:
+         *
+         * 200 * 1% = 2.
+         */
+        verificarDouble(
+                retiro.getComision(),
+                2,
+                "Retiro cobra comisión del 1%"
+        );
+
+
+        /*
+         * Evolución de M001:
+         *
+         * 20000
+         * - 1010 transferencia C002
+         * - 2020 transferencia interna
+         * - 500 gasto
+         * - 300 gasto
+         * - 202 retiro
+         *
+         * = 15968
+         */
         verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
                 ),
-                16000,
-                "Saldo después del retiro"
+                15968,
+                "Saldo después del retiro y comisión"
         );
 
 
@@ -615,12 +672,15 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * 15968 + 1000 = 16968.
+         */
         verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
                 ),
-                17000,
+                16968,
                 "Depósito programado aumenta saldo"
         );
 
@@ -666,13 +726,37 @@ public class PruebaSistemaCompleto {
                 );
 
 
+        /*
+         * Comisión normal:
+         *
+         * 400 * 1% = 4.
+         *
+         * Como el beneficio de 100 puntos
+         * ya está activo:
+         *
+         * 4 - 10% = 3.6.
+         */
+        verificarDouble(
+                transferenciaProgramada.getComision(),
+                3.6,
+                "Beneficio reduce comisión programada de 4 a 3.6"
+        );
+
+
+        /*
+         * 16968
+         * - 400
+         * - 3.6
+         *
+         * = 16564.4
+         */
         verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
                 ),
-                16600,
-                "Transferencia programada descuenta origen"
+                16564.4,
+                "Transferencia programada descuenta monto y comisión"
         );
 
 
@@ -1040,10 +1124,16 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * M001 = 16564.4
+         * M002 = 2000
+         *
+         * Total = 18564.4
+         */
         verificarDouble(
                 reporteAntes.getSaldoTotal(),
-                18600,
-                "Reporte calcula saldo total de los dos monederos"
+                18564.4,
+                "Reporte calcula saldo total incluyendo comisiones"
         );
 
 
@@ -1119,27 +1209,45 @@ public class PruebaSistemaCompleto {
         /*
          * Dinero que entró:
          *
-         * C001: 20.000
-         * C002:  1.000
-         * Programado: 1.000
+         * C001:       20.000
+         * C002:        1.000
+         * Programado:  1.000
          *
-         * Total: 22.000
+         * Total ingresado:
+         * 22.000
          *
-         * Salidas reales:
+         * Salidas:
          *
-         * Gastos: 800
-         * Retiro: 200
+         * Gastos:                800
+         * Retiro:                200
+         * Comisión retiro:         2
          *
-         * Saldo global: 21.000
+         * Comisión transferencia
+         * C001 -> C002:            10
          *
-         * Las transferencias no modifican
-         * el dinero total del sistema.
+         * Comisión transferencia
+         * interna:                 20
+         *
+         * Comisión transferencia
+         * programada:               3.6
+         *
+         * Total:
+         *
+         * 22000
+         * - 800
+         * - 200
+         * - 2
+         * - 10
+         * - 20
+         * - 3.6
+         *
+         * = 20964.4
          */
         verificarDouble(
                 reporteSistemaAntes
                         .getSaldoTotalSistema(),
-                21000,
-                "Saldo global del sistema es 21000"
+                20964.4,
+                "Saldo global incluye las comisiones cobradas"
         );
 
 
@@ -1224,13 +1332,26 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * Antes de revertir:
+         *
+         * M001 = 16564.4
+         *
+         * Se devuelve:
+         *
+         * monto = 400
+         * comisión = 3.6
+         *
+         * 16564.4 + 403.6
+         * = 16968.
+         */
         verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
                 ),
-                17000,
-                "Reversión devuelve dinero a C001"
+                16968,
+                "Reversión devuelve monto y comisión a C001"
         );
 
 
@@ -1382,9 +1503,15 @@ public class PruebaSistemaCompleto {
                 );
 
 
+        /*
+         * M001 = 16968
+         * M002 = 2000
+         *
+         * Total = 18968
+         */
         verificarDouble(
                 reporteDespues.getSaldoTotal(),
-                19000,
+                18968,
                 "Reporte actualiza saldo después de reversión"
         );
 
@@ -1465,11 +1592,23 @@ public class PruebaSistemaCompleto {
         );
 
 
+        /*
+         * Antes de revertir:
+         *
+         * 20964.4
+         *
+         * La reversión devuelve la comisión
+         * de la transferencia programada:
+         *
+         * +3.6
+         *
+         * = 20968
+         */
         verificarDouble(
                 reporteSistemaDespues
                         .getSaldoTotalSistema(),
-                21000,
-                "Reversión de transferencia no cambia saldo global"
+                20968,
+                "Reversión devuelve la comisión de la transferencia"
         );
 
 

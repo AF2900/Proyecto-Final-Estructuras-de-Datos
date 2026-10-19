@@ -8,6 +8,8 @@ public class PruebaReversiones {
 
     private static int pruebasCorrectas = 0;
 
+    private static final double TOLERANCIA = 0.0001;
+
 
     public static void main(
             String[] args) {
@@ -28,10 +30,6 @@ public class PruebaReversiones {
         MonederoVirtual sistema =
                 new MonederoVirtual();
 
-
-        // -----------------------------------------------------
-        // CLIENTES
-        // -----------------------------------------------------
 
         Cliente federico =
                 new Cliente(
@@ -56,10 +54,6 @@ public class PruebaReversiones {
                 laura
         );
 
-
-        // -----------------------------------------------------
-        // MONEDEROS
-        // -----------------------------------------------------
 
         sistema.crearMonedero(
                 "C001",
@@ -99,11 +93,12 @@ public class PruebaReversiones {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 1000,
+                ),
+                1000,
                 "Saldo después del depósito"
         );
 
@@ -121,6 +116,90 @@ public class PruebaReversiones {
                         .cantidadTransaccionesReversibles()
                         == 1,
                 "Depósito agregado a la pila"
+        );
+
+
+        // -----------------------------------------------------
+        // RETIRO
+        // -----------------------------------------------------
+
+        Transaccion retiro =
+                sistema.retirar(
+                        "C001",
+                        "M001",
+                        100
+                );
+
+
+        verificar(
+                retiro != null,
+                "Retiro registrado"
+        );
+
+
+        verificarDouble(
+                retiro.getComision(),
+                1,
+                "Retiro cobra comisión de 1"
+        );
+
+
+        verificarDouble(
+                sistema.consultarSaldo(
+                        "C001",
+                        "M001"
+                ),
+                899,
+                "Retiro descuenta monto más comisión"
+        );
+
+
+        verificar(
+                sistema.consultarPuntos(
+                        "C001"
+                ) == 12,
+                "Retiro genera dos puntos"
+        );
+
+
+        verificar(
+                sistema
+                        .cantidadTransaccionesReversibles()
+                        == 2,
+                "Retiro agregado a la pila"
+        );
+
+
+        // -----------------------------------------------------
+        // REVERTIR RETIRO
+        // -----------------------------------------------------
+
+        Transaccion retiroRevertido =
+                sistema
+                        .revertirUltimaTransaccion();
+
+
+        verificar(
+                retiroRevertido == retiro,
+                "Se revierte retiro"
+        );
+
+
+        verificarDouble(
+                sistema.consultarSaldo(
+                        "C001",
+                        "M001"
+                ),
+                1000,
+                "Reversión devuelve monto y comisión del retiro"
+        );
+
+
+        verificar(
+                sistema.consultarPuntos(
+                        "C001"
+                ) == 10,
+                "Reversión retira puntos del retiro"
         );
 
 
@@ -144,21 +223,30 @@ public class PruebaReversiones {
         );
 
 
-        verificar(
-                sistema.consultarSaldo(
-                        "C001",
-                        "M001"
-                ) == 700,
-                "Saldo Federico después de transferencia"
+        verificarDouble(
+                transferencia.getComision(),
+                3,
+                "Transferencia cobra comisión de 3"
         );
 
 
-        verificar(
+        verificarDouble(
+                sistema.consultarSaldo(
+                        "C001",
+                        "M001"
+                ),
+                697,
+                "Origen paga transferencia y comisión"
+        );
+
+
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C002",
                         "M001"
-                ) == 300,
-                "Saldo Laura después de transferencia"
+                ),
+                300,
+                "Destino recibe transferencia"
         );
 
 
@@ -174,12 +262,12 @@ public class PruebaReversiones {
                 sistema
                         .cantidadTransaccionesReversibles()
                         == 2,
-                "Dos transacciones en la pila"
+                "Depósito y transferencia quedan en pila"
         );
 
 
         // -----------------------------------------------------
-        // VER TOPE
+        // REVERTIR TRANSFERENCIA
         // -----------------------------------------------------
 
         verificar(
@@ -190,18 +278,15 @@ public class PruebaReversiones {
         );
 
 
-        // -----------------------------------------------------
-        // REVERTIR TRANSFERENCIA
-        // -----------------------------------------------------
-
-        Transaccion revertida1 =
+        Transaccion transferenciaRevertida =
                 sistema
                         .revertirUltimaTransaccion();
 
 
         verificar(
-                revertida1 == transferencia,
-                "Se revierte la última transacción"
+                transferenciaRevertida
+                        == transferencia,
+                "Se revierte transferencia"
         );
 
 
@@ -211,21 +296,23 @@ public class PruebaReversiones {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 1000,
-                "Dinero regresa al monedero origen"
+                ),
+                1000,
+                "Reversión devuelve monto y comisión al origen"
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C002",
                         "M001"
-                ) == 0,
-                "Dinero se retira del destino"
+                ),
+                0,
+                "Reversión retira monto del destino"
         );
 
 
@@ -237,26 +324,18 @@ public class PruebaReversiones {
         );
 
 
-        verificar(
-                sistema
-                        .cantidadTransaccionesReversibles()
-                        == 1,
-                "Transferencia retirada de la pila"
-        );
-
-
         // -----------------------------------------------------
         // REVERTIR DEPÓSITO
         // -----------------------------------------------------
 
-        Transaccion revertida2 =
+        Transaccion depositoRevertido =
                 sistema
                         .revertirUltimaTransaccion();
 
 
         verificar(
-                revertida2 == deposito,
-                "Se revierte el depósito"
+                depositoRevertido == deposito,
+                "Se revierte depósito"
         );
 
 
@@ -266,11 +345,12 @@ public class PruebaReversiones {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 0,
+                ),
+                0,
                 "Saldo vuelve al estado inicial"
         );
 
@@ -282,10 +362,6 @@ public class PruebaReversiones {
                 "Puntos vuelven al estado inicial"
         );
 
-
-        // -----------------------------------------------------
-        // PILA VACÍA
-        // -----------------------------------------------------
 
         verificar(
                 sistema.pilaReversionesVacia(),
@@ -308,8 +384,8 @@ public class PruebaReversiones {
         verificar(
                 sistema.obtenerHistorial(
                         "C001"
-                ).size() == 2,
-                "Historial conserva las transacciones"
+                ).size() == 3,
+                "Historial conserva las tres transacciones"
         );
 
 
@@ -318,7 +394,7 @@ public class PruebaReversiones {
                                 "C001"
                         ).get(0)
                         .isRevertida(),
-                "Historial muestra depósito revertido"
+                "Depósito aparece revertido"
         );
 
 
@@ -327,7 +403,16 @@ public class PruebaReversiones {
                                 "C001"
                         ).get(1)
                         .isRevertida(),
-                "Historial muestra transferencia revertida"
+                "Retiro aparece revertido"
+        );
+
+
+        verificar(
+                sistema.obtenerHistorial(
+                                "C001"
+                        ).get(2)
+                        .isRevertida(),
+                "Transferencia aparece revertida"
         );
 
 
@@ -359,6 +444,67 @@ public class PruebaReversiones {
             throw new AssertionError(
                     "PRUEBA FALLIDA: "
                             + descripcion
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            Double actual,
+            double esperado,
+            String descripcion) {
+
+        if (actual == null ||
+                Math.abs(
+                        actual - esperado
+                ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            double actual,
+            double esperado,
+            String descripcion) {
+
+        if (Math.abs(
+                actual - esperado
+        ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
             );
         }
 

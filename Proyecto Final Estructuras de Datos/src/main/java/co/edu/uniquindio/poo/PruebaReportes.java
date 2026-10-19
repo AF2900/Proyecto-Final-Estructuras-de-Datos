@@ -10,6 +10,8 @@ public class PruebaReportes {
 
     private static int pruebasCorrectas = 0;
 
+    private static final double TOLERANCIA = 0.0001;
+
 
     public static void main(
             String[] args) {
@@ -79,6 +81,11 @@ public class PruebaReportes {
         // TRANSACCIONES
         // -----------------------------------------------------
 
+        /*
+         * C001 deposita 1000.
+         *
+         * Saldo C001 = 1000.
+         */
         sistema.depositar(
                 "C001",
                 "M001",
@@ -86,6 +93,18 @@ public class PruebaReportes {
         );
 
 
+        /*
+         * C001 transfiere 300 a C002.
+         *
+         * Comisión:
+         * 300 * 1% = 3.
+         *
+         * C001:
+         * 1000 - 300 - 3 = 697.
+         *
+         * C002:
+         * 300.
+         */
         sistema.transferir(
                 "C001",
                 "M001",
@@ -95,6 +114,11 @@ public class PruebaReportes {
         );
 
 
+        /*
+         * C001 realiza un gasto de 100.
+         *
+         * 697 - 100 = 597.
+         */
         sistema.realizarGasto(
                 "C001",
                 "M001",
@@ -127,11 +151,11 @@ public class PruebaReportes {
         );
 
 
-        verificar(
+        verificarDouble(
                 reporteCliente
-                        .getSaldoTotal()
-                        == 600,
-                "Saldo total del cliente es 600"
+                        .getSaldoTotal(),
+                597,
+                "Saldo total del cliente es 597 incluyendo comisión"
         );
 
 
@@ -159,6 +183,21 @@ public class PruebaReportes {
         );
 
 
+        /*
+         * Puntos:
+         *
+         * Depósito 1000:
+         * 10 puntos.
+         *
+         * Transferencia 300:
+         * 9 puntos.
+         *
+         * Gasto:
+         * 0 puntos.
+         *
+         * Total:
+         * 19 puntos.
+         */
         verificar(
                 reporteCliente
                         .getPuntos()
@@ -167,10 +206,10 @@ public class PruebaReportes {
         );
 
 
-        verificar(
+        verificarDouble(
                 reporteCliente
-                        .getTotalGastos()
-                        == 100,
+                        .getTotalGastos(),
+                100,
                 "Reporte muestra 100 en gastos"
         );
 
@@ -184,10 +223,10 @@ public class PruebaReportes {
         );
 
 
-        verificar(
+        verificarDouble(
                 reporteCliente
-                        .getTotalTransferido()
-                        == 300,
+                        .getTotalTransferido(),
+                300,
                 "Reporte muestra 300 transferidos"
         );
 
@@ -224,24 +263,37 @@ public class PruebaReportes {
 
 
         /*
-         * Depósito: +1000
-         * Transferencia: no cambia saldo global
-         * Gasto: -100
+         * Dinero ingresado:
          *
-         * Total = 900
+         * Depósito:
+         * +1000.
+         *
+         * Transferencia:
+         * no cambia el monto transferido
+         * dentro del sistema, pero sí sale
+         * la comisión de 3.
+         *
+         * Gasto:
+         * -100.
+         *
+         * Total:
+         *
+         * 1000 - 3 - 100
+         * = 897.
          */
-        verificar(
+        verificarDouble(
                 reporteSistema
-                        .getSaldoTotalSistema()
-                        == 900,
-                "Saldo total del sistema es 900"
+                        .getSaldoTotalSistema(),
+                897,
+                "Saldo total del sistema es 897"
         );
 
 
         /*
-         * La transferencia aparece en dos
-         * historiales pero debe contarse
-         * como una sola transacción.
+         * La transferencia aparece en los
+         * historiales de origen y destino,
+         * pero el reporte general debe
+         * contarla una sola vez.
          */
         verificar(
                 reporteSistema
@@ -251,10 +303,10 @@ public class PruebaReportes {
         );
 
 
-        verificar(
+        verificarDouble(
                 reporteSistema
-                        .getTotalGastos()
-                        == 100,
+                        .getTotalGastos(),
+                100,
                 "Sistema acumula 100 en gastos"
         );
 
@@ -295,21 +347,39 @@ public class PruebaReportes {
         );
 
 
-        verificar(
+        /*
+         * Antes de revertir:
+         * 597.
+         *
+         * Se devuelve el gasto:
+         * +100.
+         *
+         * Resultado:
+         * 697.
+         *
+         * La comisión de transferencia
+         * continúa cobrada porque esa
+         * transferencia no fue revertida.
+         */
+        verificarDouble(
                 actualizado
-                        .getSaldoTotal()
-                        == 700,
+                        .getSaldoTotal(),
+                697,
                 "Reversión actualiza saldo del reporte"
         );
 
 
-        verificar(
+        verificarDouble(
                 actualizado
-                        .getTotalGastos()
-                        == 0,
+                        .getTotalGastos(),
+                0,
                 "Reversión actualiza gastos del reporte"
         );
 
+
+        // -----------------------------------------------------
+        // REPORTE SISTEMA DESPUÉS DE REVERTIR
+        // -----------------------------------------------------
 
         reporteSistema =
                 sistema.generarReporteSistema();
@@ -331,17 +401,51 @@ public class PruebaReportes {
         );
 
 
+        /*
+         * Después de revertir el gasto:
+         *
+         * Depósito:
+         * +1000.
+         *
+         * Comisión de transferencia:
+         * -3.
+         *
+         * El gasto ya fue revertido.
+         *
+         * Total:
+         * 997.
+         */
+        verificarDouble(
+                reporteSistema
+                        .getSaldoTotalSistema(),
+                997,
+                "Saldo global queda en 997 después de revertir gasto"
+        );
+
+
+        verificarDouble(
+                reporteSistema
+                        .getTotalGastos(),
+                0,
+                "Reporte general elimina gasto revertido"
+        );
+
+
         verificar(
                 reporteSistema
-                        .getSaldoTotalSistema()
-                        == 1000,
-                "Saldo global vuelve a 1000"
+                        .isIntegridadValida(),
+                "Sistema continúa con integridad válida"
         );
 
 
         // -----------------------------------------------------
         // MOSTRAR REPORTES
         // -----------------------------------------------------
+
+        System.out.println(
+                "\n========== REPORTE CLIENTE =========="
+        );
+
 
         System.out.println(
                 sistema.generarReporteCliente(
@@ -351,9 +455,18 @@ public class PruebaReportes {
 
 
         System.out.println(
+                "\n========== REPORTE SISTEMA =========="
+        );
+
+
+        System.out.println(
                 sistema.generarReporteSistema()
         );
 
+
+        // -----------------------------------------------------
+        // RESULTADO FINAL
+        // -----------------------------------------------------
 
         System.out.println(
                 "\n======================================"
@@ -374,6 +487,10 @@ public class PruebaReportes {
     }
 
 
+    // ---------------------------------------------------------
+    // VERIFICAR BOOLEAN
+    // ---------------------------------------------------------
+
     private static void verificar(
             boolean condicion,
             String descripcion) {
@@ -383,6 +500,40 @@ public class PruebaReportes {
             throw new AssertionError(
                     "PRUEBA FALLIDA: "
                             + descripcion
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // VERIFICAR DOUBLE
+    // ---------------------------------------------------------
+
+    private static void verificarDouble(
+            double actual,
+            double esperado,
+            String descripcion) {
+
+        if (Math.abs(
+                actual - esperado
+        ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
             );
         }
 

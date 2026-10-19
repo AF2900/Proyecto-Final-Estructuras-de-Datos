@@ -9,6 +9,8 @@ public class PruebaBaseMonederoVirtual {
 
     private static int pruebasCorrectas = 0;
 
+    private static final double TOLERANCIA = 0.0001;
+
 
     public static void main(
             String[] args) {
@@ -136,12 +138,20 @@ public class PruebaBaseMonederoVirtual {
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 1000,
+                ),
+                1000,
                 "Saldo después del depósito"
+        );
+
+
+        verificarDouble(
+                deposito.getComision(),
+                0,
+                "Depósito no cobra comisión"
         );
 
 
@@ -167,15 +177,16 @@ public class PruebaBaseMonederoVirtual {
 
         verificar(
                 retiroInvalido == null,
-                "No retirar más del saldo"
+                "No retirar más del saldo incluyendo comisión"
         );
 
 
-        verificar(
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 1000,
+                ),
+                1000,
                 "Retiro inválido no modifica saldo"
         );
 
@@ -198,12 +209,23 @@ public class PruebaBaseMonederoVirtual {
         );
 
 
-        verificar(
+        verificarDouble(
+                retiro.getComision(),
+                2,
+                "Retiro cobra comisión del 1%"
+        );
+
+
+        /*
+         * 1000 - 200 - 2 de comisión = 798
+         */
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C001",
                         "M001"
-                ) == 800,
-                "Saldo después del retiro"
+                ),
+                798,
+                "Saldo incluye comisión de retiro"
         );
 
 
@@ -211,7 +233,7 @@ public class PruebaBaseMonederoVirtual {
                 sistema.consultarPuntos(
                         "C001"
                 ) == 14,
-                "Retiro genera puntos"
+                "Retiro genera puntos sobre el monto"
         );
 
 
@@ -235,21 +257,37 @@ public class PruebaBaseMonederoVirtual {
         );
 
 
-        verificar(
-                sistema.consultarSaldo(
-                        "C001",
-                        "M001"
-                ) == 500,
-                "Saldo origen después de transferencia"
+        verificarDouble(
+                transferencia.getComision(),
+                3,
+                "Transferencia cobra comisión del 1%"
         );
 
 
-        verificar(
+        /*
+         * 798 - 300 - 3 = 495
+         */
+        verificarDouble(
+                sistema.consultarSaldo(
+                        "C001",
+                        "M001"
+                ),
+                495,
+                "Saldo origen descuenta monto y comisión"
+        );
+
+
+        /*
+         * El destino recibe únicamente
+         * el monto transferido.
+         */
+        verificarDouble(
                 sistema.consultarSaldo(
                         "C002",
                         "M001"
-                ) == 300,
-                "Saldo destino después de transferencia"
+                ),
+                300,
+                "Destino recibe únicamente el monto"
         );
 
 
@@ -257,7 +295,7 @@ public class PruebaBaseMonederoVirtual {
                 sistema.consultarPuntos(
                         "C001"
                 ) == 23,
-                "Transferencia genera puntos"
+                "Transferencia genera puntos sobre el monto"
         );
 
 
@@ -321,6 +359,67 @@ public class PruebaBaseMonederoVirtual {
             throw new AssertionError(
                     "PRUEBA FALLIDA: "
                             + descripcion
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            Double actual,
+            double esperado,
+            String descripcion) {
+
+        if (actual == null ||
+                Math.abs(
+                        actual - esperado
+                ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
+            );
+        }
+
+
+        pruebasCorrectas++;
+
+
+        System.out.println(
+                "OK - "
+                        + descripcion
+        );
+    }
+
+
+    private static void verificarDouble(
+            double actual,
+            double esperado,
+            String descripcion) {
+
+        if (Math.abs(
+                actual - esperado
+        ) > TOLERANCIA) {
+
+            throw new AssertionError(
+                    "PRUEBA FALLIDA: "
+                            + descripcion
+                            + " - esperado: "
+                            + esperado
+                            + ", actual: "
+                            + actual
             );
         }
 

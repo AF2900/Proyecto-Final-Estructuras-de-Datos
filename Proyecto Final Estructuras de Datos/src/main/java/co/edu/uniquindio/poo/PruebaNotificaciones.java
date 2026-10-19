@@ -176,11 +176,13 @@ public class PruebaNotificaciones {
 
 
         verificar(
-                sistema.consultarSaldo(
-                        "C001",
-                        "M001"
-                ) == 50,
-                "Saldo queda en 50"
+                Math.abs(
+                        sistema.consultarSaldo(
+                                "C001",
+                                "M001"
+                        ) - 45.5
+                ) < 0.0001,
+                "Saldo queda en 45.5 incluyendo comisión"
         );
 
 
