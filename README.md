@@ -1,12 +1,12 @@
 # Proyecto Final - Estructuras de Datos
 
-## Simulador de Monedero Virtual con Sistema de Puntos
+## Monedero Virtual con Interfaz Gráfica y Sistema de Puntos
 
-Proyecto desarrollado para la asignatura **Estructuras de Datos** de la Universidad del Quindío.
+Proyecto desarrollado para la asignatura **Estructuras de Datos** de la **Universidad del Quindío**.
 
-El sistema simula un monedero virtual en el que los clientes pueden administrar uno o varios monederos, realizar transacciones, acumular puntos, obtener rangos, canjear beneficios, programar operaciones, recibir notificaciones, analizar patrones de gasto y generar reportes.
+La aplicación simula un monedero virtual avanzado mediante una **interfaz gráfica de escritorio desarrollada con text Swing**. Permite administrar clientes y monederos, realizar operaciones financieras, acumular puntos, obtener rangos, canjear beneficios, programar transacciones, gestionar notificaciones, analizar patrones de gasto, consultar reportes y visualizar el uso de diferentes estructuras de datos.
 
-El proyecto fue desarrollado en **Java 21** y utiliza diferentes estructuras de datos como listas, pilas, colas, colas de prioridad, tablas hash, árboles binarios de búsqueda, árboles AVL, listas circulares y grafos dirigidos.
+El proyecto fue desarrollado con **text 21 y Maven**.
 
 ---
 
@@ -18,9 +18,18 @@ El proyecto fue desarrollado en **Java 21** y utiliza diferentes estructuras de 
 
 ---
 
-## Tecnologías utilizadas
+# Objetivo
 
-- Java 21
+Desarrollar una aplicación con interfaz gráfica que simule un monedero virtual avanzado y permita aplicar de manera práctica diferentes estructuras de datos estudiadas durante el curso.
+
+El sistema integra operaciones financieras con listas, pilas, colas, colas de prioridad, tablas hash, árboles binarios, árboles AVL, listas circulares, grafos dirigidos y recursividad.
+
+---
+
+# Tecnologías utilizadas
+
+- text 21
+- text Swing
 - Maven
 - IntelliJ IDEA
 - Git
@@ -28,60 +37,62 @@ El proyecto fue desarrollado en **Java 21** y utiliza diferentes estructuras de 
 
 ---
 
-# Objetivo
+# Funcionalidades principales
 
-Desarrollar un simulador de monedero virtual aplicando diferentes estructuras de datos vistas durante la asignatura.
-
-El sistema integra operaciones financieras básicas con funcionalidades adicionales relacionadas con puntos, beneficios, rangos, transacciones programadas, notificaciones, grafos, patrones de gasto, reversiones, reportes y verificación recursiva de integridad.
-
----
-
-# Funcionalidades implementadas
-
-El sistema permite:
+La aplicación permite:
 
 - Registrar clientes.
-- Crear uno o varios monederos por cliente.
+- Crear varios monederos por cliente.
 - Realizar depósitos.
 - Realizar retiros.
 - Realizar transferencias entre clientes.
 - Realizar transferencias entre monederos del mismo cliente.
-- Cobrar comisiones en retiros y transferencias.
-- Aplicar beneficios sobre las comisiones.
-- Registrar gastos por categorías.
+- Registrar gastos por categoría.
 - Consultar saldos.
 - Consultar historial de transacciones.
-- Acumular y descontar puntos.
-- Calcular automáticamente el rango de cada cliente.
+- Cobrar comisiones en retiros y transferencias.
+- Acumular puntos.
+- Calcular automáticamente el rango de los clientes.
 - Canjear beneficios.
-- Revertir la última transacción utilizando una pila.
+- Revertir la última transacción mediante una pila.
 - Programar depósitos.
 - Programar transferencias.
 - Crear operaciones recurrentes.
-- Procesar operaciones programadas según su fecha.
-- Generar notificaciones.
-- Gestionar notificaciones pendientes mediante una cola.
-- Mantener un historial de notificaciones mediante una lista circular.
-- Analizar transferencias mediante grafos dirigidos.
+- Procesar operaciones programadas.
+- Cancelar operaciones programadas.
+- Generar notificaciones automáticas.
+- Gestionar notificaciones pendientes mediante una cola FIFO.
+- Mantener el historial de notificaciones mediante una lista circular.
+- Analizar relaciones entre clientes mediante grafos dirigidos.
 - Analizar relaciones entre monederos.
-- Analizar patrones entre categorías de gasto.
+- Analizar patrones de gasto.
 - Realizar recorridos BFS.
 - Verificar recursivamente la integridad de las transacciones.
+- Consultar árboles BST y AVL.
 - Generar reportes por cliente.
 - Generar un reporte general del sistema.
-- Utilizar una interfaz de consola.
+- Consultar toda la información mediante una interfaz gráfica.
 
 ---
 
 # Arquitectura general
 
-El proyecto separa las responsabilidades entre modelos, estructuras, gestores e interfaz.
+La aplicación mantiene separada la interfaz gráfica de la lógica del negocio.
 
 ```text
 Main
  │
  ▼
-InterfazConsola
+InterfazGrafica
+ │
+ ├── PanelClientesMonederos
+ ├── PanelTransacciones
+ ├── PanelReversiones
+ ├── PanelPuntosBeneficios
+ ├── PanelProgramadas
+ ├── PanelNotificaciones
+ ├── PanelReportes
+ └── PanelEstructuras
  │
  ▼
 MonederoVirtual
@@ -97,14 +108,16 @@ MonederoVirtual
  ├── GestorIntegridad
  ├── GestorBeneficios
  └── GestorReportes
-        │
-        ▼
+ │
+ ▼
 Estructuras de datos
 ```
 
-`MonederoVirtual` funciona como coordinador principal del sistema.
+`MonederoVirtual` funciona como fachada principal del sistema.
 
-La interfaz utiliza esta clase para acceder a las funcionalidades sin comunicarse directamente con cada uno de los gestores.
+Los componentes de la interfaz gráfica no acceden directamente a las estructuras internas. En su lugar, utilizan los métodos públicos disponibles en `MonederoVirtual`.
+
+Esto permite mantener separada la presentación de la lógica del sistema.
 
 ---
 
@@ -113,58 +126,174 @@ La interfaz utiliza esta clase para acceder a las funcionalidades sin comunicars
 ```text
 co.edu.uniquindio.poo
 │
-├── Main.java
-├── MonederoVirtual.java
+├── Main.text
+├── MonederoVirtual.text
+│
+├── PruebaBaseMonederoVirtual.text
+├── PruebaReversiones.text
+├── PruebaArbolesPuntos.text
+├── PruebaTransaccionesProgramadas.text
+├── PruebaNotificaciones.text
+├── PruebaGrafos.text
+├── PruebaGastos.text
+├── PruebaIntegridad.text
+├── PruebaBeneficios.text
+├── PruebaReportes.text
+├── PruebaSistemaCompleto.text
 │
 ├── enums
-│   ├── CategoriaGasto.java
-│   ├── RangoCliente.java
-│   ├── TipoBeneficio.java
-│   ├── TipoNotificacion.java
-│   └── TipoTransaccion.java
+│   ├── CategoriaGasto.text
+│   ├── RangoCliente.text
+│   ├── TipoBeneficio.text
+│   ├── TipoNotificacion.text
+│   └── TipoTransaccion.text
 │
 ├── model
-│   ├── BeneficioCanjeado.java
-│   ├── Cliente.java
-│   ├── Monedero.java
-│   ├── Notificacion.java
-│   ├── ReporteCliente.java
-│   ├── ReporteSistema.java
-│   ├── Transaccion.java
-│   └── TransaccionProgramada.java
+│   ├── BeneficioCanjeado.text
+│   ├── Cliente.text
+│   ├── Monedero.text
+│   ├── Notificacion.text
+│   ├── ReporteCliente.text
+│   ├── ReporteSistema.text
+│   ├── Transaccion.text
+│   └── TransaccionProgramada.text
 │
 ├── estructuras
-│   │
 │   ├── arbol
-│   │   ├── ArbolAVLClientes.java
-│   │   ├── ArbolBinarioPuntos.java
-│   │   ├── NodoAVLCliente.java
-│   │   └── NodoArbolPuntos.java
+│   │   ├── ArbolAVLClientes.text
+│   │   ├── ArbolBinarioPuntos.text
+│   │   ├── NodoAVLCliente.text
+│   │   └── NodoArbolPuntos.text
 │   │
 │   ├── grafo
-│   │   ├── AristaGrafo.java
-│   │   └── GrafoDirigido.java
+│   │   ├── AristaGrafo.text
+│   │   └── GrafoDirigido.text
 │   │
 │   └── listacircular
-│       ├── ListaCircular.java
-│       └── NodoCircular.java
+│       ├── ListaCircular.text
+│       └── NodoCircular.text
 │
 ├── service
-│   ├── GestorBeneficios.java
-│   ├── GestorClientes.java
-│   ├── GestorGrafos.java
-│   ├── GestorIntegridad.java
-│   ├── GestorNotificaciones.java
-│   ├── GestorPatronesGasto.java
-│   ├── GestorProgramadas.java
-│   ├── GestorPuntos.java
-│   ├── GestorReportes.java
-│   ├── GestorReversiones.java
-│   └── GestorTransacciones.java
+│   ├── GestorBeneficios.text
+│   ├── GestorClientes.text
+│   ├── GestorGrafos.text
+│   ├── GestorIntegridad.text
+│   ├── GestorNotificaciones.text
+│   ├── GestorPatronesGasto.text
+│   ├── GestorProgramadas.text
+│   ├── GestorPuntos.text
+│   ├── GestorReportes.text
+│   ├── GestorReversiones.text
+│   └── GestorTransacciones.text
 │
 └── ui
-    └── InterfazConsola.java
+    ├── InterfazConsola.text
+    ├── InterfazGrafica.text
+    ├── PanelClientesMonederos.text
+    ├── PanelTransacciones.text
+    ├── PanelReversiones.text
+    ├── PanelPuntosBeneficios.text
+    ├── PanelProgramadas.text
+    ├── PanelNotificaciones.text
+    ├── PanelReportes.text
+    └── PanelEstructuras.text
 ```
+
+`InterfazConsola` se conserva dentro del proyecto como una implementación anterior y como apoyo para pruebas manuales, pero el punto de entrada principal de la aplicación utiliza actualmente `InterfazGrafica`.
+
+---
+
+# Interfaz gráfica
+
+La interfaz fue desarrollada con **text Swing** y está diseñada como una aplicación de escritorio.
+
+La ventana principal utiliza:
+
+```text
+JFrame
+BorderLayout
+CardLayout
+JPanel
+JTabbedPane
+JTable
+JComboBox
+JTextField
+JSpinner
+JOptionPane
+```
+
+La navegación principal se encuentra en un menú lateral.
+
+Los módulos disponibles son:
+
+```text
+Inicio
+Clientes
+Transacciones
+Reversiones
+Puntos y beneficios
+Programadas
+Notificaciones
+Reportes
+Estructuras
+```
+
+---
+
+## Inicio
+
+El dashboard principal muestra:
+
+- Cantidad de clientes.
+- Cantidad de monederos.
+- Saldo total del sistema.
+- Estado de integridad.
+- Accesos rápidos a las funciones principales.
+
+---
+
+## Clientes y monederos
+
+Permite:
+
+- Registrar clientes.
+- Crear monederos.
+- Consultar clientes registrados.
+- Consultar puntos.
+- Consultar rango.
+- Visualizar los monederos existentes.
+- Consultar sus saldos.
+
+---
+
+## Transacciones
+
+La pantalla utiliza pestañas para separar las operaciones.
+
+Incluye:
+
+```text
+Depósito
+Retiro
+Transferencia
+Gasto
+Consultas
+```
+
+Desde la pestaña de consultas es posible visualizar:
+
+- Saldo.
+- Historial de transacciones.
+- Código de transacción.
+- Fecha.
+- Tipo.
+- Monto.
+- Comisión.
+- Origen.
+- Destino.
+- Categoría.
+- Puntos.
+- Estado de reversión.
 
 ---
 
@@ -172,24 +301,24 @@ co.edu.uniquindio.poo
 
 ## Cliente
 
-La clase `Cliente` representa a una persona registrada en el sistema.
+`Cliente` representa a una persona registrada dentro del sistema.
 
-Cada cliente contiene:
+Cada cliente mantiene:
 
 - Identificación.
 - Nombre.
-- Puntos acumulados.
+- Puntos.
 - Rango.
 - Monederos.
 - Historial de transacciones.
 
-Los monederos se almacenan mediante:
+Los monederos se almacenan utilizando:
 
 ```text
 Map<String, Monedero>
 ```
 
-y el historial mediante:
+El historial utiliza:
 
 ```text
 List<Transaccion>
@@ -199,15 +328,13 @@ List<Transaccion>
 
 ## Monedero
 
-La clase `Monedero` representa una cuenta asociada a un cliente.
-
-Cada monedero contiene:
+Un monedero contiene:
 
 - Identificador.
 - Nombre.
 - Saldo.
 
-Un cliente puede tener varios monederos.
+Un cliente puede poseer varios monederos.
 
 Ejemplo:
 
@@ -220,9 +347,7 @@ Cliente C001
 
 ---
 
-## Transacción
-
-La clase `Transaccion` representa una operación realizada por el sistema.
+# Transacciones
 
 Los tipos implementados son:
 
@@ -233,35 +358,25 @@ TRANSFERENCIA
 GASTO
 ```
 
-Una transacción puede almacenar:
+Una `Transaccion` puede almacenar:
 
 - Código.
 - Fecha.
 - Tipo.
 - Monto.
-- Identificación de origen.
+- Cliente de origen.
 - Monedero de origen.
-- Identificación de destino.
+- Cliente de destino.
 - Monedero de destino.
 - Puntos generados.
-- Comisión cobrada.
+- Comisión.
 - Categoría de gasto.
 - Categoría anterior.
 - Estado de reversión.
 
-La comisión se almacena dentro de la misma transacción para poder conocer exactamente cuánto se cobró y devolver ese valor en caso de reversión.
-
-Las transacciones revertidas permanecen en el historial y quedan identificadas mediante:
-
-```text
-revertida = true
-```
-
 ---
 
 # Sistema de puntos
-
-Los puntos se calculan sobre el **monto de la operación**, sin incluir la comisión.
 
 Las reglas implementadas son:
 
@@ -276,29 +391,16 @@ Transferencia:
 3 puntos por cada 100 unidades.
 
 Gasto:
-0 puntos.
+No genera puntos.
 ```
 
-Ejemplo:
-
-```text
-Depósito de 1000
-→ 10 puntos
-
-Retiro de 1000
-→ 20 puntos
-
-Transferencia de 1000
-→ 30 puntos
-```
-
-Los gastos no generan puntos porque no se definió una regla de acumulación para este tipo de operación.
+Los puntos se calculan utilizando el monto de la operación y no la comisión.
 
 ---
 
-# Rangos de clientes
+# Rangos
 
-El rango se calcula según los puntos actuales del cliente.
+Los clientes se clasifican automáticamente según sus puntos:
 
 | Rango | Puntos |
 |---|---:|
@@ -307,135 +409,91 @@ El rango se calcula según los puntos actuales del cliente.
 | Oro | 1001 - 5000 |
 | Platino | Más de 5000 |
 
-El rango se actualiza cuando los puntos aumentan o disminuyen.
+El rango puede cambiar cuando:
 
-Esto puede ocurrir después de:
-
-```text
-Realizar una transacción
-Revertir una transacción
-Canjear un beneficio
-```
+- Se generan puntos.
+- Se revierten transacciones.
+- Se utilizan puntos para beneficios.
 
 ---
 
 # Comisiones
 
-El sistema implementa una comisión base del **1 %** para retiros y transferencias.
-
-## Comisión de retiro
-
-Un retiro normal calcula:
+El sistema utiliza una comisión base del:
 
 ```text
-comisión = monto × 0.01
+1 %
 ```
 
-Ejemplo:
+para:
 
 ```text
-Retiro:          1000
-Comisión 1 %:      10
+RETIRO
+TRANSFERENCIA
+```
+
+Ejemplo de transferencia:
+
+```text
+Monto:            1000
+Comisión:           10
 Total descontado: 1010
+Destino recibe:   1000
 ```
 
-El cliente debe tener saldo suficiente para cubrir:
-
-```text
-monto + comisión
-```
-
----
-
-## Comisión de transferencia
-
-Una transferencia normal también cobra:
-
-```text
-comisión = monto × 0.01
-```
-
-Ejemplo:
-
-```text
-Monto enviado:    1000
-Comisión:            10
-Total al origen:   1010
-Destino recibe:    1000
-```
-
-La comisión no se envía al destinatario.
+La comisión queda almacenada dentro de la transacción para poder ser restaurada correctamente durante una reversión.
 
 ---
 
 # Beneficios
 
-El sistema permite canjear puntos por tres beneficios.
+Los puntos se pueden canjear por tres beneficios:
 
 | Puntos | Beneficio |
 |---:|---|
-| 100 | Reducción del 10 % en la comisión de transferencias |
+| 100 | Reducción del 10 % de la comisión en transferencias |
 | 500 | Un mes sin cargos por retiros |
-| 1000 | Bono de 50 unidades en un monedero |
+| 1000 | Bono de 50 unidades |
+
+La interfaz gráfica permite consultar:
+
+- Puntos disponibles.
+- Rango.
+- Beneficios activos.
+- Historial de canjes.
+- Fecha de vencimiento.
+- Monedero beneficiado.
 
 ---
 
 ## Beneficio de 100 puntos
 
-`DESCUENTO_TRANSFERENCIA`
+Reduce un 10 % sobre la comisión de transferencia calculada.
 
-Reduce en un **10 % la comisión calculada** de una transferencia.
-
-Por ejemplo:
+Ejemplo:
 
 ```text
 Transferencia: 1000
-
-Comisión normal:
-1000 × 1 % = 10
-
-Descuento:
-10 × 10 % = 1
-
-Comisión final:
-10 - 1 = 9
+Comisión base: 10
+Reducción:      1
+Comisión final: 9
 ```
-
-En la implementación actual este beneficio permanece activo después de ser canjeado, ya que no posee una fecha de vencimiento.
 
 ---
 
 ## Beneficio de 500 puntos
 
-`RETIROS_SIN_CARGO`
-
 Permite realizar retiros sin comisión durante un mes.
 
-Ejemplo:
-
 ```text
-Retiro: 1000
-
-Comisión normal:
-10
-
-Con beneficio:
-0
-```
-
-La fecha de vencimiento se calcula utilizando:
-
-```text
-fechaCanje + 1 mes
+fechaVencimiento = fechaCanje + 1 mes
 ```
 
 ---
 
 ## Beneficio de 1000 puntos
 
-`BONO_SALDO`
-
-Agrega directamente:
+Agrega:
 
 ```text
 50 unidades
@@ -443,56 +501,58 @@ Agrega directamente:
 
 al monedero seleccionado.
 
-El bono se aplica directamente sobre el saldo y no se registra como un depósito normal, para evitar que genere nuevos puntos.
+El saldo se modifica directamente para evitar que el bono genere puntos como si fuera un depósito.
 
 ---
 
-# Reversiones
+# Reversiones y pila
 
-Las transacciones reversibles se administran mediante:
+Las operaciones reversibles utilizan:
 
 ```text
 Deque<Transaccion>
 ```
 
-implementado con:
+implementado mediante:
 
 ```text
 ArrayDeque
 ```
 
-La estructura funciona como una pila:
+La estructura trabaja con:
 
 ```text
 LIFO
 Last In, First Out
 ```
 
-La última transacción registrada es la primera que puede revertirse.
+La última operación realizada es la primera que puede revertirse.
+
+La interfaz muestra la transacción ubicada actualmente en el tope de la pila.
 
 ---
 
 ## Reversión de depósito
 
-Se retira del monedero el monto depositado y se descuentan los puntos generados.
+Retira el monto depositado y descuenta los puntos generados.
 
 ---
 
 ## Reversión de retiro
 
-Se devuelve:
+Devuelve:
 
 ```text
 monto + comisión
 ```
 
-y se descuentan los puntos generados por el retiro.
+y elimina los puntos generados por el retiro.
 
 ---
 
 ## Reversión de transferencia
 
-El destino devuelve únicamente el monto que recibió.
+El destino devuelve el dinero recibido.
 
 El origen recupera:
 
@@ -500,126 +560,13 @@ El origen recupera:
 monto + comisión
 ```
 
-También se actualizan los grafos y los puntos generados.
+También se actualizan los puntos y grafos asociados.
 
 ---
 
 ## Reversión de gasto
 
-Se devuelve el monto al monedero y se actualiza el patrón de gasto correspondiente.
-
----
-
-# ArrayList
-
-Se utiliza para almacenar colecciones que requieren recorridos y acceso secuencial.
-
-Ejemplo principal:
-
-```text
-List<Transaccion>
-```
-
-para el historial de transacciones de cada cliente.
-
-Complejidad aproximada:
-
-```text
-Agregar al final: O(1) amortizado
-Acceso por índice: O(1)
-Búsqueda lineal: O(n)
-```
-
----
-
-# HashMap
-
-Se utilizan mapas para búsquedas rápidas mediante claves.
-
-Ejemplos:
-
-```text
-Identificación → Cliente
-Id del monedero → Monedero
-Identificación → Puntos
-Código → Transacción programada
-Cliente → Beneficios
-Cliente → Notificaciones
-```
-
-Complejidad promedio:
-
-```text
-put()         O(1)
-get()         O(1)
-containsKey() O(1)
-```
-
----
-
-# Cola de notificaciones
-
-Las notificaciones pendientes utilizan:
-
-```text
-Queue<Notificacion>
-```
-
-implementada mediante:
-
-```text
-ArrayDeque
-```
-
-Trabaja con el principio:
-
-```text
-FIFO
-First In, First Out
-```
-
-La primera notificación recibida es la primera que se atiende.
-
-Operaciones principales:
-
-```text
-offer()
-peek()
-poll()
-```
-
----
-
-# Lista circular
-
-Se implementó una estructura propia:
-
-```text
-ListaCircular<T>
-NodoCircular<T>
-```
-
-Se utiliza para conservar el historial de notificaciones.
-
-```text
-N1 → N2 → N3
-↑         │
-└─────────┘
-```
-
-El último nodo vuelve al primero.
-
-La cola y la lista circular cumplen funciones diferentes:
-
-```text
-Queue
-→ notificaciones pendientes.
-
-ListaCircular
-→ historial completo.
-```
-
-Cuando una notificación es atendida, sale de la cola de pendientes pero continúa dentro del historial circular.
+Devuelve el saldo y actualiza el patrón de gasto.
 
 ---
 
@@ -633,22 +580,24 @@ PriorityQueue<TransaccionProgramada>
 
 Se pueden programar:
 
-```text
-Depósitos
-Transferencias
-```
+- Depósitos.
+- Transferencias.
 
-Cada transacción programada contiene:
+La prioridad se determina mediante:
 
-- Código.
-- Tipo.
-- Cliente y monedero de origen.
-- Cliente y monedero de destino cuando aplica.
-- Monto.
-- Fecha de ejecución.
-- Frecuencia en días.
+1. Fecha más cercana.
+2. Código en caso de empate.
 
-La prioridad se determina primero por la fecha y, en caso de empate, por el código.
+La interfaz permite:
+
+- Crear depósitos programados.
+- Crear transferencias programadas.
+- Indicar fecha y hora.
+- Definir recurrencia.
+- Consultar las operaciones en orden.
+- Consultar la siguiente operación.
+- Cancelar operaciones.
+- Procesar operaciones cuya fecha ya llegó.
 
 ---
 
@@ -668,164 +617,62 @@ Cuando:
 frecuenciaDias > 0
 ```
 
-la operación vuelve a insertarse en la `PriorityQueue` con una nueva fecha.
-
-Las transferencias programadas utilizan la misma lógica de `GestorTransacciones`, por lo que también cobran comisión y aplican beneficios cuando corresponde.
+la transacción se vuelve a insertar en la cola de prioridad con una nueva fecha.
 
 ---
 
-# Árbol binario de búsqueda
+# Notificaciones
 
-La clase:
+El sistema utiliza simultáneamente dos estructuras.
 
-```text
-ArbolBinarioPuntos
-```
+## Cola FIFO
 
-mantiene los clientes ordenados por puntos.
-
-Si dos clientes tienen la misma cantidad de puntos se utiliza su identificación como criterio de desempate.
-
-El recorrido inorden permite obtener los clientes ordenados de menor a mayor puntuación.
-
-Complejidad:
+Las notificaciones pendientes se almacenan utilizando:
 
 ```text
-Promedio:
-O(log n)
-
-Peor caso:
-O(n)
+Queue<Notificacion>
 ```
+
+implementada con:
+
+```text
+ArrayDeque
+```
+
+Funciona mediante:
+
+```text
+FIFO
+First In, First Out
+```
+
+La primera notificación recibida es la primera en ser atendida.
 
 ---
 
-# Árbol AVL
+## Lista circular
 
-La clase:
+El historial completo utiliza una implementación propia:
 
 ```text
-ArbolAVLClientes
+ListaCircular<T>
+NodoCircular<T>
 ```
 
-mantiene balanceado el árbol utilizando rotaciones.
+La interfaz permite recorrer las notificaciones de forma circular.
 
-Se manejan los casos:
-
-```text
-Izquierda - Izquierda
-Derecha - Derecha
-Izquierda - Derecha
-Derecha - Izquierda
-```
-
-La búsqueda, inserción y eliminación mantienen una complejidad aproximada de:
+Cuando una notificación es atendida:
 
 ```text
-O(log n)
-```
-
-Cuando cambian los puntos de un cliente, este se elimina de los árboles utilizando su valor anterior, se actualizan sus puntos y luego se inserta nuevamente.
-
----
-
-# Grafos dirigidos
-
-El proyecto utiliza grafos dirigidos mediante:
-
-```text
-GrafoDirigido
-```
-
-implementado con listas de adyacencia.
-
-Cada arista registra:
-
-- Destino.
-- Monto acumulado.
-- Cantidad de transacciones.
-
----
-
-## Grafo de clientes
-
-Registra transferencias entre clientes diferentes.
-
-Ejemplo:
-
-```text
-C001 ───▶ C002
-```
-
-Permite consultar:
-
-- Monto transferido.
-- Cantidad de transferencias.
-- Total transferido por un cliente.
-- Destino con mayor monto.
-- Existencia de caminos.
-- Recorrido BFS.
-
-Las transferencias entre dos monederos del mismo cliente no generan una arista en este grafo.
-
----
-
-## Grafo de monederos
-
-Toda transferencia registra una relación entre monederos.
-
-Los vértices se identifican de la forma:
-
-```text
-C001:M001
-```
-
-Ejemplo:
-
-```text
-C001:M001 ───▶ C001:M002
-```
-
-Por esta razón también se pueden representar transferencias internas entre monederos del mismo cliente.
-
----
-
-# BFS
-
-El grafo implementa recorrido en anchura:
-
-```text
-BFS
-Breadth First Search
-```
-
-Utiliza:
-
-```text
-Queue<String>
-Set<String>
-```
-
-para recorrer los vértices y evitar visitar varias veces el mismo nodo.
-
-Complejidad:
-
-```text
-O(V + E)
-```
-
-donde:
-
-```text
-V = cantidad de vértices
-E = cantidad de aristas
+Sale de la cola de pendientes.
+Permanece en la lista circular.
 ```
 
 ---
 
-# Gastos
+# Gastos y patrones
 
-El sistema permite registrar gastos utilizando las siguientes categorías:
+Las categorías disponibles son:
 
 ```text
 ALIMENTACION
@@ -842,15 +689,11 @@ Los gastos:
 
 ```text
 Disminuyen el saldo.
-No generan puntos.
 No cobran comisión.
+No generan puntos.
 ```
 
----
-
-# Patrones de gasto
-
-`GestorPatronesGasto` registra los gastos de cada cliente y analiza las relaciones entre categorías consecutivas.
+`GestorPatronesGasto` utiliza un grafo para analizar relaciones entre categorías consecutivas.
 
 Ejemplo:
 
@@ -863,196 +706,284 @@ TRANSPORTE
 
 El sistema permite consultar:
 
-- Total gastado por cliente.
+- Total de gastos.
 - Total por categoría.
 - Categoría de mayor gasto.
 - Última categoría.
-- Monto entre categorías consecutivas.
-- Cantidad de transiciones.
 - Principal categoría siguiente.
-
-Al revertir un gasto también se actualiza la información del patrón.
-
----
-
-# Notificaciones
-
-El sistema maneja tres tipos:
-
-```text
-SALDO_BAJO
-TRANSACCION_PROGRAMADA
-GENERAL
-```
-
-Las notificaciones se almacenan simultáneamente en:
-
-```text
-ListaCircular
-→ historial.
-
-Queue
-→ pendientes.
-```
-
-Las transacciones programadas generan notificaciones al ser programadas y al ejecutarse correctamente.
+- Monto de las transiciones.
+- Cantidad de transiciones.
 
 ---
 
-# Saldo bajo
+# Grafos dirigidos
 
-Después de operaciones que disminuyen el saldo se verifica si el monedero queda por debajo de:
+El sistema utiliza `GrafoDirigido` con listas de adyacencia.
 
-```text
-100 unidades
-```
+Cada arista registra:
 
-Si ocurre, se genera una notificación de tipo:
-
-```text
-SALDO_BAJO
-```
-
-El valor de 100 corresponde a una decisión de implementación del proyecto.
+- Destino.
+- Monto acumulado.
+- Cantidad de transacciones.
 
 ---
 
-# Verificación recursiva de integridad
+## Grafo de clientes
 
-`GestorIntegridad` utiliza recursividad para verificar los historiales.
+Representa transferencias entre clientes diferentes.
 
-Entre las validaciones realizadas se encuentran:
+Ejemplo:
+
+```text
+C001 ───▶ C002
+```
+
+Permite analizar:
+
+- Total transferido.
+- Número de transferencias.
+- Principal destino.
+- Existencia de caminos.
+- Recorrido BFS.
+
+---
+
+## Grafo de monederos
+
+Representa relaciones entre monederos.
+
+Un vértice tiene la forma:
+
+```text
+C001:M001
+```
+
+Esto permite representar también transferencias internas.
+
+```text
+C001:M001 ───▶ C001:M002
+```
+
+---
+
+# BFS
+
+El recorrido en anchura utiliza:
+
+```text
+BFS
+Breadth First Search
+```
+
+y se apoya en:
+
+```text
+Queue<String>
+Set<String>
+```
+
+Su complejidad es:
+
+```text
+O(V + E)
+```
+
+---
+
+# HashMap
+
+Se utilizan tablas hash para búsquedas rápidas.
+
+Ejemplos:
+
+```text
+Identificación → Cliente
+Id → Monedero
+Identificación → Puntos
+Código → Transacción programada
+Cliente → Beneficios
+Cliente → Notificaciones
+```
+
+Complejidad promedio:
+
+```text
+put()         O(1)
+get()         O(1)
+containsKey() O(1)
+```
+
+---
+
+# Árbol binario de búsqueda
+
+`ArbolBinarioPuntos` organiza los clientes según sus puntos.
+
+Si dos clientes tienen la misma puntuación, se utiliza la identificación como criterio de desempate.
+
+El recorrido inorden permite obtenerlos de menor a mayor puntuación.
+
+Complejidad:
+
+```text
+Promedio: O(log n)
+Peor caso: O(n)
+```
+
+---
+
+# Árbol AVL
+
+`ArbolAVLClientes` mantiene el árbol balanceado mediante rotaciones.
+
+Casos manejados:
+
+```text
+Izquierda - Izquierda
+Derecha - Derecha
+Izquierda - Derecha
+Derecha - Izquierda
+```
+
+Complejidad aproximada:
+
+```text
+O(log n)
+```
+
+La interfaz permite comparar:
+
+```text
+Altura BST
+Altura AVL
+Recorrido BST
+Recorrido AVL
+```
+
+---
+
+# Recursividad e integridad
+
+`GestorIntegridad` utiliza recursividad para revisar los historiales.
+
+Entre las condiciones verificadas se encuentran:
 
 - Código válido.
-- Código no repetido dentro del historial del cliente.
+- Código no repetido.
 - Fecha válida.
 - Tipo válido.
-- Monto mayor que cero.
-- Comisión no negativa.
-- Identificación de origen.
+- Monto positivo.
+- Comisión válida.
+- Cliente de origen.
 - Monedero de origen.
-- Datos de destino en transferencias.
-- Categoría válida para gastos.
+- Datos de destino.
+- Categoría de gasto.
 - Coherencia de puntos.
-- Coherencia de la comisión según el tipo de operación.
+- Coherencia de comisiones.
 
-Para retiros se acepta:
+La interfaz gráfica permite consultar:
 
-```text
-Comisión normal del 1 %
-o
-0 cuando aplica el beneficio.
-```
-
-Para transferencias se acepta:
-
-```text
-Comisión normal del 1 %
-o
-comisión reducida por el beneficio.
-```
-
-También existen métodos recursivos para:
-
-```text
-Verificar un cliente.
-Verificar todos los clientes.
-Contar transacciones válidas.
-Buscar la primera transacción inválida.
-```
-
-Una transacción revertida continúa formando parte del historial y no se considera inválida únicamente por estar revertida.
+- Integridad del sistema.
+- Integridad de un cliente.
+- Número de transacciones válidas.
+- Primera transacción inválida.
 
 ---
 
 # Reportes
 
-## Reporte de cliente
+## Reporte individual
 
-`ReporteCliente` contiene:
+Incluye:
 
 - Identificación.
 - Nombre.
 - Cantidad de monederos.
 - Saldo total.
-- Cantidad de transacciones.
+- Número de transacciones.
 - Transacciones activas.
 - Transacciones revertidas.
 - Puntos.
 - Rango.
 - Total de gastos.
-- Categoría de mayor gasto.
+- Categoría principal.
 - Total transferido.
-- Cantidad de beneficios.
-- Cantidad de notificaciones.
+- Beneficios.
+- Notificaciones.
 - Estado de integridad.
 
 ---
 
 ## Reporte general
 
-`ReporteSistema` contiene:
+Incluye:
 
-- Cantidad de clientes.
-- Cantidad de monederos.
-- Saldo total del sistema.
-- Cantidad de transacciones únicas.
+- Clientes.
+- Monederos.
+- Saldo total.
+- Transacciones únicas.
 - Transacciones activas.
 - Transacciones revertidas.
 - Total de gastos.
-- Cantidad de beneficios.
-- Cantidad de notificaciones.
-- Estado de integridad.
+- Beneficios.
+- Notificaciones.
+- Integridad general.
 
-Como una transferencia entre clientes aparece en los historiales de origen y destino, el reporte utiliza el código de la transacción para evitar contarla dos veces.
+Las transferencias no se cuentan dos veces aunque aparezcan en el historial de origen y destino.
 
 ---
 
-# Interfaz de usuario
+# Estructuras de datos utilizadas
 
-El proyecto cuenta con una interfaz de consola:
+| Estructura | Uso principal |
+|---|---|
+| ArrayList | Historiales y colecciones |
+| HashMap | Búsquedas por claves |
+| Deque / ArrayDeque | Pila de reversiones |
+| Queue / ArrayDeque | Notificaciones pendientes |
+| PriorityQueue | Transacciones programadas |
+| ListaCircular | Historial de notificaciones |
+| Árbol BST | Clientes ordenados por puntos |
+| Árbol AVL | Clientes ordenados y balanceados |
+| GrafoDirigido | Clientes, monederos y patrones |
+| HashSet | Visitados y códigos |
+| Recursividad | Integridad del sistema |
 
-```text
-ui/InterfazConsola.java
-```
+---
 
-`Main.java` crea una instancia de esta interfaz y ejecuta:
+# Complejidades principales
 
-```text
-interfaz.iniciar()
-```
-
-Desde el menú de consola se puede acceder a las principales funcionalidades del sistema, incluyendo:
-
-```text
-Registro de clientes
-Creación de monederos
-Depósitos
-Retiros
-Transferencias
-Gastos
-Consulta de saldo
-Historial
-Puntos y rango
-Canje de beneficios
-Programación de operaciones
-Notificaciones
-Reversiones
-Reportes
-Patrones de gasto
-Integridad
-Grafos
-```
-
-Las operaciones muestran la información de la `Transaccion`, incluyendo la comisión que fue cobrada cuando aplica.
-
-La lógica financiera no se encuentra dentro de la interfaz, sino en los gestores correspondientes.
+| Operación | Complejidad aproximada |
+|---|---:|
+| Buscar cliente en HashMap | O(1) promedio |
+| Buscar monedero | O(1) promedio |
+| Consultar puntos | O(1) promedio |
+| Agregar en ArrayList | O(1) amortizado |
+| Búsqueda lineal | O(n) |
+| Push de pila | O(1) |
+| Peek de pila | O(1) |
+| Pop de pila | O(1) |
+| Queue offer | O(1) |
+| Queue peek | O(1) |
+| Queue poll | O(1) |
+| PriorityQueue peek | O(1) |
+| PriorityQueue offer | O(log n) |
+| PriorityQueue poll | O(log n) |
+| PriorityQueue remove(Object) | O(n) |
+| Lista circular agregar | O(1) |
+| Lista circular siguiente | O(1) |
+| BST promedio | O(log n) |
+| BST peor caso | O(n) |
+| AVL | O(log n) |
+| BFS | O(V + E) |
+| Recorrido inorden | O(n) |
+| Integridad recursiva | O(n) |
 
 ---
 
 # Pruebas
 
-El proyecto contiene las siguientes clases de prueba:
+El proyecto contiene pruebas independientes para diferentes módulos:
 
 ```text
 PruebaBaseMonederoVirtual
@@ -1068,122 +999,59 @@ PruebaReportes
 PruebaSistemaCompleto
 ```
 
-Las pruebas se ejecutan mediante métodos:
+Las pruebas utilizan:
 
 ```text
 public static void main(String[] args)
 ```
 
-y utilizan `AssertionError` para indicar una condición incorrecta.
+y generan `AssertionError` cuando una condición no se cumple.
 
 ---
 
 # Prueba integral
 
-`PruebaSistemaCompleto.java` reúne diferentes funcionalidades dentro de un mismo escenario.
+`PruebaSistemaCompleto.text` valida el funcionamiento combinado del sistema.
 
-Actualmente contiene:
+La prueba comprueba, entre otros aspectos:
+
+- Clientes.
+- Multimonedero.
+- Depósitos.
+- Retiros.
+- Transferencias.
+- Transferencias internas.
+- Comisiones.
+- Gastos.
+- Puntos.
+- Rangos.
+- Beneficios.
+- HashMap.
+- BST.
+- AVL.
+- PriorityQueue.
+- Recurrencia.
+- Notificaciones.
+- Queue.
+- Lista circular.
+- Grafos.
+- BFS.
+- Recursividad.
+- Reversiones.
+- Reportes.
+
+La prueba integral actual contiene:
 
 ```text
 132 verificaciones
 ```
 
-Entre ellas se comprueban:
-
-```text
-Clientes
-Multimonedero
-Depósitos
-Retiros
-Transferencias
-Transferencias internas
-Comisiones
-Descuento de comisión
-Gastos
-Puntos
-Rangos
-Beneficios
-HashMap
-BST
-AVL
-PriorityQueue
-Operaciones recurrentes
-Notificaciones
-Queue
-Lista circular
-Grafos
-BFS
-Recursividad
-Pila
-Reversiones
-Reportes
-```
-
-En el escenario definido por la prueba se validan, entre otras, estas comisiones:
-
-```text
-Transferencia de 1000
-→ comisión 10
-
-Transferencia interna de 2000
-→ comisión 20
-
-Retiro de 200
-→ comisión 2
-
-Transferencia programada de 400
-con beneficio de descuento
-→ comisión 3.6
-```
-
-Antes de revertir la última transferencia programada, el saldo esperado del sistema es:
-
-```text
-20964.4
-```
-
-Después de revertirla y devolver también su comisión:
-
-```text
-20968.0
-```
-
-Si todas las verificaciones son correctas, la prueba finaliza mostrando:
+Si todas se cumplen finaliza mostrando:
 
 ```text
 PRUEBA INTEGRAL TERMINADA CORRECTAMENTE
 Pruebas superadas: 132
 ```
-
----
-
-# Complejidades principales
-
-| Operación | Complejidad aproximada |
-|---|---:|
-| Buscar cliente en HashMap | O(1) promedio |
-| Buscar monedero en HashMap | O(1) promedio |
-| Consultar puntos en HashMap | O(1) promedio |
-| Agregar al final de ArrayList | O(1) amortizado |
-| Búsqueda lineal | O(n) |
-| Push en pila | O(1) |
-| Peek en pila | O(1) |
-| Pop en pila | O(1) |
-| Offer en Queue | O(1) |
-| Peek en Queue | O(1) |
-| Poll en Queue | O(1) |
-| Peek en PriorityQueue | O(1) |
-| Offer en PriorityQueue | O(log n) |
-| Poll en PriorityQueue | O(log n) |
-| Remove(Object) en PriorityQueue | O(n) |
-| Agregar en lista circular | O(1) |
-| Siguiente en lista circular | O(1) |
-| BST promedio | O(log n) |
-| BST peor caso | O(n) |
-| AVL | O(log n) |
-| BFS | O(V + E) |
-| Recorrido inorden | O(n) |
-| Verificación recursiva de un historial | O(n) |
 
 ---
 
@@ -1197,7 +1065,7 @@ Maven
 IntelliJ IDEA
 ```
 
-El `pom.xml` está configurado con:
+El proyecto utiliza:
 
 ```text
 maven.compiler.source = 21
@@ -1206,15 +1074,15 @@ maven.compiler.target = 21
 
 ---
 
-## Abrir el proyecto
+## Abrir
 
-Abrir en IntelliJ IDEA la carpeta:
+En IntelliJ IDEA abrir la carpeta:
 
 ```text
 Proyecto Final Estructuras de Datos
 ```
 
-donde se encuentra:
+Esta carpeta contiene:
 
 ```text
 pom.xml
@@ -1224,7 +1092,7 @@ pom.xml
 
 ## Compilar
 
-Desde una terminal ubicada en la carpeta del proyecto:
+Desde la carpeta donde se encuentra `pom.xml`:
 
 ```bash
 mvn clean compile
@@ -1232,31 +1100,116 @@ mvn clean compile
 
 ---
 
-## Ejecutar el sistema
+## Ejecutar la aplicación
 
 Ejecutar:
 
 ```text
-Main.java
+Main.text
 ```
 
-Esto inicia la interfaz de consola.
+`Main` inicia la interfaz gráfica utilizando el Event Dispatch Thread de Swing:
+
+```text
+SwingUtilities.invokeLater(...)
+```
+
+y crea:
+
+```text
+InterfazGrafica
+```
+
+Por lo tanto, la aplicación inicia directamente en la ventana gráfica.
 
 ---
 
-## Ejecutar la prueba integral
+## Ejecutar prueba integral
 
 Ejecutar:
 
 ```text
-PruebaSistemaCompleto.java
+PruebaSistemaCompleto.text
 ```
 
-Si todas las condiciones se cumplen, debe finalizar sin lanzar `AssertionError`.
+La prueba debe finalizar sin lanzar `AssertionError`.
+
+---
+
+# Flujo recomendado para demostrar el proyecto
+
+Durante la presentación se puede utilizar el siguiente flujo:
+
+```text
+1. Registrar dos clientes.
+
+2. Crear uno o más monederos.
+
+3. Realizar un depósito.
+
+4. Mostrar los puntos generados.
+
+5. Realizar una transferencia.
+
+6. Mostrar la comisión.
+
+7. Registrar un gasto.
+
+8. Consultar patrones de gasto.
+
+9. Canjear un beneficio.
+
+10. Realizar otra transferencia o retiro
+    para mostrar el efecto del beneficio.
+
+11. Programar una transacción.
+
+12. Mostrar PriorityQueue.
+
+13. Consultar notificaciones.
+
+14. Mostrar Queue y ListaCircular.
+
+15. Consultar BST y AVL.
+
+16. Mostrar grafos.
+
+17. Revertir la última operación.
+
+18. Mostrar reportes.
+
+19. Verificar integridad.
+```
+
+Este flujo permite demostrar tanto las funcionalidades del monedero como las estructuras de datos que se encuentran detrás de cada operación.
 
 ---
 
 # Decisiones de diseño
+
+## Separación de interfaz y lógica
+
+La interfaz gráfica se encarga exclusivamente de:
+
+- Capturar información.
+- Mostrar datos.
+- Navegar entre módulos.
+- Mostrar mensajes al usuario.
+
+La lógica financiera permanece dentro de los gestores.
+
+Por ejemplo:
+
+```text
+sistema.depositar(...)
+sistema.retirar(...)
+sistema.transferir(...)
+sistema.canjearBeneficio(...)
+```
+
+Esto evita duplicar reglas financieras dentro de Swing.
+
+---
 
 ## Comisión base
 
@@ -1266,15 +1219,13 @@ Se definió una comisión del:
 1 %
 ```
 
-tanto para retiros como para transferencias.
-
-Esta comisión se almacena dentro de cada `Transaccion`.
+para retiros y transferencias.
 
 ---
 
 ## Descuento de transferencia
 
-El beneficio de 100 puntos reduce un:
+El beneficio de 100 puntos reduce:
 
 ```text
 10 %
@@ -1282,136 +1233,47 @@ El beneficio de 100 puntos reduce un:
 
 sobre la comisión calculada.
 
-Por ejemplo:
-
-```text
-Comisión base: 10
-Descuento:      1
-Comisión final: 9
-```
-
----
-
-## Duración del descuento de transferencia
-
-La implementación no asigna una fecha de vencimiento a `DESCUENTO_TRANSFERENCIA`.
-
-Por esta razón, una vez canjeado permanece activo.
-
 ---
 
 ## Retiros sin cargo
 
-`RETIROS_SIN_CARGO` tiene una duración de:
+El beneficio de 500 puntos elimina la comisión de retiro durante:
 
 ```text
 1 mes
 ```
 
-Durante este periodo la comisión del retiro es cero.
-
 ---
 
-## Puntos y comisiones
+## Bono
 
-Los puntos se calculan únicamente sobre:
+El beneficio de 1000 puntos agrega:
 
 ```text
-monto de la operación
+50 unidades
 ```
 
-La comisión no genera puntos adicionales.
-
----
-
-## Transferencias internas
-
-Las transferencias entre dos monederos diferentes del mismo cliente están permitidas.
-
-Estas operaciones:
-
-```text
-Cobran comisión.
-Generan puntos.
-Se registran en el grafo de monederos.
-No generan una relación entre clientes.
-```
-
----
-
-## Gastos
-
-Los gastos:
-
-```text
-No generan puntos.
-No cobran comisión.
-```
-
----
-
-## Bono de saldo
-
-El bono de 50 unidades se aplica directamente al monedero para evitar generar puntos como si fuera un depósito normal.
+directamente al monedero.
 
 ---
 
 ## Saldo bajo
 
-Se utiliza un límite de:
+Cuando un monedero queda por debajo de:
 
 ```text
 100 unidades
 ```
 
-para generar la alerta automática.
-
----
-
-# Uso de estructuras de datos
-
-```text
-ArrayList
-→ historial de transacciones y colecciones.
-
-HashMap
-→ búsquedas rápidas y asociaciones por clave.
-
-Deque / ArrayDeque
-→ pila de transacciones reversibles.
-
-Queue / ArrayDeque
-→ notificaciones pendientes.
-
-PriorityQueue
-→ transacciones programadas.
-
-ListaCircular
-→ historial circular de notificaciones.
-
-ArbolBinarioPuntos
-→ ordenamiento de clientes por puntos.
-
-ArbolAVLClientes
-→ árbol balanceado de clientes por puntos.
-
-GrafoDirigido
-→ relaciones entre clientes, monederos y categorías.
-
-HashSet
-→ control de visitados y detección de códigos repetidos.
-
-Recursividad
-→ verificación de integridad.
-```
+se genera una notificación de saldo bajo.
 
 ---
 
 # Resultado
 
-El proyecto integra las diferentes estructuras dentro del mismo flujo de negocio.
+El sistema integra las estructuras de datos dentro de un mismo flujo de negocio.
 
-Por ejemplo, una transferencia puede modificar:
+Una transferencia puede modificar:
 
 ```text
 Saldo
@@ -1419,28 +1281,30 @@ Comisión
 Historial
 Puntos
 Rango
-HashMap de puntos
+HashMap
 BST
 AVL
-Pila de reversiones
+Pila
 Grafo de clientes
 Grafo de monederos
+Notificaciones
+Reportes
 ```
 
-Cuando la transferencia es revertida se devuelve tanto el monto como la comisión realmente cobrada y se actualizan las estructuras relacionadas.
+Una reversión actualiza nuevamente las estructuras relacionadas y devuelve también la comisión que fue cobrada.
 
-Esto permite mantener sincronizados los diferentes componentes del sistema.
+La interfaz gráfica permite visualizar y utilizar estas funcionalidades sin modificar la lógica interna de los gestores.
 
 ---
 
 # Conclusión
 
-El proyecto permitió aplicar de manera práctica diferentes estructuras de datos dentro de un único sistema.
+El proyecto permitió aplicar las estructuras de datos estudiadas durante el curso dentro de una aplicación funcional de monedero virtual.
 
-La aplicación integra listas, pilas, colas, colas de prioridad, tablas hash, árboles binarios, árboles AVL, listas circulares, grafos dirigidos y recursividad.
+Se utilizaron listas, pilas, colas, colas de prioridad, tablas hash, árboles binarios de búsqueda, árboles AVL, listas circulares, grafos dirigidos y recursividad.
 
-Además de las operaciones básicas de un monedero, el sistema implementa puntos, rangos, beneficios, comisiones, transacciones programadas, recurrencia, notificaciones, gastos, patrones, multimonedero, reversiones, validación de integridad y reportes.
+Además de las operaciones básicas, la aplicación incluye puntos, rangos, beneficios, comisiones, transacciones programadas, recurrencia, notificaciones, multimonedero, gastos, patrones, reversiones, reportes y validación de integridad.
 
-Las comisiones permiten que los beneficios de 100 y 500 puntos tengan un efecto real dentro del funcionamiento financiero del monedero, mientras que las reversiones restauran tanto los montos como las comisiones correspondientes.
+La incorporación de una interfaz gráfica de escritorio permite realizar y consultar las principales operaciones del sistema de una manera más clara, manteniendo separadas la presentación y la lógica de negocio.
 
-La prueba integral actual contiene **132 verificaciones** para comprobar el funcionamiento conjunto de las principales características del sistema.
+La prueba integral contiene **132 verificaciones** para validar el funcionamiento conjunto de los principales componentes.
