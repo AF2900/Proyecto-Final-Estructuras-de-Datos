@@ -63,11 +63,14 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
-    // PANEL CLIENTES Y MONEDEROS
+    // PANELES FUNCIONALES
     // ---------------------------------------------------------
 
     private PanelClientesMonederos
             panelClientesMonederos;
+
+    private PanelTransacciones
+            panelTransacciones;
 
 
     // ---------------------------------------------------------
@@ -92,19 +95,15 @@ public class InterfazGrafica extends JFrame {
         sistema =
                 new MonederoVirtual();
 
-
         configurarVentana();
 
-
         inicializarInterfaz();
-
 
         mostrarPantalla(
                 "INICIO",
                 "Inicio",
                 "Resumen general del monedero virtual"
         );
-
 
         actualizarDashboard();
     }
@@ -120,17 +119,14 @@ public class InterfazGrafica extends JFrame {
                 "Monedero Virtual - Universidad del Quindío"
         );
 
-
         setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
         );
-
 
         setSize(
                 1250,
                 760
         );
-
 
         setMinimumSize(
                 new Dimension(
@@ -139,16 +135,13 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
-
         setLocationRelativeTo(
                 null
         );
 
-
         setLayout(
                 new BorderLayout()
         );
-
 
         getContentPane()
                 .setBackground(
@@ -168,11 +161,9 @@ public class InterfazGrafica extends JFrame {
                         new BorderLayout()
                 );
 
-
         panelPrincipal.setBackground(
                 FONDO
         );
-
 
         panelPrincipal.add(
                 crearMenuLateral(),
@@ -185,11 +176,9 @@ public class InterfazGrafica extends JFrame {
                         new BorderLayout()
                 );
 
-
         panelDerecho.setBackground(
                 FONDO
         );
-
 
         panelDerecho.add(
                 crearEncabezado(),
@@ -200,12 +189,10 @@ public class InterfazGrafica extends JFrame {
         cardLayout =
                 new CardLayout();
 
-
         panelContenido =
                 new JPanel(
                         cardLayout
                 );
-
 
         panelContenido.setBackground(
                 FONDO
@@ -229,9 +216,8 @@ public class InterfazGrafica extends JFrame {
         panelClientesMonederos =
                 new PanelClientesMonederos(
                         sistema,
-                        this::actualizarDashboard
+                        this::actualizarDatosGenerales
                 );
-
 
         panelContenido.add(
                 panelClientesMonederos,
@@ -243,11 +229,14 @@ public class InterfazGrafica extends JFrame {
         // TRANSACCIONES
         // -----------------------------------------------------
 
+        panelTransacciones =
+                new PanelTransacciones(
+                        sistema,
+                        this::actualizarDatosGenerales
+                );
+
         panelContenido.add(
-                crearPanelProvisional(
-                        "Transacciones",
-                        "Depósitos, retiros, transferencias y gastos."
-                ),
+                panelTransacciones,
                 "TRANSACCIONES"
         );
 
@@ -345,14 +334,12 @@ public class InterfazGrafica extends JFrame {
         JPanel menu =
                 new JPanel();
 
-
         menu.setLayout(
                 new BoxLayout(
                         menu,
                         BoxLayout.Y_AXIS
                 )
         );
-
 
         menu.setPreferredSize(
                 new Dimension(
@@ -361,11 +348,9 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
-
         menu.setBackground(
                 AZUL_OSCURO
         );
-
 
         menu.setBorder(
                 new EmptyBorder(
@@ -382,11 +367,9 @@ public class InterfazGrafica extends JFrame {
                         "MONEDERO"
                 );
 
-
         logo.setForeground(
                 BLANCO
         );
-
 
         logo.setFont(
                 new Font(
@@ -395,7 +378,6 @@ public class InterfazGrafica extends JFrame {
                         23
                 )
         );
-
 
         logo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -407,7 +389,6 @@ public class InterfazGrafica extends JFrame {
                         "VIRTUAL"
                 );
 
-
         subtitulo.setForeground(
                 new Color(
                         150,
@@ -416,7 +397,6 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
-
         subtitulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -424,7 +404,6 @@ public class InterfazGrafica extends JFrame {
                         12
                 )
         );
-
 
         subtitulo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -435,11 +414,9 @@ public class InterfazGrafica extends JFrame {
                 logo
         );
 
-
         menu.add(
                 subtitulo
         );
-
 
         menu.add(
                 Box.createRigidArea(
@@ -533,7 +510,6 @@ public class InterfazGrafica extends JFrame {
                         "<html>Universidad del Quindío<br>Estructuras de Datos</html>"
                 );
 
-
         universidad.setForeground(
                 new Color(
                         155,
@@ -542,7 +518,6 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
-
         universidad.setFont(
                 new Font(
                         "Segoe UI",
@@ -550,7 +525,6 @@ public class InterfazGrafica extends JFrame {
                         11
                 )
         );
-
 
         universidad.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -664,10 +638,6 @@ public class InterfazGrafica extends JFrame {
                 AZUL_OSCURO
         );
 
-
-        // -----------------------------------------------------
-        // IMPORTANTE PARA EVITAR EL COLOR GRIS DE WINDOWS
-        // -----------------------------------------------------
 
         boton.setOpaque(
                 true
@@ -913,10 +883,6 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
-        // TARJETAS SUPERIORES
-        // -----------------------------------------------------
-
         JPanel tarjetas =
                 new JPanel(
                         new GridLayout(
@@ -998,10 +964,6 @@ public class InterfazGrafica extends JFrame {
                 BorderLayout.NORTH
         );
 
-
-        // -----------------------------------------------------
-        // CENTRO
-        // -----------------------------------------------------
 
         JPanel centro =
                 new JPanel(
@@ -1796,6 +1758,40 @@ public class InterfazGrafica extends JFrame {
                 panelClientesMonederos != null) {
 
             panelClientesMonederos
+                    .actualizarDatos();
+        }
+
+
+        if (pantalla.equals(
+                "TRANSACCIONES"
+        ) &&
+                panelTransacciones != null) {
+
+            panelTransacciones
+                    .actualizarDatos();
+        }
+    }
+
+
+    // ---------------------------------------------------------
+    // ACTUALIZAR TODOS LOS PANELES
+    // ---------------------------------------------------------
+
+    private void actualizarDatosGenerales() {
+
+        actualizarDashboard();
+
+
+        if (panelClientesMonederos != null) {
+
+            panelClientesMonederos
+                    .actualizarDatos();
+        }
+
+
+        if (panelTransacciones != null) {
+
+            panelTransacciones
                     .actualizarDatos();
         }
     }
