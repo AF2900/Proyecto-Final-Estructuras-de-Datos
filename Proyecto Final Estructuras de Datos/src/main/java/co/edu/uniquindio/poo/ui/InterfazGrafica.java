@@ -72,9 +72,12 @@ public class InterfazGrafica extends JFrame {
     private PanelTransacciones
             panelTransacciones;
 
+    private PanelPuntosBeneficios
+            panelPuntosBeneficios;
+
 
     // ---------------------------------------------------------
-    // LABELS DEL DASHBOARD
+    // DASHBOARD
     // ---------------------------------------------------------
 
     private JLabel lblCantidadClientes;
@@ -95,9 +98,11 @@ public class InterfazGrafica extends JFrame {
         sistema =
                 new MonederoVirtual();
 
+
         configurarVentana();
 
         inicializarInterfaz();
+
 
         mostrarPantalla(
                 "INICIO",
@@ -105,12 +110,13 @@ public class InterfazGrafica extends JFrame {
                 "Resumen general del monedero virtual"
         );
 
+
         actualizarDashboard();
     }
 
 
     // ---------------------------------------------------------
-    // CONFIGURAR VENTANA
+    // VENTANA
     // ---------------------------------------------------------
 
     private void configurarVentana() {
@@ -119,14 +125,17 @@ public class InterfazGrafica extends JFrame {
                 "Monedero Virtual - Universidad del Quindío"
         );
 
+
         setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
         );
+
 
         setSize(
                 1250,
                 760
         );
+
 
         setMinimumSize(
                 new Dimension(
@@ -135,13 +144,16 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         setLocationRelativeTo(
                 null
         );
 
+
         setLayout(
                 new BorderLayout()
         );
+
 
         getContentPane()
                 .setBackground(
@@ -151,36 +163,40 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
-    // INICIALIZAR INTERFAZ
+    // INTERFAZ
     // ---------------------------------------------------------
 
     private void inicializarInterfaz() {
 
-        JPanel panelPrincipal =
+        JPanel principal =
                 new JPanel(
                         new BorderLayout()
                 );
 
-        panelPrincipal.setBackground(
+
+        principal.setBackground(
                 FONDO
         );
 
-        panelPrincipal.add(
+
+        principal.add(
                 crearMenuLateral(),
                 BorderLayout.WEST
         );
 
 
-        JPanel panelDerecho =
+        JPanel derecha =
                 new JPanel(
                         new BorderLayout()
                 );
 
-        panelDerecho.setBackground(
+
+        derecha.setBackground(
                 FONDO
         );
 
-        panelDerecho.add(
+
+        derecha.add(
                 crearEncabezado(),
                 BorderLayout.NORTH
         );
@@ -189,10 +205,12 @@ public class InterfazGrafica extends JFrame {
         cardLayout =
                 new CardLayout();
 
+
         panelContenido =
                 new JPanel(
                         cardLayout
                 );
+
 
         panelContenido.setBackground(
                 FONDO
@@ -210,7 +228,7 @@ public class InterfazGrafica extends JFrame {
 
 
         // -----------------------------------------------------
-        // CLIENTES Y MONEDEROS
+        // CLIENTES
         // -----------------------------------------------------
 
         panelClientesMonederos =
@@ -218,6 +236,7 @@ public class InterfazGrafica extends JFrame {
                         sistema,
                         this::actualizarDatosGenerales
                 );
+
 
         panelContenido.add(
                 panelClientesMonederos,
@@ -235,6 +254,7 @@ public class InterfazGrafica extends JFrame {
                         this::actualizarDatosGenerales
                 );
 
+
         panelContenido.add(
                 panelTransacciones,
                 "TRANSACCIONES"
@@ -242,14 +262,18 @@ public class InterfazGrafica extends JFrame {
 
 
         // -----------------------------------------------------
-        // PUNTOS
+        // PUNTOS Y BENEFICIOS
         // -----------------------------------------------------
 
+        panelPuntosBeneficios =
+                new PanelPuntosBeneficios(
+                        sistema,
+                        this::actualizarDatosGenerales
+                );
+
+
         panelContenido.add(
-                crearPanelProvisional(
-                        "Puntos y beneficios",
-                        "Consulta de puntos, rangos y canje de beneficios."
-                ),
+                panelPuntosBeneficios,
                 "PUNTOS"
         );
 
@@ -306,33 +330,34 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        panelDerecho.add(
+        derecha.add(
                 panelContenido,
                 BorderLayout.CENTER
         );
 
 
-        panelPrincipal.add(
-                panelDerecho,
+        principal.add(
+                derecha,
                 BorderLayout.CENTER
         );
 
 
         add(
-                panelPrincipal,
+                principal,
                 BorderLayout.CENTER
         );
     }
 
 
     // ---------------------------------------------------------
-    // MENÚ LATERAL
+    // MENÚ
     // ---------------------------------------------------------
 
     private JPanel crearMenuLateral() {
 
         JPanel menu =
                 new JPanel();
+
 
         menu.setLayout(
                 new BoxLayout(
@@ -341,6 +366,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         menu.setPreferredSize(
                 new Dimension(
                         245,
@@ -348,9 +374,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         menu.setBackground(
                 AZUL_OSCURO
         );
+
 
         menu.setBorder(
                 new EmptyBorder(
@@ -367,9 +395,11 @@ public class InterfazGrafica extends JFrame {
                         "MONEDERO"
                 );
 
+
         logo.setForeground(
                 BLANCO
         );
+
 
         logo.setFont(
                 new Font(
@@ -378,6 +408,7 @@ public class InterfazGrafica extends JFrame {
                         23
                 )
         );
+
 
         logo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -389,6 +420,7 @@ public class InterfazGrafica extends JFrame {
                         "VIRTUAL"
                 );
 
+
         subtitulo.setForeground(
                 new Color(
                         150,
@@ -397,6 +429,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         subtitulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -404,6 +437,7 @@ public class InterfazGrafica extends JFrame {
                         12
                 )
         );
+
 
         subtitulo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -414,9 +448,11 @@ public class InterfazGrafica extends JFrame {
                 logo
         );
 
+
         menu.add(
                 subtitulo
         );
+
 
         menu.add(
                 Box.createRigidArea(
@@ -510,6 +546,7 @@ public class InterfazGrafica extends JFrame {
                         "<html>Universidad del Quindío<br>Estructuras de Datos</html>"
                 );
 
+
         universidad.setForeground(
                 new Color(
                         155,
@@ -518,6 +555,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         universidad.setFont(
                 new Font(
                         "Segoe UI",
@@ -525,6 +563,7 @@ public class InterfazGrafica extends JFrame {
                         11
                 )
         );
+
 
         universidad.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -539,10 +578,6 @@ public class InterfazGrafica extends JFrame {
         return menu;
     }
 
-
-    // ---------------------------------------------------------
-    // AGREGAR BOTÓN AL MENÚ
-    // ---------------------------------------------------------
 
     private void agregarBotonMenu(
             JPanel menu,
@@ -581,10 +616,6 @@ public class InterfazGrafica extends JFrame {
         );
     }
 
-
-    // ---------------------------------------------------------
-    // CREAR BOTÓN DEL MENÚ
-    // ---------------------------------------------------------
 
     private JButton crearBotonMenu(
             String texto) {
@@ -711,18 +742,18 @@ public class InterfazGrafica extends JFrame {
 
     private JPanel crearEncabezado() {
 
-        JPanel encabezado =
+        JPanel panel =
                 new JPanel(
                         new BorderLayout()
                 );
 
 
-        encabezado.setBackground(
+        panel.setBackground(
                 BLANCO
         );
 
 
-        encabezado.setPreferredSize(
+        panel.setPreferredSize(
                 new Dimension(
                         0,
                         92
@@ -730,7 +761,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        encabezado.setBorder(
+        panel.setBorder(
                 new EmptyBorder(
                         18,
                         32,
@@ -817,7 +848,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        encabezado.add(
+        panel.add(
                 textos,
                 BorderLayout.WEST
         );
@@ -843,18 +874,18 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        encabezado.add(
+        panel.add(
                 estado,
                 BorderLayout.EAST
         );
 
 
-        return encabezado;
+        return panel;
     }
 
 
     // ---------------------------------------------------------
-    // PANEL INICIO
+    // INICIO
     // ---------------------------------------------------------
 
     private JPanel crearPanelInicio() {
@@ -1001,10 +1032,6 @@ public class InterfazGrafica extends JFrame {
     }
 
 
-    // ---------------------------------------------------------
-    // TARJETA RESUMEN
-    // ---------------------------------------------------------
-
     private JPanel crearTarjetaResumen(
             String titulo,
             JLabel valor,
@@ -1143,10 +1170,6 @@ public class InterfazGrafica extends JFrame {
     }
 
 
-    // ---------------------------------------------------------
-    // PANEL BIENVENIDA
-    // ---------------------------------------------------------
-
     private JPanel crearPanelBienvenida() {
 
         JPanel panel =
@@ -1238,13 +1261,13 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        JLabel universidad =
+        JLabel proyecto =
                 new JLabel(
                         "Proyecto Final - Estructuras de Datos"
                 );
 
 
-        universidad.setFont(
+        proyecto.setFont(
                 new Font(
                         "Segoe UI",
                         Font.BOLD,
@@ -1253,7 +1276,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        universidad.setForeground(
+        proyecto.setForeground(
                 new Color(
                         180,
                         210,
@@ -1262,7 +1285,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        universidad.setAlignmentX(
+        proyecto.setAlignmentX(
                 Component.LEFT_ALIGNMENT
         );
 
@@ -1293,17 +1316,13 @@ public class InterfazGrafica extends JFrame {
 
 
         panel.add(
-                universidad
+                proyecto
         );
 
 
         return panel;
     }
 
-
-    // ---------------------------------------------------------
-    // ACCESOS RÁPIDOS
-    // ---------------------------------------------------------
 
     private JPanel crearPanelAccesosRapidos() {
 
@@ -1452,10 +1471,6 @@ public class InterfazGrafica extends JFrame {
     }
 
 
-    // ---------------------------------------------------------
-    // BOTÓN ACCESO RÁPIDO
-    // ---------------------------------------------------------
-
     private JButton crearBotonAcceso(
             String texto,
             String pantalla,
@@ -1534,7 +1549,7 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
-    // PANEL PROVISIONAL
+    // PROVISIONAL
     // ---------------------------------------------------------
 
     private JPanel crearPanelProvisional(
@@ -1616,18 +1631,9 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        lblTitulo.setAlignmentX(
-                Component.LEFT_ALIGNMENT
-        );
-
-
         JLabel lblDescripcion =
                 new JLabel(
-                        "<html><div style='width:500px'>"
-                                +
-                                descripcion
-                                +
-                                "</div></html>"
+                        descripcion
                 );
 
 
@@ -1642,11 +1648,6 @@ public class InterfazGrafica extends JFrame {
 
         lblDescripcion.setForeground(
                 TEXTO_SECUNDARIO
-        );
-
-
-        lblDescripcion.setAlignmentX(
-                Component.LEFT_ALIGNMENT
         );
 
 
@@ -1667,11 +1668,6 @@ public class InterfazGrafica extends JFrame {
 
         lblEstado.setForeground(
                 AZUL_PRINCIPAL
-        );
-
-
-        lblEstado.setAlignmentX(
-                Component.LEFT_ALIGNMENT
         );
 
 
@@ -1720,7 +1716,7 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
-    // CAMBIAR PANTALLA
+    // NAVEGACIÓN
     // ---------------------------------------------------------
 
     private void mostrarPantalla(
@@ -1754,8 +1750,7 @@ public class InterfazGrafica extends JFrame {
 
         if (pantalla.equals(
                 "CLIENTES"
-        ) &&
-                panelClientesMonederos != null) {
+        )) {
 
             panelClientesMonederos
                     .actualizarDatos();
@@ -1764,17 +1759,25 @@ public class InterfazGrafica extends JFrame {
 
         if (pantalla.equals(
                 "TRANSACCIONES"
-        ) &&
-                panelTransacciones != null) {
+        )) {
 
             panelTransacciones
+                    .actualizarDatos();
+        }
+
+
+        if (pantalla.equals(
+                "PUNTOS"
+        )) {
+
+            panelPuntosBeneficios
                     .actualizarDatos();
         }
     }
 
 
     // ---------------------------------------------------------
-    // ACTUALIZAR TODOS LOS PANELES
+    // ACTUALIZAR TODO
     // ---------------------------------------------------------
 
     private void actualizarDatosGenerales() {
@@ -1794,11 +1797,18 @@ public class InterfazGrafica extends JFrame {
             panelTransacciones
                     .actualizarDatos();
         }
+
+
+        if (panelPuntosBeneficios != null) {
+
+            panelPuntosBeneficios
+                    .actualizarDatos();
+        }
     }
 
 
     // ---------------------------------------------------------
-    // ACTUALIZAR DASHBOARD
+    // DASHBOARD
     // ---------------------------------------------------------
 
     private void actualizarDashboard() {
