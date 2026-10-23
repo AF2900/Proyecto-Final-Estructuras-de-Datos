@@ -13,10 +13,6 @@ import java.util.List;
 
 public class InterfazGrafica extends JFrame {
 
-    // ---------------------------------------------------------
-    // COLORES
-    // ---------------------------------------------------------
-
     private static final Color AZUL_PRINCIPAL =
             new Color(20, 65, 120);
 
@@ -42,16 +38,8 @@ public class InterfazGrafica extends JFrame {
             new Color(35, 145, 95);
 
 
-    // ---------------------------------------------------------
-    // SISTEMA
-    // ---------------------------------------------------------
-
     private final MonederoVirtual sistema;
 
-
-    // ---------------------------------------------------------
-    // COMPONENTES PRINCIPALES
-    // ---------------------------------------------------------
 
     private JPanel panelContenido;
 
@@ -62,10 +50,6 @@ public class InterfazGrafica extends JFrame {
     private JLabel lblSubtituloPagina;
 
 
-    // ---------------------------------------------------------
-    // PANELES FUNCIONALES
-    // ---------------------------------------------------------
-
     private PanelClientesMonederos
             panelClientesMonederos;
 
@@ -75,10 +59,15 @@ public class InterfazGrafica extends JFrame {
     private PanelPuntosBeneficios
             panelPuntosBeneficios;
 
+    private PanelProgramadas
+            panelProgramadas;
 
-    // ---------------------------------------------------------
-    // DASHBOARD
-    // ---------------------------------------------------------
+    private PanelNotificaciones
+            panelNotificaciones;
+
+    private PanelReversiones
+            panelReversiones;
+
 
     private JLabel lblCantidadClientes;
 
@@ -88,10 +77,6 @@ public class InterfazGrafica extends JFrame {
 
     private JLabel lblIntegridad;
 
-
-    // ---------------------------------------------------------
-    // CONSTRUCTOR
-    // ---------------------------------------------------------
 
     public InterfazGrafica() {
 
@@ -217,20 +202,14 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
         // INICIO
-        // -----------------------------------------------------
-
         panelContenido.add(
                 crearPanelInicio(),
                 "INICIO"
         );
 
 
-        // -----------------------------------------------------
         // CLIENTES
-        // -----------------------------------------------------
-
         panelClientesMonederos =
                 new PanelClientesMonederos(
                         sistema,
@@ -244,10 +223,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
         // TRANSACCIONES
-        // -----------------------------------------------------
-
         panelTransacciones =
                 new PanelTransacciones(
                         sistema,
@@ -261,10 +237,21 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
-        // PUNTOS Y BENEFICIOS
-        // -----------------------------------------------------
+        // REVERSIONES
+        panelReversiones =
+                new PanelReversiones(
+                        sistema,
+                        this::actualizarDatosGenerales
+                );
 
+
+        panelContenido.add(
+                panelReversiones,
+                "REVERSIONES"
+        );
+
+
+        // PUNTOS
         panelPuntosBeneficios =
                 new PanelPuntosBeneficios(
                         sistema,
@@ -278,36 +265,35 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
         // PROGRAMADAS
-        // -----------------------------------------------------
+        panelProgramadas =
+                new PanelProgramadas(
+                        sistema,
+                        this::actualizarDatosGenerales
+                );
+
 
         panelContenido.add(
-                crearPanelProvisional(
-                        "Transacciones programadas",
-                        "Programación y consulta de depósitos y transferencias."
-                ),
+                panelProgramadas,
                 "PROGRAMADAS"
         );
 
 
-        // -----------------------------------------------------
         // NOTIFICACIONES
-        // -----------------------------------------------------
+        panelNotificaciones =
+                new PanelNotificaciones(
+                        sistema,
+                        this::actualizarDatosGenerales
+                );
+
 
         panelContenido.add(
-                crearPanelProvisional(
-                        "Notificaciones",
-                        "Historial y cola de notificaciones pendientes."
-                ),
+                panelNotificaciones,
                 "NOTIFICACIONES"
         );
 
 
-        // -----------------------------------------------------
         // REPORTES
-        // -----------------------------------------------------
-
         panelContenido.add(
                 crearPanelProvisional(
                         "Reportes",
@@ -317,10 +303,7 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        // -----------------------------------------------------
         // ESTRUCTURAS
-        // -----------------------------------------------------
-
         panelContenido.add(
                 crearPanelProvisional(
                         "Estructuras y análisis",
@@ -382,9 +365,9 @@ public class InterfazGrafica extends JFrame {
 
         menu.setBorder(
                 new EmptyBorder(
-                        28,
-                        18,
                         25,
+                        18,
+                        20,
                         18
                 )
         );
@@ -458,7 +441,7 @@ public class InterfazGrafica extends JFrame {
                 Box.createRigidArea(
                         new Dimension(
                                 0,
-                                38
+                                28
                         )
                 )
         );
@@ -493,6 +476,15 @@ public class InterfazGrafica extends JFrame {
 
         agregarBotonMenu(
                 menu,
+                "Reversiones",
+                "REVERSIONES",
+                "Reversiones",
+                "Pila LIFO de transacciones reversibles"
+        );
+
+
+        agregarBotonMenu(
+                menu,
                 "Puntos y beneficios",
                 "PUNTOS",
                 "Puntos y beneficios",
@@ -514,7 +506,7 @@ public class InterfazGrafica extends JFrame {
                 "Notificaciones",
                 "NOTIFICACIONES",
                 "Notificaciones",
-                "Alertas e información pendiente"
+                "Historial circular y cola FIFO de pendientes"
         );
 
 
@@ -610,7 +602,7 @@ public class InterfazGrafica extends JFrame {
                 Box.createRigidArea(
                         new Dimension(
                                 0,
-                                7
+                                5
                         )
                 )
         );
@@ -629,7 +621,7 @@ public class InterfazGrafica extends JFrame {
         boton.setMaximumSize(
                 new Dimension(
                         Integer.MAX_VALUE,
-                        44
+                        40
                 )
         );
 
@@ -637,7 +629,7 @@ public class InterfazGrafica extends JFrame {
         boton.setPreferredSize(
                 new Dimension(
                         210,
-                        44
+                        40
                 )
         );
 
@@ -651,7 +643,7 @@ public class InterfazGrafica extends JFrame {
                 new Font(
                         "Segoe UI",
                         Font.PLAIN,
-                        14
+                        13
                 )
         );
 
@@ -1219,11 +1211,6 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        titulo.setAlignmentX(
-                Component.LEFT_ALIGNMENT
-        );
-
-
         JLabel texto =
                 new JLabel(
                         "<html><div style='width:390px'>"
@@ -1238,15 +1225,6 @@ public class InterfazGrafica extends JFrame {
                 );
 
 
-        texto.setFont(
-                new Font(
-                        "Segoe UI",
-                        Font.PLAIN,
-                        14
-                )
-        );
-
-
         texto.setForeground(
                 new Color(
                         225,
@@ -1256,8 +1234,12 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        texto.setAlignmentX(
-                Component.LEFT_ALIGNMENT
+        texto.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
         );
 
 
@@ -1265,15 +1247,6 @@ public class InterfazGrafica extends JFrame {
                 new JLabel(
                         "Proyecto Final - Estructuras de Datos"
                 );
-
-
-        proyecto.setFont(
-                new Font(
-                        "Segoe UI",
-                        Font.BOLD,
-                        13
-                )
-        );
 
 
         proyecto.setForeground(
@@ -1285,8 +1258,12 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        proyecto.setAlignmentX(
-                Component.LEFT_ALIGNMENT
+        proyecto.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        13
+                )
         );
 
 
@@ -1446,17 +1423,17 @@ public class InterfazGrafica extends JFrame {
                         "Notificaciones",
                         "NOTIFICACIONES",
                         "Notificaciones",
-                        "Alertas e información pendiente"
+                        "Historial circular y pendientes FIFO"
                 )
         );
 
 
         botones.add(
                 crearBotonAcceso(
-                        "Reportes",
-                        "REPORTES",
-                        "Reportes",
-                        "Información consolidada del sistema"
+                        "Reversiones",
+                        "REVERSIONES",
+                        "Reversiones",
+                        "Pila de transacciones reversibles"
                 )
         );
 
@@ -1507,30 +1484,9 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        boton.setOpaque(
-                true
-        );
-
-
-        boton.setContentAreaFilled(
-                true
-        );
-
-
         boton.setCursor(
                 new Cursor(
                         Cursor.HAND_CURSOR
-                )
-        );
-
-
-        boton.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(
-                                205,
-                                220,
-                                236
-                        )
                 )
         );
 
@@ -1549,7 +1505,7 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
-    // PROVISIONAL
+    // PROVISIONALES
     // ---------------------------------------------------------
 
     private JPanel crearPanelProvisional(
@@ -1626,24 +1582,10 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        lblTitulo.setForeground(
-                TEXTO_PRINCIPAL
-        );
-
-
         JLabel lblDescripcion =
                 new JLabel(
                         descripcion
                 );
-
-
-        lblDescripcion.setFont(
-                new Font(
-                        "Segoe UI",
-                        Font.PLAIN,
-                        15
-                )
-        );
 
 
         lblDescripcion.setForeground(
@@ -1655,15 +1597,6 @@ public class InterfazGrafica extends JFrame {
                 new JLabel(
                         "La funcionalidad será conectada en la siguiente fase."
                 );
-
-
-        lblEstado.setFont(
-                new Font(
-                        "Segoe UI",
-                        Font.BOLD,
-                        13
-                )
-        );
 
 
         lblEstado.setForeground(
@@ -1740,38 +1673,38 @@ public class InterfazGrafica extends JFrame {
         );
 
 
-        if (pantalla.equals(
-                "INICIO"
-        )) {
-
+        if (pantalla.equals("INICIO")) {
             actualizarDashboard();
         }
 
 
-        if (pantalla.equals(
-                "CLIENTES"
-        )) {
-
-            panelClientesMonederos
-                    .actualizarDatos();
+        if (pantalla.equals("CLIENTES")) {
+            panelClientesMonederos.actualizarDatos();
         }
 
 
-        if (pantalla.equals(
-                "TRANSACCIONES"
-        )) {
-
-            panelTransacciones
-                    .actualizarDatos();
+        if (pantalla.equals("TRANSACCIONES")) {
+            panelTransacciones.actualizarDatos();
         }
 
 
-        if (pantalla.equals(
-                "PUNTOS"
-        )) {
+        if (pantalla.equals("REVERSIONES")) {
+            panelReversiones.actualizarDatos();
+        }
 
-            panelPuntosBeneficios
-                    .actualizarDatos();
+
+        if (pantalla.equals("PUNTOS")) {
+            panelPuntosBeneficios.actualizarDatos();
+        }
+
+
+        if (pantalla.equals("PROGRAMADAS")) {
+            panelProgramadas.actualizarDatos();
+        }
+
+
+        if (pantalla.equals("NOTIFICACIONES")) {
+            panelNotificaciones.actualizarDatos();
         }
     }
 
@@ -1786,23 +1719,32 @@ public class InterfazGrafica extends JFrame {
 
 
         if (panelClientesMonederos != null) {
-
-            panelClientesMonederos
-                    .actualizarDatos();
+            panelClientesMonederos.actualizarDatos();
         }
 
 
         if (panelTransacciones != null) {
-
-            panelTransacciones
-                    .actualizarDatos();
+            panelTransacciones.actualizarDatos();
         }
 
 
         if (panelPuntosBeneficios != null) {
+            panelPuntosBeneficios.actualizarDatos();
+        }
 
-            panelPuntosBeneficios
-                    .actualizarDatos();
+
+        if (panelProgramadas != null) {
+            panelProgramadas.actualizarDatos();
+        }
+
+
+        if (panelNotificaciones != null) {
+            panelNotificaciones.actualizarDatos();
+        }
+
+
+        if (panelReversiones != null) {
+            panelReversiones.actualizarDatos();
         }
     }
 
