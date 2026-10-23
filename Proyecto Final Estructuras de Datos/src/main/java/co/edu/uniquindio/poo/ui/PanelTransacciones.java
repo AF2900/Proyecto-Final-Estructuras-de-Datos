@@ -16,10 +16,6 @@ import java.util.List;
 
 public class PanelTransacciones extends JPanel {
 
-    // ---------------------------------------------------------
-    // COLORES
-    // ---------------------------------------------------------
-
     private static final Color AZUL_PRINCIPAL =
             new Color(20, 65, 120);
 
@@ -38,87 +34,47 @@ public class PanelTransacciones extends JPanel {
     private static final Color TEXTO_SECUNDARIO =
             new Color(105, 115, 130);
 
-    private static final Color VERDE =
-            new Color(35, 145, 95);
-
-
-    // ---------------------------------------------------------
-    // SISTEMA
-    // ---------------------------------------------------------
 
     private final MonederoVirtual sistema;
 
     private final Runnable alActualizarDatos;
 
 
-    // ---------------------------------------------------------
     // DEPÓSITO
-    // ---------------------------------------------------------
-
     private JComboBox<String> cmbClienteDeposito;
-
     private JComboBox<String> cmbMonederoDeposito;
-
     private JTextField txtMontoDeposito;
 
 
-    // ---------------------------------------------------------
     // RETIRO
-    // ---------------------------------------------------------
-
     private JComboBox<String> cmbClienteRetiro;
-
     private JComboBox<String> cmbMonederoRetiro;
-
     private JTextField txtMontoRetiro;
 
 
-    // ---------------------------------------------------------
     // TRANSFERENCIA
-    // ---------------------------------------------------------
-
     private JComboBox<String> cmbClienteOrigen;
-
     private JComboBox<String> cmbMonederoOrigen;
-
     private JComboBox<String> cmbClienteDestino;
-
     private JComboBox<String> cmbMonederoDestino;
-
     private JTextField txtMontoTransferencia;
 
 
-    // ---------------------------------------------------------
     // GASTO
-    // ---------------------------------------------------------
-
     private JComboBox<String> cmbClienteGasto;
-
     private JComboBox<String> cmbMonederoGasto;
-
     private JComboBox<CategoriaGasto> cmbCategoriaGasto;
-
     private JTextField txtMontoGasto;
 
 
-    // ---------------------------------------------------------
     // CONSULTAS
-    // ---------------------------------------------------------
-
     private JComboBox<String> cmbClienteConsulta;
-
     private JComboBox<String> cmbMonederoConsulta;
-
     private JLabel lblSaldoConsulta;
 
     private JComboBox<String> cmbClienteHistorial;
-
     private DefaultTableModel modeloHistorial;
 
-
-    // ---------------------------------------------------------
-    // FECHAS
-    // ---------------------------------------------------------
 
     private final DateTimeFormatter formatoFecha =
             DateTimeFormatter.ofPattern(
@@ -126,31 +82,21 @@ public class PanelTransacciones extends JPanel {
             );
 
 
-    // ---------------------------------------------------------
-    // CONSTRUCTOR
-    // ---------------------------------------------------------
-
     public PanelTransacciones(
             MonederoVirtual sistema,
             Runnable alActualizarDatos) {
 
-        this.sistema =
-                sistema;
-
-        this.alActualizarDatos =
-                alActualizarDatos;
-
+        this.sistema = sistema;
+        this.alActualizarDatos = alActualizarDatos;
 
         configurarPanel();
-
         construirInterfaz();
-
         actualizarDatos();
     }
 
 
     // ---------------------------------------------------------
-    // CONFIGURAR
+    // CONFIGURACIÓN GENERAL
     // ---------------------------------------------------------
 
     private void configurarPanel() {
@@ -159,11 +105,9 @@ public class PanelTransacciones extends JPanel {
                 new BorderLayout()
         );
 
-
         setBackground(
                 FONDO
         );
-
 
         setBorder(
                 new EmptyBorder(
@@ -176,15 +120,10 @@ public class PanelTransacciones extends JPanel {
     }
 
 
-    // ---------------------------------------------------------
-    // CONSTRUIR
-    // ---------------------------------------------------------
-
     private void construirInterfaz() {
 
         JTabbedPane tabs =
                 new JTabbedPane();
-
 
         tabs.setFont(
                 new Font(
@@ -200,24 +139,20 @@ public class PanelTransacciones extends JPanel {
                 crearPanelDeposito()
         );
 
-
         tabs.addTab(
                 "Retiro",
                 crearPanelRetiro()
         );
-
 
         tabs.addTab(
                 "Transferencia",
                 crearPanelTransferencia()
         );
 
-
         tabs.addTab(
                 "Gasto",
                 crearPanelGasto()
         );
-
 
         tabs.addTab(
                 "Consultas",
@@ -245,22 +180,19 @@ public class PanelTransacciones extends JPanel {
         cmbClienteDeposito =
                 crearComboTexto();
 
-
         cmbMonederoDeposito =
                 crearComboTexto();
-
 
         txtMontoDeposito =
                 crearCampoTexto();
 
 
-        cmbClienteDeposito
-                .addActionListener(
-                        e -> actualizarMonederos(
-                                cmbClienteDeposito,
-                                cmbMonederoDeposito
-                        )
-                );
+        cmbClienteDeposito.addActionListener(
+                e -> actualizarMonederos(
+                        cmbClienteDeposito,
+                        cmbMonederoDeposito
+                )
+        );
 
 
         agregarCampo(
@@ -270,14 +202,12 @@ public class PanelTransacciones extends JPanel {
                 cmbClienteDeposito
         );
 
-
         agregarCampo(
                 campos,
                 1,
                 "Monedero",
                 cmbMonederoDeposito
         );
-
 
         agregarCampo(
                 campos,
@@ -326,22 +256,19 @@ public class PanelTransacciones extends JPanel {
         cmbClienteRetiro =
                 crearComboTexto();
 
-
         cmbMonederoRetiro =
                 crearComboTexto();
-
 
         txtMontoRetiro =
                 crearCampoTexto();
 
 
-        cmbClienteRetiro
-                .addActionListener(
-                        e -> actualizarMonederos(
-                                cmbClienteRetiro,
-                                cmbMonederoRetiro
-                        )
-                );
+        cmbClienteRetiro.addActionListener(
+                e -> actualizarMonederos(
+                        cmbClienteRetiro,
+                        cmbMonederoRetiro
+                )
+        );
 
 
         agregarCampo(
@@ -351,14 +278,12 @@ public class PanelTransacciones extends JPanel {
                 cmbClienteRetiro
         );
 
-
         agregarCampo(
                 campos,
                 1,
                 "Monedero",
                 cmbMonederoRetiro
         );
-
 
         agregarCampo(
                 campos,
@@ -378,7 +303,6 @@ public class PanelTransacciones extends JPanel {
                 TEXTO_SECUNDARIO
         );
 
-
         aviso.setFont(
                 new Font(
                         "Segoe UI",
@@ -390,7 +314,6 @@ public class PanelTransacciones extends JPanel {
 
         GridBagConstraints gbc =
                 restricciones();
-
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -442,39 +365,33 @@ public class PanelTransacciones extends JPanel {
         cmbClienteOrigen =
                 crearComboTexto();
 
-
         cmbMonederoOrigen =
                 crearComboTexto();
-
 
         cmbClienteDestino =
                 crearComboTexto();
 
-
         cmbMonederoDestino =
                 crearComboTexto();
-
 
         txtMontoTransferencia =
                 crearCampoTexto();
 
 
-        cmbClienteOrigen
-                .addActionListener(
-                        e -> actualizarMonederos(
-                                cmbClienteOrigen,
-                                cmbMonederoOrigen
-                        )
-                );
+        cmbClienteOrigen.addActionListener(
+                e -> actualizarMonederos(
+                        cmbClienteOrigen,
+                        cmbMonederoOrigen
+                )
+        );
 
 
-        cmbClienteDestino
-                .addActionListener(
-                        e -> actualizarMonederos(
-                                cmbClienteDestino,
-                                cmbMonederoDestino
-                        )
-                );
+        cmbClienteDestino.addActionListener(
+                e -> actualizarMonederos(
+                        cmbClienteDestino,
+                        cmbMonederoDestino
+                )
+        );
 
 
         agregarCampo(
@@ -484,14 +401,12 @@ public class PanelTransacciones extends JPanel {
                 cmbClienteOrigen
         );
 
-
         agregarCampo(
                 campos,
                 1,
                 "Monedero origen",
                 cmbMonederoOrigen
         );
-
 
         agregarCampo(
                 campos,
@@ -500,14 +415,12 @@ public class PanelTransacciones extends JPanel {
                 cmbClienteDestino
         );
 
-
         agregarCampo(
                 campos,
                 3,
                 "Monedero destino",
                 cmbMonederoDestino
         );
-
 
         agregarCampo(
                 campos,
@@ -527,7 +440,6 @@ public class PanelTransacciones extends JPanel {
                 TEXTO_SECUNDARIO
         );
 
-
         aviso.setFont(
                 new Font(
                         "Segoe UI",
@@ -539,7 +451,6 @@ public class PanelTransacciones extends JPanel {
 
         GridBagConstraints gbc =
                 restricciones();
-
 
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -591,33 +502,28 @@ public class PanelTransacciones extends JPanel {
         cmbClienteGasto =
                 crearComboTexto();
 
-
         cmbMonederoGasto =
                 crearComboTexto();
-
 
         cmbCategoriaGasto =
                 new JComboBox<>(
                         CategoriaGasto.values()
                 );
 
-
         configurarCombo(
                 cmbCategoriaGasto
         );
-
 
         txtMontoGasto =
                 crearCampoTexto();
 
 
-        cmbClienteGasto
-                .addActionListener(
-                        e -> actualizarMonederos(
-                                cmbClienteGasto,
-                                cmbMonederoGasto
-                        )
-                );
+        cmbClienteGasto.addActionListener(
+                e -> actualizarMonederos(
+                        cmbClienteGasto,
+                        cmbMonederoGasto
+                )
+        );
 
 
         agregarCampo(
@@ -627,7 +533,6 @@ public class PanelTransacciones extends JPanel {
                 cmbClienteGasto
         );
 
-
         agregarCampo(
                 campos,
                 1,
@@ -635,14 +540,12 @@ public class PanelTransacciones extends JPanel {
                 cmbMonederoGasto
         );
 
-
         agregarCampo(
                 campos,
                 2,
                 "Categoría",
                 cmbCategoriaGasto
         );
-
 
         agregarCampo(
                 campos,
@@ -697,7 +600,6 @@ public class PanelTransacciones extends JPanel {
                 FONDO
         );
 
-
         panel.setBorder(
                 new EmptyBorder(
                         18,
@@ -713,7 +615,6 @@ public class PanelTransacciones extends JPanel {
                 BorderLayout.NORTH
         );
 
-
         panel.add(
                 crearHistorial(),
                 BorderLayout.CENTER
@@ -725,7 +626,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // CONSULTA SALDO
+    // CONSULTA DE SALDO
     // ---------------------------------------------------------
 
     private JPanel crearConsultaSaldo() {
@@ -734,47 +635,67 @@ public class PanelTransacciones extends JPanel {
                 crearTarjeta();
 
 
-        JPanel campos =
+        JPanel contenido =
                 new JPanel(
-                        new FlowLayout(
-                                FlowLayout.LEFT,
-                                12,
-                                10
-                        )
+                        new GridBagLayout()
                 );
 
 
-        campos.setOpaque(
+        contenido.setOpaque(
                 false
+        );
+
+
+        contenido.setBorder(
+                new EmptyBorder(
+                        5,
+                        0,
+                        5,
+                        0
+                )
         );
 
 
         cmbClienteConsulta =
                 crearComboTexto();
 
-
         cmbMonederoConsulta =
                 crearComboTexto();
 
 
-        cmbClienteConsulta
-                .addActionListener(
-                        e -> {
+        // Un poco más pequeños para que la consulta
+        // se vea correctamente incluso en ventanas reducidas.
+        cmbClienteConsulta.setPreferredSize(
+                new Dimension(
+                        220,
+                        34
+                )
+        );
 
-                            actualizarMonederos(
-                                    cmbClienteConsulta,
-                                    cmbMonederoConsulta
-                            );
-
-                            actualizarSaldoConsulta();
-                        }
-                );
+        cmbMonederoConsulta.setPreferredSize(
+                new Dimension(
+                        220,
+                        34
+                )
+        );
 
 
-        cmbMonederoConsulta
-                .addActionListener(
-                        e -> actualizarSaldoConsulta()
-                );
+        cmbClienteConsulta.addActionListener(
+                e -> {
+
+                    actualizarMonederos(
+                            cmbClienteConsulta,
+                            cmbMonederoConsulta
+                    );
+
+                    actualizarSaldoConsulta();
+                }
+        );
+
+
+        cmbMonederoConsulta.addActionListener(
+                e -> actualizarSaldoConsulta()
+        );
 
 
         lblSaldoConsulta =
@@ -787,20 +708,38 @@ public class PanelTransacciones extends JPanel {
                 AZUL_PRINCIPAL
         );
 
-
         lblSaldoConsulta.setFont(
                 new Font(
                         "Segoe UI",
                         Font.BOLD,
-                        21
+                        23
+                )
+        );
+
+        lblSaldoConsulta.setHorizontalAlignment(
+                SwingConstants.LEFT
+        );
+
+        lblSaldoConsulta.setPreferredSize(
+                new Dimension(
+                        230,
+                        38
                 )
         );
 
 
         JButton btnConsultar =
                 crearBotonPrincipal(
-                        "Consultar"
+                        "Consultar saldo"
                 );
+
+
+        btnConsultar.setPreferredSize(
+                new Dimension(
+                        180,
+                        36
+                )
+        );
 
 
         btnConsultar.addActionListener(
@@ -808,51 +747,124 @@ public class PanelTransacciones extends JPanel {
         );
 
 
-        campos.add(
+        GridBagConstraints gbc =
+                new GridBagConstraints();
+
+
+        gbc.insets =
+                new Insets(
+                        6,
+                        8,
+                        6,
+                        8
+                );
+
+        gbc.anchor =
+                GridBagConstraints.WEST;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+
+        // FILA 1 - CLIENTE
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+
+        contenido.add(
                 crearEtiqueta(
                         "Cliente"
-                )
+                ),
+                gbc
         );
 
 
-        campos.add(
-                cmbClienteConsulta
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+
+        contenido.add(
+                cmbClienteConsulta,
+                gbc
         );
 
 
-        campos.add(
+        // FILA 1 - MONEDERO
+
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+
+        contenido.add(
                 crearEtiqueta(
                         "Monedero"
-                )
+                ),
+                gbc
         );
 
 
-        campos.add(
-                cmbMonederoConsulta
+        gbc.gridx = 3;
+        gbc.weightx = 1;
+
+        contenido.add(
+                cmbMonederoConsulta,
+                gbc
         );
 
 
-        campos.add(
-                btnConsultar
+        // FILA 2 - BOTÓN
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0;
+        gbc.fill =
+                GridBagConstraints.NONE;
+
+        contenido.add(
+                btnConsultar,
+                gbc
         );
 
 
-        campos.add(
-                Box.createHorizontalStrut(
-                        18
-                )
-        );
+        // FILA 2 - SALDO
 
-
-        campos.add(
+        JLabel etiquetaSaldo =
                 new JLabel(
-                        "Saldo:"
+                        "Saldo disponible:"
+                );
+
+
+        etiquetaSaldo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        13
                 )
         );
 
+        etiquetaSaldo.setForeground(
+                TEXTO_SECUNDARIO
+        );
 
-        campos.add(
-                lblSaldoConsulta
+
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        contenido.add(
+                etiquetaSaldo,
+                gbc
+        );
+
+
+        gbc.gridx = 3;
+        gbc.weightx = 1;
+
+        contenido.add(
+                lblSaldoConsulta,
+                gbc
         );
 
 
@@ -865,7 +877,7 @@ public class PanelTransacciones extends JPanel {
 
 
         tarjeta.add(
-                campos,
+                contenido,
                 BorderLayout.CENTER
         );
 
@@ -924,10 +936,17 @@ public class PanelTransacciones extends JPanel {
                 crearComboTexto();
 
 
-        cmbClienteHistorial
-                .addActionListener(
-                        e -> actualizarHistorial()
-                );
+        cmbClienteHistorial.setPreferredSize(
+                new Dimension(
+                        250,
+                        34
+                )
+        );
+
+
+        cmbClienteHistorial.addActionListener(
+                e -> actualizarHistorial()
+        );
 
 
         JButton btnActualizar =
@@ -947,11 +966,9 @@ public class PanelTransacciones extends JPanel {
                 )
         );
 
-
         filtros.add(
                 cmbClienteHistorial
         );
-
 
         filtros.add(
                 btnActualizar
@@ -1007,7 +1024,6 @@ public class PanelTransacciones extends JPanel {
                 27
         );
 
-
         tabla.setFont(
                 new Font(
                         "Segoe UI",
@@ -1017,14 +1033,13 @@ public class PanelTransacciones extends JPanel {
         );
 
 
-        tabla.getTableHeader()
-                .setFont(
-                        new Font(
-                                "Segoe UI",
-                                Font.BOLD,
-                                12
-                        )
-                );
+        tabla.getTableHeader().setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        12
+                )
+        );
 
 
         tabla.getTableHeader()
@@ -1052,11 +1067,11 @@ public class PanelTransacciones extends JPanel {
 
         tabla.getColumnModel()
                 .getColumn(3)
-                .setPreferredWidth(90);
+                .setPreferredWidth(100);
 
         tabla.getColumnModel()
                 .getColumn(4)
-                .setPreferredWidth(85);
+                .setPreferredWidth(90);
 
         tabla.getColumnModel()
                 .getColumn(5)
@@ -1072,7 +1087,7 @@ public class PanelTransacciones extends JPanel {
 
         tabla.getColumnModel()
                 .getColumn(8)
-                .setPreferredWidth(70);
+                .setPreferredWidth(80);
 
         tabla.getColumnModel()
                 .getColumn(9)
@@ -1106,7 +1121,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // REALIZAR DEPÓSITO
+    // DEPÓSITO
     // ---------------------------------------------------------
 
     private void realizarDeposito() {
@@ -1116,12 +1131,10 @@ public class PanelTransacciones extends JPanel {
                         cmbClienteDeposito
                 );
 
-
         String monedero =
                 obtenerSeleccion(
                         cmbMonederoDeposito
                 );
-
 
         Double monto =
                 leerMonto(
@@ -1168,7 +1181,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // REALIZAR RETIRO
+    // RETIRO
     // ---------------------------------------------------------
 
     private void realizarRetiro() {
@@ -1178,12 +1191,10 @@ public class PanelTransacciones extends JPanel {
                         cmbClienteRetiro
                 );
 
-
         String monedero =
                 obtenerSeleccion(
                         cmbMonederoRetiro
                 );
-
 
         Double monto =
                 leerMonto(
@@ -1232,7 +1243,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // REALIZAR TRANSFERENCIA
+    // TRANSFERENCIA
     // ---------------------------------------------------------
 
     private void realizarTransferencia() {
@@ -1242,24 +1253,20 @@ public class PanelTransacciones extends JPanel {
                         cmbClienteOrigen
                 );
 
-
         String monederoOrigen =
                 obtenerSeleccion(
                         cmbMonederoOrigen
                 );
-
 
         String clienteDestino =
                 obtenerSeleccion(
                         cmbClienteDestino
                 );
 
-
         String monederoDestino =
                 obtenerSeleccion(
                         cmbMonederoDestino
                 );
-
 
         Double monto =
                 leerMonto(
@@ -1314,7 +1321,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // REALIZAR GASTO
+    // GASTO
     // ---------------------------------------------------------
 
     private void realizarGasto() {
@@ -1324,18 +1331,15 @@ public class PanelTransacciones extends JPanel {
                         cmbClienteGasto
                 );
 
-
         String monedero =
                 obtenerSeleccion(
                         cmbMonederoGasto
                 );
 
-
         CategoriaGasto categoria =
                 (CategoriaGasto)
                         cmbCategoriaGasto
                                 .getSelectedItem();
-
 
         Double monto =
                 leerMonto(
@@ -1418,7 +1422,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // MOSTRAR RESULTADO
+    // RESULTADO TRANSACCIÓN
     // ---------------------------------------------------------
 
     private void mostrarResultadoTransaccion(
@@ -1579,7 +1583,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // CLIENTES
+    // ACTUALIZAR CLIENTES
     // ---------------------------------------------------------
 
     private void actualizarComboClientes(
@@ -1627,7 +1631,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // MONEDEROS
+    // ACTUALIZAR MONEDEROS
     // ---------------------------------------------------------
 
     private void actualizarMonederos(
@@ -1703,7 +1707,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // CONSULTAR SALDO
+    // ACTUALIZAR SALDO
     // ---------------------------------------------------------
 
     private void actualizarSaldoConsulta() {
@@ -1759,6 +1763,12 @@ public class PanelTransacciones extends JPanel {
                         saldo
                 )
         );
+
+
+        // Obliga a Swing a recalcular el espacio visual
+        // después de modificar el texto.
+        lblSaldoConsulta.revalidate();
+        lblSaldoConsulta.repaint();
     }
 
 
@@ -1812,8 +1822,7 @@ public class PanelTransacciones extends JPanel {
                     "-";
 
 
-            if (transaccion
-                    .getIdentificacionDestino()
+            if (transaccion.getIdentificacionDestino()
                     != null) {
 
                 destino =
@@ -1861,8 +1870,10 @@ public class PanelTransacciones extends JPanel {
                             categoria,
                             transaccion.getPuntosGenerados(),
                             transaccion.isRevertida()
-                                    ? "REVERTIDA"
-                                    : "ACTIVA"
+                                    ?
+                                    "REVERTIDA"
+                                    :
+                                    "ACTIVA"
                     }
             );
         }
@@ -1877,7 +1888,8 @@ public class PanelTransacciones extends JPanel {
             JTextField campo) {
 
         String texto =
-                campo.getText()
+                campo
+                        .getText()
                         .trim();
 
 
@@ -1926,14 +1938,15 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // OBTENER SELECCIÓN
+    // SELECCIÓN
     // ---------------------------------------------------------
 
     private String obtenerSeleccion(
             JComboBox<String> combo) {
 
         if (combo == null ||
-                combo.getSelectedItem() == null) {
+                combo.getSelectedItem()
+                        == null) {
 
             return null;
         }
@@ -2024,7 +2037,6 @@ public class PanelTransacciones extends JPanel {
                 lblTitulo
         );
 
-
         encabezado.add(
                 Box.createRigidArea(
                         new Dimension(
@@ -2033,7 +2045,6 @@ public class PanelTransacciones extends JPanel {
                         )
                 )
         );
-
 
         encabezado.add(
                 lblDescripcion
@@ -2062,7 +2073,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // PANEL CAMPOS
+    // PANEL DE CAMPOS
     // ---------------------------------------------------------
 
     private JPanel crearPanelCampos() {
@@ -2091,10 +2102,6 @@ public class PanelTransacciones extends JPanel {
         return panel;
     }
 
-
-    // ---------------------------------------------------------
-    // AGREGAR CAMPO
-    // ---------------------------------------------------------
 
     private void agregarCampo(
             JPanel panel,
@@ -2129,10 +2136,6 @@ public class PanelTransacciones extends JPanel {
     }
 
 
-    // ---------------------------------------------------------
-    // AGREGAR BOTÓN
-    // ---------------------------------------------------------
-
     private void agregarBoton(
             JPanel panel,
             int fila,
@@ -2162,10 +2165,6 @@ public class PanelTransacciones extends JPanel {
     }
 
 
-    // ---------------------------------------------------------
-    // RESTRICCIONES
-    // ---------------------------------------------------------
-
     private GridBagConstraints restricciones() {
 
         GridBagConstraints gbc =
@@ -2184,7 +2183,6 @@ public class PanelTransacciones extends JPanel {
         gbc.anchor =
                 GridBagConstraints.WEST;
 
-
         gbc.fill =
                 GridBagConstraints.HORIZONTAL;
 
@@ -2194,7 +2192,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // TARJETA
+    // TARJETAS
     // ---------------------------------------------------------
 
     private JPanel crearTarjeta() {
@@ -2233,10 +2231,6 @@ public class PanelTransacciones extends JPanel {
     }
 
 
-    // ---------------------------------------------------------
-    // TÍTULO
-    // ---------------------------------------------------------
-
     private JLabel crearTitulo(
             String texto) {
 
@@ -2263,10 +2257,6 @@ public class PanelTransacciones extends JPanel {
         return label;
     }
 
-
-    // ---------------------------------------------------------
-    // ETIQUETA
-    // ---------------------------------------------------------
 
     private JLabel crearEtiqueta(
             String texto) {
@@ -2296,7 +2286,7 @@ public class PanelTransacciones extends JPanel {
 
 
     // ---------------------------------------------------------
-    // CAMPO
+    // CAMPOS
     // ---------------------------------------------------------
 
     private JTextField crearCampoTexto() {
@@ -2325,10 +2315,6 @@ public class PanelTransacciones extends JPanel {
         return campo;
     }
 
-
-    // ---------------------------------------------------------
-    // COMBO
-    // ---------------------------------------------------------
 
     private JComboBox<String> crearComboTexto() {
 
@@ -2400,26 +2386,21 @@ public class PanelTransacciones extends JPanel {
                 BLANCO
         );
 
-
         boton.setBackground(
                 AZUL_PRINCIPAL
         );
-
 
         boton.setOpaque(
                 true
         );
 
-
         boton.setContentAreaFilled(
                 true
         );
 
-
         boton.setFocusPainted(
                 false
         );
-
 
         boton.setCursor(
                 new Cursor(
