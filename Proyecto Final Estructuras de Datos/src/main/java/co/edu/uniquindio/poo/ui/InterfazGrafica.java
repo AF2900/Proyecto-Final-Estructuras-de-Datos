@@ -63,6 +63,14 @@ public class InterfazGrafica extends JFrame {
 
 
     // ---------------------------------------------------------
+    // PANEL CLIENTES Y MONEDEROS
+    // ---------------------------------------------------------
+
+    private PanelClientesMonederos
+            panelClientesMonederos;
+
+
+    // ---------------------------------------------------------
     // LABELS DEL DASHBOARD
     // ---------------------------------------------------------
 
@@ -84,15 +92,19 @@ public class InterfazGrafica extends JFrame {
         sistema =
                 new MonederoVirtual();
 
+
         configurarVentana();
 
+
         inicializarInterfaz();
+
 
         mostrarPantalla(
                 "INICIO",
                 "Inicio",
                 "Resumen general del monedero virtual"
         );
+
 
         actualizarDashboard();
     }
@@ -108,14 +120,17 @@ public class InterfazGrafica extends JFrame {
                 "Monedero Virtual - Universidad del Quindío"
         );
 
+
         setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
         );
+
 
         setSize(
                 1250,
                 760
         );
+
 
         setMinimumSize(
                 new Dimension(
@@ -124,13 +139,16 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         setLocationRelativeTo(
                 null
         );
 
+
         setLayout(
                 new BorderLayout()
         );
+
 
         getContentPane()
                 .setBackground(
@@ -150,6 +168,7 @@ public class InterfazGrafica extends JFrame {
                         new BorderLayout()
                 );
 
+
         panelPrincipal.setBackground(
                 FONDO
         );
@@ -166,6 +185,7 @@ public class InterfazGrafica extends JFrame {
                         new BorderLayout()
                 );
 
+
         panelDerecho.setBackground(
                 FONDO
         );
@@ -180,15 +200,21 @@ public class InterfazGrafica extends JFrame {
         cardLayout =
                 new CardLayout();
 
+
         panelContenido =
                 new JPanel(
                         cardLayout
                 );
 
+
         panelContenido.setBackground(
                 FONDO
         );
 
+
+        // -----------------------------------------------------
+        // INICIO
+        // -----------------------------------------------------
 
         panelContenido.add(
                 crearPanelInicio(),
@@ -196,14 +222,26 @@ public class InterfazGrafica extends JFrame {
         );
 
 
+        // -----------------------------------------------------
+        // CLIENTES Y MONEDEROS
+        // -----------------------------------------------------
+
+        panelClientesMonederos =
+                new PanelClientesMonederos(
+                        sistema,
+                        this::actualizarDashboard
+                );
+
+
         panelContenido.add(
-                crearPanelProvisional(
-                        "Clientes y monederos",
-                        "Aquí registraremos clientes y administraremos sus monederos."
-                ),
+                panelClientesMonederos,
                 "CLIENTES"
         );
 
+
+        // -----------------------------------------------------
+        // TRANSACCIONES
+        // -----------------------------------------------------
 
         panelContenido.add(
                 crearPanelProvisional(
@@ -214,6 +252,10 @@ public class InterfazGrafica extends JFrame {
         );
 
 
+        // -----------------------------------------------------
+        // PUNTOS
+        // -----------------------------------------------------
+
         panelContenido.add(
                 crearPanelProvisional(
                         "Puntos y beneficios",
@@ -222,6 +264,10 @@ public class InterfazGrafica extends JFrame {
                 "PUNTOS"
         );
 
+
+        // -----------------------------------------------------
+        // PROGRAMADAS
+        // -----------------------------------------------------
 
         panelContenido.add(
                 crearPanelProvisional(
@@ -232,6 +278,10 @@ public class InterfazGrafica extends JFrame {
         );
 
 
+        // -----------------------------------------------------
+        // NOTIFICACIONES
+        // -----------------------------------------------------
+
         panelContenido.add(
                 crearPanelProvisional(
                         "Notificaciones",
@@ -241,6 +291,10 @@ public class InterfazGrafica extends JFrame {
         );
 
 
+        // -----------------------------------------------------
+        // REPORTES
+        // -----------------------------------------------------
+
         panelContenido.add(
                 crearPanelProvisional(
                         "Reportes",
@@ -249,6 +303,10 @@ public class InterfazGrafica extends JFrame {
                 "REPORTES"
         );
 
+
+        // -----------------------------------------------------
+        // ESTRUCTURAS
+        // -----------------------------------------------------
 
         panelContenido.add(
                 crearPanelProvisional(
@@ -287,12 +345,14 @@ public class InterfazGrafica extends JFrame {
         JPanel menu =
                 new JPanel();
 
+
         menu.setLayout(
                 new BoxLayout(
                         menu,
                         BoxLayout.Y_AXIS
                 )
         );
+
 
         menu.setPreferredSize(
                 new Dimension(
@@ -301,9 +361,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         menu.setBackground(
                 AZUL_OSCURO
         );
+
 
         menu.setBorder(
                 new EmptyBorder(
@@ -320,9 +382,11 @@ public class InterfazGrafica extends JFrame {
                         "MONEDERO"
                 );
 
+
         logo.setForeground(
                 BLANCO
         );
+
 
         logo.setFont(
                 new Font(
@@ -331,6 +395,7 @@ public class InterfazGrafica extends JFrame {
                         23
                 )
         );
+
 
         logo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -342,6 +407,7 @@ public class InterfazGrafica extends JFrame {
                         "VIRTUAL"
                 );
 
+
         subtitulo.setForeground(
                 new Color(
                         150,
@@ -350,6 +416,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         subtitulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -357,6 +424,7 @@ public class InterfazGrafica extends JFrame {
                         12
                 )
         );
+
 
         subtitulo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -367,9 +435,11 @@ public class InterfazGrafica extends JFrame {
                 logo
         );
 
+
         menu.add(
                 subtitulo
         );
+
 
         menu.add(
                 Box.createRigidArea(
@@ -463,6 +533,7 @@ public class InterfazGrafica extends JFrame {
                         "<html>Universidad del Quindío<br>Estructuras de Datos</html>"
                 );
 
+
         universidad.setForeground(
                 new Color(
                         155,
@@ -471,6 +542,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         universidad.setFont(
                 new Font(
                         "Segoe UI",
@@ -478,6 +550,7 @@ public class InterfazGrafica extends JFrame {
                         11
                 )
         );
+
 
         universidad.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -511,28 +584,18 @@ public class InterfazGrafica extends JFrame {
 
 
         boton.addActionListener(
-                e -> {
-
-                    mostrarPantalla(
-                            pantalla,
-                            titulo,
-                            subtitulo
-                    );
-
-
-                    if (pantalla.equals(
-                            "INICIO"
-                    )) {
-
-                        actualizarDashboard();
-                    }
-                }
+                e -> mostrarPantalla(
+                        pantalla,
+                        titulo,
+                        subtitulo
+                )
         );
 
 
         menu.add(
                 boton
         );
+
 
         menu.add(
                 Box.createRigidArea(
@@ -565,6 +628,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setPreferredSize(
                 new Dimension(
                         210,
@@ -572,9 +636,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setHorizontalAlignment(
                 SwingConstants.LEFT
         );
+
 
         boton.setFont(
                 new Font(
@@ -584,6 +650,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setForeground(
                 new Color(
                         225,
@@ -592,9 +659,30 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setBackground(
                 AZUL_OSCURO
         );
+
+
+        // -----------------------------------------------------
+        // IMPORTANTE PARA EVITAR EL COLOR GRIS DE WINDOWS
+        // -----------------------------------------------------
+
+        boton.setOpaque(
+                true
+        );
+
+
+        boton.setContentAreaFilled(
+                true
+        );
+
+
+        boton.setBorderPainted(
+                false
+        );
+
 
         boton.setBorder(
                 new EmptyBorder(
@@ -605,9 +693,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setFocusPainted(
                 false
         );
+
 
         boton.setCursor(
                 new Cursor(
@@ -656,9 +746,11 @@ public class InterfazGrafica extends JFrame {
                         new BorderLayout()
                 );
 
+
         encabezado.setBackground(
                 BLANCO
         );
+
 
         encabezado.setPreferredSize(
                 new Dimension(
@@ -666,6 +758,7 @@ public class InterfazGrafica extends JFrame {
                         92
                 )
         );
+
 
         encabezado.setBorder(
                 new EmptyBorder(
@@ -680,12 +773,14 @@ public class InterfazGrafica extends JFrame {
         JPanel textos =
                 new JPanel();
 
+
         textos.setLayout(
                 new BoxLayout(
                         textos,
                         BoxLayout.Y_AXIS
                 )
         );
+
 
         textos.setOpaque(
                 false
@@ -697,6 +792,7 @@ public class InterfazGrafica extends JFrame {
                         "Inicio"
                 );
 
+
         lblTituloPagina.setFont(
                 new Font(
                         "Segoe UI",
@@ -704,6 +800,7 @@ public class InterfazGrafica extends JFrame {
                         23
                 )
         );
+
 
         lblTituloPagina.setForeground(
                 TEXTO_PRINCIPAL
@@ -715,6 +812,7 @@ public class InterfazGrafica extends JFrame {
                         "Resumen general del monedero virtual"
                 );
 
+
         lblSubtituloPagina.setFont(
                 new Font(
                         "Segoe UI",
@@ -722,6 +820,7 @@ public class InterfazGrafica extends JFrame {
                         13
                 )
         );
+
 
         lblSubtituloPagina.setForeground(
                 TEXTO_SECUNDARIO
@@ -732,6 +831,7 @@ public class InterfazGrafica extends JFrame {
                 lblTituloPagina
         );
 
+
         textos.add(
                 Box.createRigidArea(
                         new Dimension(
@@ -740,6 +840,7 @@ public class InterfazGrafica extends JFrame {
                         )
                 )
         );
+
 
         textos.add(
                 lblSubtituloPagina
@@ -757,9 +858,11 @@ public class InterfazGrafica extends JFrame {
                         "Sistema activo"
                 );
 
+
         estado.setForeground(
                 VERDE
         );
+
 
         estado.setFont(
                 new Font(
@@ -794,9 +897,11 @@ public class InterfazGrafica extends JFrame {
                         )
                 );
 
+
         panel.setBackground(
                 FONDO
         );
+
 
         panel.setBorder(
                 new EmptyBorder(
@@ -821,6 +926,7 @@ public class InterfazGrafica extends JFrame {
                                 0
                         )
                 );
+
 
         tarjetas.setOpaque(
                 false
@@ -894,7 +1000,7 @@ public class InterfazGrafica extends JFrame {
 
 
         // -----------------------------------------------------
-        // CENTRO DEL DASHBOARD
+        // CENTRO
         // -----------------------------------------------------
 
         JPanel centro =
@@ -906,6 +1012,7 @@ public class InterfazGrafica extends JFrame {
                                 0
                         )
                 );
+
 
         centro.setOpaque(
                 false
@@ -944,6 +1051,7 @@ public class InterfazGrafica extends JFrame {
         JPanel tarjeta =
                 new JPanel();
 
+
         tarjeta.setLayout(
                 new BoxLayout(
                         tarjeta,
@@ -951,9 +1059,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         tarjeta.setBackground(
                 BLANCO
         );
+
 
         tarjeta.setBorder(
                 BorderFactory.createCompoundBorder(
@@ -979,6 +1089,7 @@ public class InterfazGrafica extends JFrame {
                         titulo
                 );
 
+
         lblTitulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -986,6 +1097,7 @@ public class InterfazGrafica extends JFrame {
                         13
                 )
         );
+
 
         lblTitulo.setForeground(
                 TEXTO_SECUNDARIO
@@ -1000,6 +1112,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         valor.setForeground(
                 AZUL_PRINCIPAL
         );
@@ -1010,6 +1123,7 @@ public class InterfazGrafica extends JFrame {
                         descripcion
                 );
 
+
         lblDescripcion.setFont(
                 new Font(
                         "Segoe UI",
@@ -1017,6 +1131,7 @@ public class InterfazGrafica extends JFrame {
                         11
                 )
         );
+
 
         lblDescripcion.setForeground(
                 new Color(
@@ -1031,6 +1146,7 @@ public class InterfazGrafica extends JFrame {
                 lblTitulo
         );
 
+
         tarjeta.add(
                 Box.createRigidArea(
                         new Dimension(
@@ -1040,9 +1156,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         tarjeta.add(
                 valor
         );
+
 
         tarjeta.add(
                 Box.createRigidArea(
@@ -1052,6 +1170,7 @@ public class InterfazGrafica extends JFrame {
                         )
                 )
         );
+
 
         tarjeta.add(
                 lblDescripcion
@@ -1071,6 +1190,7 @@ public class InterfazGrafica extends JFrame {
         JPanel panel =
                 new JPanel();
 
+
         panel.setLayout(
                 new BoxLayout(
                         panel,
@@ -1078,9 +1198,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         panel.setBackground(
                 AZUL_PRINCIPAL
         );
+
 
         panel.setBorder(
                 new EmptyBorder(
@@ -1097,6 +1219,7 @@ public class InterfazGrafica extends JFrame {
                         "Bienvenido al Monedero Virtual"
                 );
 
+
         titulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -1105,9 +1228,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         titulo.setForeground(
                 BLANCO
         );
+
 
         titulo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1127,6 +1252,7 @@ public class InterfazGrafica extends JFrame {
                                 "</div></html>"
                 );
 
+
         texto.setFont(
                 new Font(
                         "Segoe UI",
@@ -1135,6 +1261,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         texto.setForeground(
                 new Color(
                         225,
@@ -1142,6 +1269,7 @@ public class InterfazGrafica extends JFrame {
                         245
                 )
         );
+
 
         texto.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1153,6 +1281,7 @@ public class InterfazGrafica extends JFrame {
                         "Proyecto Final - Estructuras de Datos"
                 );
 
+
         universidad.setFont(
                 new Font(
                         "Segoe UI",
@@ -1161,6 +1290,7 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         universidad.setForeground(
                 new Color(
                         180,
@@ -1168,6 +1298,7 @@ public class InterfazGrafica extends JFrame {
                         238
                 )
         );
+
 
         universidad.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1178,6 +1309,7 @@ public class InterfazGrafica extends JFrame {
                 titulo
         );
 
+
         panel.add(
                 Box.createRigidArea(
                         new Dimension(
@@ -1187,13 +1319,16 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         panel.add(
                 texto
         );
 
+
         panel.add(
                 Box.createVerticalGlue()
         );
+
 
         panel.add(
                 universidad
@@ -1218,9 +1353,11 @@ public class InterfazGrafica extends JFrame {
                         )
                 );
 
+
         panel.setBackground(
                 BLANCO
         );
+
 
         panel.setBorder(
                 BorderFactory.createCompoundBorder(
@@ -1246,6 +1383,7 @@ public class InterfazGrafica extends JFrame {
                         "Accesos rápidos"
                 );
 
+
         titulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -1253,6 +1391,7 @@ public class InterfazGrafica extends JFrame {
                         19
                 )
         );
+
 
         titulo.setForeground(
                 TEXTO_PRINCIPAL
@@ -1274,6 +1413,7 @@ public class InterfazGrafica extends JFrame {
                                 12
                         )
                 );
+
 
         botones.setOpaque(
                 false
@@ -1365,6 +1505,7 @@ public class InterfazGrafica extends JFrame {
                         texto
                 );
 
+
         boton.setFont(
                 new Font(
                         "Segoe UI",
@@ -1373,23 +1514,38 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         boton.setForeground(
                 AZUL_PRINCIPAL
         );
+
 
         boton.setBackground(
                 AZUL_CLARO
         );
 
+
         boton.setFocusPainted(
                 false
         );
+
+
+        boton.setOpaque(
+                true
+        );
+
+
+        boton.setContentAreaFilled(
+                true
+        );
+
 
         boton.setCursor(
                 new Cursor(
                         Cursor.HAND_CURSOR
                 )
         );
+
 
         boton.setBorder(
                 BorderFactory.createLineBorder(
@@ -1428,6 +1584,7 @@ public class InterfazGrafica extends JFrame {
                         new GridBagLayout()
                 );
 
+
         fondo.setBackground(
                 FONDO
         );
@@ -1436,12 +1593,14 @@ public class InterfazGrafica extends JFrame {
         JPanel tarjeta =
                 new JPanel();
 
+
         tarjeta.setLayout(
                 new BoxLayout(
                         tarjeta,
                         BoxLayout.Y_AXIS
                 )
         );
+
 
         tarjeta.setPreferredSize(
                 new Dimension(
@@ -1450,9 +1609,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         tarjeta.setBackground(
                 BLANCO
         );
+
 
         tarjeta.setBorder(
                 BorderFactory.createCompoundBorder(
@@ -1478,6 +1639,7 @@ public class InterfazGrafica extends JFrame {
                         titulo
                 );
 
+
         lblTitulo.setFont(
                 new Font(
                         "Segoe UI",
@@ -1486,9 +1648,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         lblTitulo.setForeground(
                 TEXTO_PRINCIPAL
         );
+
 
         lblTitulo.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1504,6 +1668,7 @@ public class InterfazGrafica extends JFrame {
                                 "</div></html>"
                 );
 
+
         lblDescripcion.setFont(
                 new Font(
                         "Segoe UI",
@@ -1512,9 +1677,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         lblDescripcion.setForeground(
                 TEXTO_SECUNDARIO
         );
+
 
         lblDescripcion.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1526,6 +1693,7 @@ public class InterfazGrafica extends JFrame {
                         "La funcionalidad será conectada en la siguiente fase."
                 );
 
+
         lblEstado.setFont(
                 new Font(
                         "Segoe UI",
@@ -1534,9 +1702,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         lblEstado.setForeground(
                 AZUL_PRINCIPAL
         );
+
 
         lblEstado.setAlignmentX(
                 Component.LEFT_ALIGNMENT
@@ -1547,6 +1717,7 @@ public class InterfazGrafica extends JFrame {
                 lblTitulo
         );
 
+
         tarjeta.add(
                 Box.createRigidArea(
                         new Dimension(
@@ -1556,9 +1727,11 @@ public class InterfazGrafica extends JFrame {
                 )
         );
 
+
         tarjeta.add(
                 lblDescripcion
         );
+
 
         tarjeta.add(
                 Box.createRigidArea(
@@ -1568,6 +1741,7 @@ public class InterfazGrafica extends JFrame {
                         )
                 )
         );
+
 
         tarjeta.add(
                 lblEstado
@@ -1606,6 +1780,24 @@ public class InterfazGrafica extends JFrame {
         lblSubtituloPagina.setText(
                 subtitulo
         );
+
+
+        if (pantalla.equals(
+                "INICIO"
+        )) {
+
+            actualizarDashboard();
+        }
+
+
+        if (pantalla.equals(
+                "CLIENTES"
+        ) &&
+                panelClientesMonederos != null) {
+
+            panelClientesMonederos
+                    .actualizarDatos();
+        }
     }
 
 
@@ -1669,6 +1861,7 @@ public class InterfazGrafica extends JFrame {
                     "Correcta"
             );
 
+
             lblIntegridad.setForeground(
                     VERDE
             );
@@ -1678,6 +1871,7 @@ public class InterfazGrafica extends JFrame {
             lblIntegridad.setText(
                     "Revisar"
             );
+
 
             lblIntegridad.setForeground(
                     new Color(
