@@ -4,52 +4,87 @@ import co.edu.uniquindio.poo.model.Cliente;
 
 public class NodoArbolPuntos {
 
-    private Cliente cliente;
+    private Cliente elemento;
 
-    private NodoArbolPuntos izquierdo;
+    private NodoArbolPuntos hijoIzquierdo;
 
-    private NodoArbolPuntos derecho;
+    private NodoArbolPuntos hijoDerecho;
+
+    private NodoArbolPuntos padre;
 
 
     public NodoArbolPuntos(
-            Cliente cliente) {
+            Cliente elemento,
+            NodoArbolPuntos padre) {
 
-        this.cliente = cliente;
+        this.elemento =
+                elemento;
+
+        this.padre =
+                padre;
+
+        hijoIzquierdo =
+                null;
+
+        hijoDerecho =
+                null;
     }
 
 
-    public Cliente getCliente() {
-        return cliente;
+    public Cliente getElemento() {
+
+        return elemento;
     }
 
 
-    public void setCliente(
-            Cliente cliente) {
+    public void setElemento(
+            Cliente elemento) {
 
-        this.cliente = cliente;
+        this.elemento =
+                elemento;
     }
 
 
-    public NodoArbolPuntos getIzquierdo() {
-        return izquierdo;
+    public NodoArbolPuntos
+    getHijoIzquierdo() {
+
+        return hijoIzquierdo;
     }
 
 
-    public void setIzquierdo(
-            NodoArbolPuntos izquierdo) {
+    public void setHijoIzquierdo(
+            NodoArbolPuntos hijoIzquierdo) {
 
-        this.izquierdo = izquierdo;
+        this.hijoIzquierdo =
+                hijoIzquierdo;
     }
 
 
-    public NodoArbolPuntos getDerecho() {
-        return derecho;
+    public NodoArbolPuntos
+    getHijoDerecho() {
+
+        return hijoDerecho;
     }
 
 
-    public void setDerecho(
-            NodoArbolPuntos derecho) {
+    public void setHijoDerecho(
+            NodoArbolPuntos hijoDerecho) {
 
-        this.derecho = derecho;
+        this.hijoDerecho =
+                hijoDerecho;
+    }
+
+
+    public NodoArbolPuntos getPadre() {
+
+        return padre;
+    }
+
+
+    public void setPadre(
+            NodoArbolPuntos padre) {
+
+        this.padre =
+                padre;
     }
 }

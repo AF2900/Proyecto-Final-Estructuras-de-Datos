@@ -9,10 +9,42 @@ public class ArbolBinarioPuntos {
 
     private NodoArbolPuntos raiz;
 
+    private int peso;
+
 
     public ArbolBinarioPuntos() {
 
-        raiz = null;
+        raiz =
+                null;
+
+        peso =
+                0;
+    }
+
+
+    public NodoArbolPuntos getRaiz() {
+
+        return raiz;
+    }
+
+
+    public void setRaiz(
+            NodoArbolPuntos raiz) {
+
+        this.raiz =
+                raiz;
+    }
+
+
+    public int getPeso() {
+
+        return peso;
+    }
+
+
+    public boolean estaVacio() {
+
+        return raiz == null;
     }
 
 
@@ -21,61 +53,145 @@ public class ArbolBinarioPuntos {
     // ---------------------------------------------------------
 
     public void insertar(
-            Cliente cliente) {
+            Cliente elemento) {
 
-        if (cliente == null) {
+        if (elemento == null) {
+
             return;
         }
 
+
         raiz =
-                insertarRecursivo(
+                insertar(
                         raiz,
-                        cliente
+                        elemento,
+                        null
                 );
     }
 
 
-    private NodoArbolPuntos
-    insertarRecursivo(
-            NodoArbolPuntos nodo,
-            Cliente cliente) {
+    private NodoArbolPuntos insertar(
+            NodoArbolPuntos raizAux,
+            Cliente elemento,
+            NodoArbolPuntos padre) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
 
-            return new NodoArbolPuntos(
-                    cliente
-            );
+            NodoArbolPuntos nuevoNodo =
+                    new NodoArbolPuntos(
+                            elemento,
+                            padre
+                    );
+
+
+            peso++;
+
+
+            return nuevoNodo;
         }
 
 
         int comparacion =
                 comparar(
-                        cliente,
-                        nodo.getCliente()
+                        raizAux.getElemento(),
+                        elemento
                 );
 
 
-        if (comparacion < 0) {
+        if (comparacion == 0) {
 
-            nodo.setIzquierdo(
-                    insertarRecursivo(
-                            nodo.getIzquierdo(),
-                            cliente
+            throw new RuntimeException(
+                    "El cliente ya existe en el arbol"
+            );
+        }
+
+
+        if (comparacion > 0) {
+
+            raizAux.setHijoIzquierdo(
+                    insertar(
+                            raizAux
+                                    .getHijoIzquierdo(),
+                            elemento,
+                            raizAux
                     )
             );
 
-        } else if (comparacion > 0) {
+        } else {
 
-            nodo.setDerecho(
-                    insertarRecursivo(
-                            nodo.getDerecho(),
-                            cliente
+            raizAux.setHijoDerecho(
+                    insertar(
+                            raizAux
+                                    .getHijoDerecho(),
+                            elemento,
+                            raizAux
                     )
             );
         }
 
 
-        return nodo;
+        return raizAux;
+    }
+
+
+    // ---------------------------------------------------------
+    // BUSCAR
+    // ---------------------------------------------------------
+
+    public boolean buscarNodo(
+            Cliente buscado) {
+
+        if (buscado == null) {
+
+            return false;
+        }
+
+
+        return buscarNodo(
+                raiz,
+                buscado
+        ) != null;
+    }
+
+
+    private NodoArbolPuntos buscarNodo(
+            NodoArbolPuntos raizAux,
+            Cliente buscado) {
+
+        if (raizAux == null) {
+
+            return null;
+        }
+
+
+        int comparacion =
+                comparar(
+                        raizAux.getElemento(),
+                        buscado
+                );
+
+
+        if (comparacion == 0) {
+
+            return raizAux;
+        }
+
+
+        if (comparacion > 0) {
+
+            return buscarNodo(
+                    raizAux
+                            .getHijoIzquierdo(),
+                    buscado
+            );
+        }
+
+
+        return buscarNodo(
+                raizAux
+                        .getHijoDerecho(),
+                buscado
+        );
     }
 
 
@@ -84,115 +200,252 @@ public class ArbolBinarioPuntos {
     // ---------------------------------------------------------
 
     public void eliminar(
-            Cliente cliente) {
+            Cliente elemento) {
 
-        if (cliente == null) {
+        if (elemento == null) {
+
             return;
         }
 
-        raiz =
-                eliminarRecursivo(
+
+        NodoArbolPuntos encontrado =
+                buscarNodo(
                         raiz,
-                        cliente
+                        elemento
                 );
-    }
 
 
-    private NodoArbolPuntos
-    eliminarRecursivo(
-            NodoArbolPuntos nodo,
-            Cliente cliente) {
+        if (encontrado == null) {
 
-        if (nodo == null) {
-            return null;
+            return;
         }
 
 
-        int comparacion =
-                comparar(
-                        cliente,
-                        nodo.getCliente()
+        /*
+         * CASO 1:
+         *
+         * El nodo no tiene hijos.
+         */
+        if (encontrado.getHijoIzquierdo()
+                == null
+                &&
+                encontrado.getHijoDerecho()
+                        == null) {
+
+            eliminarHoja(
+                    encontrado
+            );
+
+
+            peso--;
+
+
+            return;
+        }
+
+
+        /*
+         * CASO 2:
+         *
+         * El nodo tiene solamente
+         * un hijo.
+         */
+        if (encontrado.getHijoIzquierdo()
+                == null
+                ||
+                encontrado.getHijoDerecho()
+                        == null) {
+
+            eliminarConUnHijo(
+                    encontrado
+            );
+
+
+            peso--;
+
+
+            return;
+        }
+
+
+        /*
+         * CASO 3:
+         *
+         * El nodo tiene dos hijos.
+         *
+         * Como trabaja el profesor,
+         * buscamos el elemento mayor
+         * del subárbol izquierdo.
+         */
+        NodoArbolPuntos nodoAuxiliar =
+                encontrarMayor(
+                        encontrado
+                                .getHijoIzquierdo()
                 );
 
 
-        if (comparacion < 0) {
+        /*
+         * Copiamos el elemento del
+         * nodo auxiliar en el nodo
+         * que deseamos eliminar.
+         */
+        encontrado.setElemento(
+                nodoAuxiliar
+                        .getElemento()
+        );
 
-            nodo.setIzquierdo(
-                    eliminarRecursivo(
-                            nodo.getIzquierdo(),
-                            cliente
-                    )
-            );
 
-        } else if (comparacion > 0) {
+        /*
+         * El nodo mayor del subárbol
+         * izquierdo nunca puede tener
+         * un hijo derecho.
+         *
+         * Puede ser hoja o tener
+         * solamente hijo izquierdo.
+         */
+        if (nodoAuxiliar
+                .getHijoIzquierdo()
+                == null) {
 
-            nodo.setDerecho(
-                    eliminarRecursivo(
-                            nodo.getDerecho(),
-                            cliente
-                    )
+            eliminarHoja(
+                    nodoAuxiliar
             );
 
         } else {
 
-            // Sin hijo izquierdo.
-            if (nodo.getIzquierdo() == null) {
-
-                return nodo.getDerecho();
-            }
-
-
-            // Sin hijo derecho.
-            if (nodo.getDerecho() == null) {
-
-                return nodo.getIzquierdo();
-            }
-
-
-            /*
-             * Si tiene dos hijos, se busca el
-             * menor elemento del subárbol derecho.
-             */
-            NodoArbolPuntos sucesor =
-                    buscarMinimo(
-                            nodo.getDerecho()
-                    );
-
-
-            nodo.setCliente(
-                    sucesor.getCliente()
-            );
-
-
-            nodo.setDerecho(
-                    eliminarRecursivo(
-                            nodo.getDerecho(),
-                            sucesor.getCliente()
-                    )
+            eliminarConUnHijo(
+                    nodoAuxiliar
             );
         }
 
 
-        return nodo;
+        peso--;
     }
 
 
-    private NodoArbolPuntos buscarMinimo(
+    private void eliminarHoja(
             NodoArbolPuntos nodo) {
 
-        NodoArbolPuntos actual =
-                nodo;
+        /*
+         * Si el nodo es la raíz
+         * y no tiene hijos.
+         */
+        if (nodo == raiz) {
 
+            raiz =
+                    null;
 
-        while (actual.getIzquierdo()
-                != null) {
-
-            actual =
-                    actual.getIzquierdo();
+            return;
         }
 
 
-        return actual;
+        NodoArbolPuntos padre =
+                nodo.getPadre();
+
+
+        if (padre.getHijoIzquierdo()
+                == nodo) {
+
+            padre.setHijoIzquierdo(
+                    null
+            );
+
+        } else {
+
+            padre.setHijoDerecho(
+                    null
+            );
+        }
+    }
+
+
+    private void eliminarConUnHijo(
+            NodoArbolPuntos nodo) {
+
+        NodoArbolPuntos hijo;
+
+
+        if (nodo.getHijoIzquierdo()
+                != null) {
+
+            hijo =
+                    nodo.getHijoIzquierdo();
+
+        } else {
+
+            hijo =
+                    nodo.getHijoDerecho();
+        }
+
+
+        /*
+         * Si estamos eliminando
+         * la raíz.
+         */
+        if (nodo == raiz) {
+
+            raiz =
+                    hijo;
+
+
+            hijo.setPadre(
+                    null
+            );
+
+
+            return;
+        }
+
+
+        NodoArbolPuntos padre =
+                nodo.getPadre();
+
+
+        /*
+         * Determinamos si el nodo
+         * estaba a la izquierda
+         * o a la derecha del padre.
+         */
+        if (padre.getHijoIzquierdo()
+                == nodo) {
+
+            padre.setHijoIzquierdo(
+                    hijo
+            );
+
+        } else {
+
+            padre.setHijoDerecho(
+                    hijo
+            );
+        }
+
+
+        hijo.setPadre(
+                padre
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // MAYOR DEL SUBÁRBOL IZQUIERDO
+    // ---------------------------------------------------------
+
+    private NodoArbolPuntos encontrarMayor(
+            NodoArbolPuntos raizAux) {
+
+        if (raizAux
+                .getHijoDerecho()
+                == null) {
+
+            return raizAux;
+        }
+
+
+        return encontrarMayor(
+                raizAux
+                        .getHijoDerecho()
+        );
     }
 
 
@@ -207,7 +460,7 @@ public class ArbolBinarioPuntos {
                 new ArrayList<>();
 
 
-        recorridoInOrden(
+        inorden(
                 raiz,
                 resultado
         );
@@ -217,29 +470,137 @@ public class ArbolBinarioPuntos {
     }
 
 
-    private void recorridoInOrden(
-            NodoArbolPuntos nodo,
+    private void inorden(
+            NodoArbolPuntos raizAux,
             List<Cliente> resultado) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
+
             return;
         }
 
 
-        recorridoInOrden(
-                nodo.getIzquierdo(),
+        inorden(
+                raizAux
+                        .getHijoIzquierdo(),
                 resultado
         );
 
 
         resultado.add(
-                nodo.getCliente()
+                raizAux
+                        .getElemento()
         );
 
 
-        recorridoInOrden(
-                nodo.getDerecho(),
+        inorden(
+                raizAux
+                        .getHijoDerecho(),
                 resultado
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // PREORDEN
+    // ---------------------------------------------------------
+
+    public List<Cliente>
+    obtenerPreOrden() {
+
+        List<Cliente> resultado =
+                new ArrayList<>();
+
+
+        preorden(
+                raiz,
+                resultado
+        );
+
+
+        return resultado;
+    }
+
+
+    private void preorden(
+            NodoArbolPuntos raizAux,
+            List<Cliente> resultado) {
+
+        if (raizAux == null) {
+
+            return;
+        }
+
+
+        resultado.add(
+                raizAux
+                        .getElemento()
+        );
+
+
+        preorden(
+                raizAux
+                        .getHijoIzquierdo(),
+                resultado
+        );
+
+
+        preorden(
+                raizAux
+                        .getHijoDerecho(),
+                resultado
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // POSTORDEN
+    // ---------------------------------------------------------
+
+    public List<Cliente>
+    obtenerPostOrden() {
+
+        List<Cliente> resultado =
+                new ArrayList<>();
+
+
+        postorden(
+                raiz,
+                resultado
+        );
+
+
+        return resultado;
+    }
+
+
+    private void postorden(
+            NodoArbolPuntos raizAux,
+            List<Cliente> resultado) {
+
+        if (raizAux == null) {
+
+            return;
+        }
+
+
+        postorden(
+                raizAux
+                        .getHijoIzquierdo(),
+                resultado
+        );
+
+
+        postorden(
+                raizAux
+                        .getHijoDerecho(),
+                resultado
+        );
+
+
+        resultado.add(
+                raizAux
+                        .getElemento()
         );
     }
 
@@ -257,22 +618,25 @@ public class ArbolBinarioPuntos {
 
 
     private int calcularAltura(
-            NodoArbolPuntos nodo) {
+            NodoArbolPuntos raizAux) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
+
             return 0;
         }
 
 
         int alturaIzquierda =
                 calcularAltura(
-                        nodo.getIzquierdo()
+                        raizAux
+                                .getHijoIzquierdo()
                 );
 
 
         int alturaDerecha =
                 calcularAltura(
-                        nodo.getDerecho()
+                        raizAux
+                                .getHijoDerecho()
                 );
 
 
@@ -281,6 +645,30 @@ public class ArbolBinarioPuntos {
                         alturaIzquierda,
                         alturaDerecha
                 );
+    }
+
+
+    // ---------------------------------------------------------
+    // PESO
+    // ---------------------------------------------------------
+
+    public int obtenerPeso() {
+
+        return peso;
+    }
+
+
+    // ---------------------------------------------------------
+    // BORRAR ÁRBOL
+    // ---------------------------------------------------------
+
+    public void borrarArbol() {
+
+        raiz =
+                null;
+
+        peso =
+                0;
     }
 
 
@@ -299,17 +687,18 @@ public class ArbolBinarioPuntos {
                 );
 
 
-        if (comparacionPuntos != 0) {
+        if (comparacionPuntos
+                != 0) {
 
             return comparacionPuntos;
         }
 
 
         /*
-         * Dos clientes pueden tener los mismos puntos.
-         *
-         * La identificación se utiliza como
-         * criterio de desempate.
+         * Si dos clientes tienen
+         * la misma cantidad de puntos,
+         * se utiliza la identificación
+         * como criterio de desempate.
          */
         return cliente1
                 .getIdentificacion()
