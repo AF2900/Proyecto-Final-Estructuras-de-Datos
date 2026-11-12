@@ -9,10 +9,34 @@ public class ArbolAVLClientes {
 
     private NodoAVLCliente raiz;
 
+    private int peso;
+
 
     public ArbolAVLClientes() {
 
-        raiz = null;
+        raiz =
+                null;
+
+        peso =
+                0;
+    }
+
+
+    public NodoAVLCliente getRaiz() {
+
+        return raiz;
+    }
+
+
+    public int getPeso() {
+
+        return peso;
+    }
+
+
+    public boolean estaVacio() {
+
+        return raiz == null;
     }
 
 
@@ -21,72 +45,175 @@ public class ArbolAVLClientes {
     // ---------------------------------------------------------
 
     public void insertar(
-            Cliente cliente) {
+            Cliente elemento) {
 
-        if (cliente == null) {
+        if (elemento == null) {
+
             return;
         }
 
 
         raiz =
-                insertarRecursivo(
+                insertar(
                         raiz,
-                        cliente
+                        elemento,
+                        null
                 );
+
+
+        if (raiz != null) {
+
+            raiz.setPadre(
+                    null
+            );
+        }
     }
 
 
-    private NodoAVLCliente
-    insertarRecursivo(
-            NodoAVLCliente nodo,
-            Cliente cliente) {
+    private NodoAVLCliente insertar(
+            NodoAVLCliente raizAux,
+            Cliente elemento,
+            NodoAVLCliente padre) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
+
+            peso++;
+
 
             return new NodoAVLCliente(
-                    cliente
+                    elemento,
+                    padre
             );
         }
 
 
         int comparacion =
                 comparar(
-                        cliente,
-                        nodo.getCliente()
+                        raizAux.getElemento(),
+                        elemento
                 );
 
 
-        if (comparacion < 0) {
+        if (comparacion > 0) {
 
-            nodo.setIzquierdo(
-                    insertarRecursivo(
-                            nodo.getIzquierdo(),
-                            cliente
-                    )
+            NodoAVLCliente nuevoIzquierdo =
+                    insertar(
+                            raizAux
+                                    .getHijoIzquierdo(),
+                            elemento,
+                            raizAux
+                    );
+
+
+            raizAux.setHijoIzquierdo(
+                    nuevoIzquierdo
             );
 
-        } else if (comparacion > 0) {
 
-            nodo.setDerecho(
-                    insertarRecursivo(
-                            nodo.getDerecho(),
-                            cliente
-                    )
+            if (nuevoIzquierdo != null) {
+
+                nuevoIzquierdo.setPadre(
+                        raizAux
+                );
+            }
+
+        } else if (comparacion < 0) {
+
+            NodoAVLCliente nuevoDerecho =
+                    insertar(
+                            raizAux
+                                    .getHijoDerecho(),
+                            elemento,
+                            raizAux
+                    );
+
+
+            raizAux.setHijoDerecho(
+                    nuevoDerecho
             );
+
+
+            if (nuevoDerecho != null) {
+
+                nuevoDerecho.setPadre(
+                        raizAux
+                );
+            }
 
         } else {
 
-            return nodo;
+            return raizAux;
         }
 
 
-        actualizarAltura(
-                nodo
+        actualizarDatos(
+                raizAux
         );
 
 
         return balancear(
-                nodo
+                raizAux
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // BUSCAR
+    // ---------------------------------------------------------
+
+    public boolean buscarNodo(
+            Cliente buscado) {
+
+        if (buscado == null) {
+
+            return false;
+        }
+
+
+        return buscarNodo(
+                raiz,
+                buscado
+        ) != null;
+    }
+
+
+    private NodoAVLCliente buscarNodo(
+            NodoAVLCliente raizAux,
+            Cliente buscado) {
+
+        if (raizAux == null) {
+
+            return null;
+        }
+
+
+        int comparacion =
+                comparar(
+                        raizAux.getElemento(),
+                        buscado
+                );
+
+
+        if (comparacion == 0) {
+
+            return raizAux;
+        }
+
+
+        if (comparacion > 0) {
+
+            return buscarNodo(
+                    raizAux
+                            .getHijoIzquierdo(),
+                    buscado
+            );
+        }
+
+
+        return buscarNodo(
+                raizAux
+                        .getHijoDerecho(),
+                buscado
         );
     }
 
@@ -96,119 +223,253 @@ public class ArbolAVLClientes {
     // ---------------------------------------------------------
 
     public void eliminar(
-            Cliente cliente) {
+            Cliente elemento) {
 
-        if (cliente == null) {
+        if (elemento == null) {
+
+            return;
+        }
+
+
+        if (!buscarNodo(
+                elemento
+        )) {
+
             return;
         }
 
 
         raiz =
-                eliminarRecursivo(
+                eliminar(
                         raiz,
-                        cliente
+                        elemento
                 );
+
+
+        peso--;
+
+
+        if (raiz != null) {
+
+            raiz.setPadre(
+                    null
+            );
+        }
     }
 
 
-    private NodoAVLCliente
-    eliminarRecursivo(
-            NodoAVLCliente nodo,
-            Cliente cliente) {
+    private NodoAVLCliente eliminar(
+            NodoAVLCliente raizAux,
+            Cliente elemento) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
+
             return null;
         }
 
 
         int comparacion =
                 comparar(
-                        cliente,
-                        nodo.getCliente()
+                        raizAux.getElemento(),
+                        elemento
                 );
 
 
-        if (comparacion < 0) {
+        if (comparacion > 0) {
 
-            nodo.setIzquierdo(
-                    eliminarRecursivo(
-                            nodo.getIzquierdo(),
-                            cliente
-                    )
-            );
-
-        } else if (comparacion > 0) {
-
-            nodo.setDerecho(
-                    eliminarRecursivo(
-                            nodo.getDerecho(),
-                            cliente
-                    )
-            );
-
-        } else {
-
-            if (nodo.getIzquierdo() == null) {
-
-                return nodo.getDerecho();
-            }
-
-
-            if (nodo.getDerecho() == null) {
-
-                return nodo.getIzquierdo();
-            }
-
-
-            NodoAVLCliente sucesor =
-                    buscarMinimo(
-                            nodo.getDerecho()
+            NodoAVLCliente nuevoIzquierdo =
+                    eliminar(
+                            raizAux
+                                    .getHijoIzquierdo(),
+                            elemento
                     );
 
 
-            nodo.setCliente(
-                    sucesor.getCliente()
+            raizAux.setHijoIzquierdo(
+                    nuevoIzquierdo
             );
 
 
-            nodo.setDerecho(
-                    eliminarRecursivo(
-                            nodo.getDerecho(),
-                            sucesor.getCliente()
-                    )
+            if (nuevoIzquierdo != null) {
+
+                nuevoIzquierdo.setPadre(
+                        raizAux
+                );
+            }
+
+        } else if (comparacion < 0) {
+
+            NodoAVLCliente nuevoDerecho =
+                    eliminar(
+                            raizAux
+                                    .getHijoDerecho(),
+                            elemento
+                    );
+
+
+            raizAux.setHijoDerecho(
+                    nuevoDerecho
             );
+
+
+            if (nuevoDerecho != null) {
+
+                nuevoDerecho.setPadre(
+                        raizAux
+                );
+            }
+
+        } else {
+
+            /*
+             * CASO 1:
+             *
+             * No tiene hijo izquierdo.
+             */
+            if (raizAux
+                    .getHijoIzquierdo()
+                    == null) {
+
+                NodoAVLCliente derecho =
+                        raizAux
+                                .getHijoDerecho();
+
+
+                if (derecho != null) {
+
+                    derecho.setPadre(
+                            raizAux.getPadre()
+                    );
+                }
+
+
+                return derecho;
+            }
+
+
+            /*
+             * CASO 2:
+             *
+             * No tiene hijo derecho.
+             */
+            if (raizAux
+                    .getHijoDerecho()
+                    == null) {
+
+                NodoAVLCliente izquierdo =
+                        raizAux
+                                .getHijoIzquierdo();
+
+
+                if (izquierdo != null) {
+
+                    izquierdo.setPadre(
+                            raizAux.getPadre()
+                    );
+                }
+
+
+                return izquierdo;
+            }
+
+
+            /*
+             * CASO 3:
+             *
+             * Tiene dos hijos.
+             *
+             * Se utiliza el mayor elemento
+             * del subárbol izquierdo,
+             * como trabaja el profesor.
+             */
+            NodoAVLCliente mayorIzquierda =
+                    encontrarMayor(
+                            raizAux
+                                    .getHijoIzquierdo()
+                    );
+
+
+            raizAux.setElemento(
+                    mayorIzquierda
+                            .getElemento()
+            );
+
+
+            NodoAVLCliente nuevoIzquierdo =
+                    eliminar(
+                            raizAux
+                                    .getHijoIzquierdo(),
+                            mayorIzquierda
+                                    .getElemento()
+                    );
+
+
+            raizAux.setHijoIzquierdo(
+                    nuevoIzquierdo
+            );
+
+
+            if (nuevoIzquierdo != null) {
+
+                nuevoIzquierdo.setPadre(
+                        raizAux
+                );
+            }
         }
 
 
-        actualizarAltura(
-                nodo
+        /*
+         * Después de eliminar,
+         * actualizamos altura y FE.
+         */
+        actualizarDatos(
+                raizAux
         );
 
 
+        /*
+         * Finalmente balanceamos
+         * el subárbol.
+         */
         return balancear(
-                nodo
+                raizAux
         );
     }
 
 
     // ---------------------------------------------------------
-    // BALANCE
+    // BALANCEAR
     // ---------------------------------------------------------
 
     private NodoAVLCliente balancear(
             NodoAVLCliente nodo) {
 
-        int factorBalance =
-                obtenerFactorBalance(
-                        nodo
-                );
+        if (nodo == null) {
+
+            return null;
+        }
 
 
-        // Izquierda - izquierda.
-        if (factorBalance > 1 &&
-                obtenerFactorBalance(
-                        nodo.getIzquierdo()
-                ) >= 0) {
+        actualizarDatos(
+                nodo
+        );
+
+
+        int factorEquilibrio =
+                nodo.getFe();
+
+
+        /*
+         * IZQUIERDA - IZQUIERDA
+         *
+         * FE < -1 significa que el
+         * árbol está cargado hacia
+         * la izquierda.
+         */
+        if (factorEquilibrio < -1 &&
+                obtenerFactorEquilibrio(
+                        nodo.getHijoIzquierdo()
+                ) <= 0) {
 
             return rotacionDerecha(
                     nodo
@@ -216,11 +477,51 @@ public class ArbolAVLClientes {
         }
 
 
-        // Derecha - derecha.
-        if (factorBalance < -1 &&
-                obtenerFactorBalance(
-                        nodo.getDerecho()
-                ) <= 0) {
+        /*
+         * IZQUIERDA - DERECHA
+         */
+        if (factorEquilibrio < -1 &&
+                obtenerFactorEquilibrio(
+                        nodo.getHijoIzquierdo()
+                ) > 0) {
+
+            NodoAVLCliente nuevoIzquierdo =
+                    rotacionIzquierda(
+                            nodo
+                                    .getHijoIzquierdo()
+                    );
+
+
+            nodo.setHijoIzquierdo(
+                    nuevoIzquierdo
+            );
+
+
+            if (nuevoIzquierdo != null) {
+
+                nuevoIzquierdo.setPadre(
+                        nodo
+                );
+            }
+
+
+            return rotacionDerecha(
+                    nodo
+            );
+        }
+
+
+        /*
+         * DERECHA - DERECHA
+         *
+         * FE > 1 significa que el
+         * árbol está cargado hacia
+         * la derecha.
+         */
+        if (factorEquilibrio > 1 &&
+                obtenerFactorEquilibrio(
+                        nodo.getHijoDerecho()
+                ) >= 0) {
 
             return rotacionIzquierda(
                     nodo
@@ -228,36 +529,32 @@ public class ArbolAVLClientes {
         }
 
 
-        // Izquierda - derecha.
-        if (factorBalance > 1 &&
-                obtenerFactorBalance(
-                        nodo.getIzquierdo()
+        /*
+         * DERECHA - IZQUIERDA
+         */
+        if (factorEquilibrio > 1 &&
+                obtenerFactorEquilibrio(
+                        nodo.getHijoDerecho()
                 ) < 0) {
 
-            nodo.setIzquierdo(
-                    rotacionIzquierda(
-                            nodo.getIzquierdo()
-                    )
-            );
-
-
-            return rotacionDerecha(
-                    nodo
-            );
-        }
-
-
-        // Derecha - izquierda.
-        if (factorBalance < -1 &&
-                obtenerFactorBalance(
-                        nodo.getDerecho()
-                ) > 0) {
-
-            nodo.setDerecho(
+            NodoAVLCliente nuevoDerecho =
                     rotacionDerecha(
-                            nodo.getDerecho()
-                    )
+                            nodo
+                                    .getHijoDerecho()
+                    );
+
+
+            nodo.setHijoDerecho(
+                    nuevoDerecho
             );
+
+
+            if (nuevoDerecho != null) {
+
+                nuevoDerecho.setPadre(
+                        nodo
+                );
+            }
 
 
             return rotacionIzquierda(
@@ -270,68 +567,65 @@ public class ArbolAVLClientes {
     }
 
 
+    // ---------------------------------------------------------
+    // ROTACIÓN DERECHA
+    // ---------------------------------------------------------
+
     private NodoAVLCliente rotacionDerecha(
             NodoAVLCliente nodo) {
 
         NodoAVLCliente nuevaRaiz =
-                nodo.getIzquierdo();
+                nodo
+                        .getHijoIzquierdo();
 
 
         NodoAVLCliente temporal =
-                nuevaRaiz.getDerecho();
+                nuevaRaiz
+                        .getHijoDerecho();
 
 
-        nuevaRaiz.setDerecho(
+        NodoAVLCliente padreOriginal =
+                nodo.getPadre();
+
+
+        /*
+         * La nueva raíz ocupa
+         * la posición del nodo.
+         */
+        nuevaRaiz.setPadre(
+                padreOriginal
+        );
+
+
+        nuevaRaiz.setHijoDerecho(
                 nodo
         );
 
 
-        nodo.setIzquierdo(
-                temporal
-        );
-
-
-        actualizarAltura(
-                nodo
-        );
-
-
-        actualizarAltura(
+        nodo.setPadre(
                 nuevaRaiz
         );
 
 
-        return nuevaRaiz;
-    }
-
-
-    private NodoAVLCliente rotacionIzquierda(
-            NodoAVLCliente nodo) {
-
-        NodoAVLCliente nuevaRaiz =
-                nodo.getDerecho();
-
-
-        NodoAVLCliente temporal =
-                nuevaRaiz.getIzquierdo();
-
-
-        nuevaRaiz.setIzquierdo(
-                nodo
-        );
-
-
-        nodo.setDerecho(
+        nodo.setHijoIzquierdo(
                 temporal
         );
 
 
-        actualizarAltura(
+        if (temporal != null) {
+
+            temporal.setPadre(
+                    nodo
+            );
+        }
+
+
+        actualizarDatos(
                 nodo
         );
 
 
-        actualizarAltura(
+        actualizarDatos(
                 nuevaRaiz
         );
 
@@ -341,13 +635,81 @@ public class ArbolAVLClientes {
 
 
     // ---------------------------------------------------------
-    // ALTURA
+    // ROTACIÓN IZQUIERDA
+    // ---------------------------------------------------------
+
+    private NodoAVLCliente rotacionIzquierda(
+            NodoAVLCliente nodo) {
+
+        NodoAVLCliente nuevaRaiz =
+                nodo
+                        .getHijoDerecho();
+
+
+        NodoAVLCliente temporal =
+                nuevaRaiz
+                        .getHijoIzquierdo();
+
+
+        NodoAVLCliente padreOriginal =
+                nodo.getPadre();
+
+
+        /*
+         * La nueva raíz ocupa
+         * la posición del nodo.
+         */
+        nuevaRaiz.setPadre(
+                padreOriginal
+        );
+
+
+        nuevaRaiz.setHijoIzquierdo(
+                nodo
+        );
+
+
+        nodo.setPadre(
+                nuevaRaiz
+        );
+
+
+        nodo.setHijoDerecho(
+                temporal
+        );
+
+
+        if (temporal != null) {
+
+            temporal.setPadre(
+                    nodo
+            );
+        }
+
+
+        actualizarDatos(
+                nodo
+        );
+
+
+        actualizarDatos(
+                nuevaRaiz
+        );
+
+
+        return nuevaRaiz;
+    }
+
+
+    // ---------------------------------------------------------
+    // ALTURA Y FACTOR DE EQUILIBRIO
     // ---------------------------------------------------------
 
     private int obtenerAltura(
             NodoAVLCliente nodo) {
 
         if (nodo == null) {
+
             return 0;
         }
 
@@ -356,42 +718,69 @@ public class ArbolAVLClientes {
     }
 
 
-    private void actualizarAltura(
+    /*
+     * Convención utilizada por
+     * el profesor:
+     *
+     * FE = altura derecha
+     *      - altura izquierda
+     */
+    private int obtenerFactorEquilibrio(
             NodoAVLCliente nodo) {
 
         if (nodo == null) {
-            return;
-        }
 
-
-        nodo.setAltura(
-                1 +
-                        Math.max(
-                                obtenerAltura(
-                                        nodo.getIzquierdo()
-                                ),
-                                obtenerAltura(
-                                        nodo.getDerecho()
-                                )
-                        )
-        );
-    }
-
-
-    private int obtenerFactorBalance(
-            NodoAVLCliente nodo) {
-
-        if (nodo == null) {
             return 0;
         }
 
 
         return obtenerAltura(
-                nodo.getIzquierdo()
-        ) -
+                nodo.getHijoDerecho()
+        )
+                -
                 obtenerAltura(
-                        nodo.getDerecho()
+                        nodo.getHijoIzquierdo()
                 );
+    }
+
+
+    private void actualizarDatos(
+            NodoAVLCliente nodo) {
+
+        if (nodo == null) {
+
+            return;
+        }
+
+
+        int alturaIzquierda =
+                obtenerAltura(
+                        nodo
+                                .getHijoIzquierdo()
+                );
+
+
+        int alturaDerecha =
+                obtenerAltura(
+                        nodo
+                                .getHijoDerecho()
+                );
+
+
+        nodo.setAltura(
+                1 +
+                        Math.max(
+                                alturaIzquierda,
+                                alturaDerecha
+                        )
+        );
+
+
+        nodo.setFe(
+                alturaDerecha
+                        -
+                        alturaIzquierda
+        );
     }
 
 
@@ -404,25 +793,24 @@ public class ArbolAVLClientes {
 
 
     // ---------------------------------------------------------
-    // MÍNIMO
+    // MAYOR DEL SUBÁRBOL IZQUIERDO
     // ---------------------------------------------------------
 
-    private NodoAVLCliente buscarMinimo(
-            NodoAVLCliente nodo) {
+    private NodoAVLCliente encontrarMayor(
+            NodoAVLCliente raizAux) {
 
-        NodoAVLCliente actual =
-                nodo;
+        if (raizAux
+                .getHijoDerecho()
+                == null) {
 
-
-        while (actual.getIzquierdo()
-                != null) {
-
-            actual =
-                    actual.getIzquierdo();
+            return raizAux;
         }
 
 
-        return actual;
+        return encontrarMayor(
+                raizAux
+                        .getHijoDerecho()
+        );
     }
 
 
@@ -437,7 +825,7 @@ public class ArbolAVLClientes {
                 new ArrayList<>();
 
 
-        recorridoInOrden(
+        inorden(
                 raiz,
                 resultado
         );
@@ -447,30 +835,152 @@ public class ArbolAVLClientes {
     }
 
 
-    private void recorridoInOrden(
-            NodoAVLCliente nodo,
+    private void inorden(
+            NodoAVLCliente raizAux,
             List<Cliente> resultado) {
 
-        if (nodo == null) {
+        if (raizAux == null) {
+
             return;
         }
 
 
-        recorridoInOrden(
-                nodo.getIzquierdo(),
+        inorden(
+                raizAux
+                        .getHijoIzquierdo(),
                 resultado
         );
 
 
         resultado.add(
-                nodo.getCliente()
+                raizAux
+                        .getElemento()
         );
 
 
-        recorridoInOrden(
-                nodo.getDerecho(),
+        inorden(
+                raizAux
+                        .getHijoDerecho(),
                 resultado
         );
+    }
+
+
+    // ---------------------------------------------------------
+    // PREORDEN
+    // ---------------------------------------------------------
+
+    public List<Cliente>
+    obtenerPreOrden() {
+
+        List<Cliente> resultado =
+                new ArrayList<>();
+
+
+        preorden(
+                raiz,
+                resultado
+        );
+
+
+        return resultado;
+    }
+
+
+    private void preorden(
+            NodoAVLCliente raizAux,
+            List<Cliente> resultado) {
+
+        if (raizAux == null) {
+
+            return;
+        }
+
+
+        resultado.add(
+                raizAux
+                        .getElemento()
+        );
+
+
+        preorden(
+                raizAux
+                        .getHijoIzquierdo(),
+                resultado
+        );
+
+
+        preorden(
+                raizAux
+                        .getHijoDerecho(),
+                resultado
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // POSTORDEN
+    // ---------------------------------------------------------
+
+    public List<Cliente>
+    obtenerPostOrden() {
+
+        List<Cliente> resultado =
+                new ArrayList<>();
+
+
+        postorden(
+                raiz,
+                resultado
+        );
+
+
+        return resultado;
+    }
+
+
+    private void postorden(
+            NodoAVLCliente raizAux,
+            List<Cliente> resultado) {
+
+        if (raizAux == null) {
+
+            return;
+        }
+
+
+        postorden(
+                raizAux
+                        .getHijoIzquierdo(),
+                resultado
+        );
+
+
+        postorden(
+                raizAux
+                        .getHijoDerecho(),
+                resultado
+        );
+
+
+        resultado.add(
+                raizAux
+                        .getElemento()
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // BORRAR ÁRBOL
+    // ---------------------------------------------------------
+
+    public void borrarArbol() {
+
+        raiz =
+                null;
+
+        peso =
+                0;
     }
 
 
@@ -495,6 +1005,12 @@ public class ArbolAVLClientes {
         }
 
 
+        /*
+         * Cuando dos clientes tienen
+         * los mismos puntos, usamos
+         * la identificación como
+         * criterio de desempate.
+         */
         return cliente1
                 .getIdentificacion()
                 .compareTo(

@@ -4,62 +4,103 @@ import co.edu.uniquindio.poo.model.Cliente;
 
 public class NodoAVLCliente {
 
-    private Cliente cliente;
+    private Cliente elemento;
 
-    private NodoAVLCliente izquierdo;
+    private NodoAVLCliente hijoIzquierdo;
 
-    private NodoAVLCliente derecho;
+    private NodoAVLCliente hijoDerecho;
+
+    private NodoAVLCliente padre;
 
     private int altura;
 
+    private int fe;
+
 
     public NodoAVLCliente(
-            Cliente cliente) {
+            Cliente elemento,
+            NodoAVLCliente padre) {
 
-        this.cliente =
-                cliente;
+        this.elemento =
+                elemento;
 
-        this.altura = 1;
+        this.padre =
+                padre;
+
+        this.hijoIzquierdo =
+                null;
+
+        this.hijoDerecho =
+                null;
+
+        this.altura =
+                1;
+
+        this.fe =
+                0;
     }
 
 
-    public Cliente getCliente() {
-        return cliente;
+    public Cliente getElemento() {
+
+        return elemento;
     }
 
 
-    public void setCliente(
-            Cliente cliente) {
+    public void setElemento(
+            Cliente elemento) {
 
-        this.cliente = cliente;
+        this.elemento =
+                elemento;
     }
 
 
-    public NodoAVLCliente getIzquierdo() {
-        return izquierdo;
+    public NodoAVLCliente
+    getHijoIzquierdo() {
+
+        return hijoIzquierdo;
     }
 
 
-    public void setIzquierdo(
-            NodoAVLCliente izquierdo) {
+    public void setHijoIzquierdo(
+            NodoAVLCliente hijoIzquierdo) {
 
-        this.izquierdo = izquierdo;
+        this.hijoIzquierdo =
+                hijoIzquierdo;
     }
 
 
-    public NodoAVLCliente getDerecho() {
-        return derecho;
+    public NodoAVLCliente
+    getHijoDerecho() {
+
+        return hijoDerecho;
     }
 
 
-    public void setDerecho(
-            NodoAVLCliente derecho) {
+    public void setHijoDerecho(
+            NodoAVLCliente hijoDerecho) {
 
-        this.derecho = derecho;
+        this.hijoDerecho =
+                hijoDerecho;
+    }
+
+
+    public NodoAVLCliente getPadre() {
+
+        return padre;
+    }
+
+
+    public void setPadre(
+            NodoAVLCliente padre) {
+
+        this.padre =
+                padre;
     }
 
 
     public int getAltura() {
+
         return altura;
     }
 
@@ -67,6 +108,21 @@ public class NodoAVLCliente {
     public void setAltura(
             int altura) {
 
-        this.altura = altura;
+        this.altura =
+                altura;
+    }
+
+
+    public int getFe() {
+
+        return fe;
+    }
+
+
+    public void setFe(
+            int fe) {
+
+        this.fe =
+                fe;
     }
 }
