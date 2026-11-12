@@ -4,7 +4,7 @@
 
 Proyecto desarrollado para la asignatura **Estructuras de Datos** de la **Universidad del Quindío**.
 
-La aplicación simula un monedero virtual mediante una interfaz gráfica de escritorio desarrollada con **Java Swing**.
+La aplicación simula un monedero virtual mediante una interfaz gráfica de escritorio desarrollada con **text Swing**.
 
 El sistema permite administrar clientes y monederos, realizar operaciones financieras, acumular puntos, calcular rangos, canjear beneficios, programar transacciones, generar notificaciones, analizar relaciones mediante grafos, consultar reportes y aplicar diferentes estructuras de datos estudiadas durante el curso.
 
@@ -18,7 +18,7 @@ Una parte importante del proyecto consiste en la implementación propia de estru
 - Listas circulares.
 - Grafos dirigidos.
 
-El proyecto fue desarrollado utilizando **Java 21 y Maven**.
+El proyecto fue desarrollado utilizando **text 21 y Maven**.
 
 ---
 
@@ -53,14 +53,14 @@ Además, se busca relacionar estas estructuras con funcionalidades reales de una
 
 # Tecnologías utilizadas
 
-- Java 21.
-- Java Swing.
+- text 21.
+- text Swing.
 - Maven.
 - IntelliJ IDEA.
 - Git.
 - GitHub.
 
-El proyecto utiliza principalmente funcionalidades estándar de Java y no requiere dependencias externas adicionales.
+El proyecto utiliza principalmente funcionalidades estándar de text y no requiere dependencias externas adicionales.
 
 ---
 
@@ -170,94 +170,94 @@ Estructuras de datos
 ```text
 co.edu.uniquindio.poo
 │
-├── Main.java
-├── MonederoVirtual.java
-├── PruebaSistemaCompleto.java
+├── Main.text
+├── MonederoVirtual.text
+├── PruebaSistemaCompleto.text
 │
 ├── enums
-│   ├── CategoriaGasto.java
-│   ├── RangoCliente.java
-│   ├── TipoBeneficio.java
-│   ├── TipoNotificacion.java
-│   └── TipoTransaccion.java
+│   ├── CategoriaGasto.text
+│   ├── RangoCliente.text
+│   ├── TipoBeneficio.text
+│   ├── TipoNotificacion.text
+│   └── TipoTransaccion.text
 │
 ├── model
-│   ├── BeneficioCanjeado.java
-│   ├── Cliente.java
-│   ├── Monedero.java
-│   ├── Notificacion.java
-│   ├── ReporteCliente.java
-│   ├── ReporteSistema.java
-│   ├── Transaccion.java
-│   └── TransaccionProgramada.java
+│   ├── BeneficioCanjeado.text
+│   ├── Cliente.text
+│   ├── Monedero.text
+│   ├── Notificacion.text
+│   ├── ReporteCliente.text
+│   ├── ReporteSistema.text
+│   ├── Transaccion.text
+│   └── TransaccionProgramada.text
 │
 ├── estructuras
 │   │
 │   ├── arbol
-│   │   ├── ArbolAVLClientes.java
-│   │   ├── ArbolBinarioPuntos.java
-│   │   ├── NodoAVLCliente.java
-│   │   └── NodoArbolPuntos.java
+│   │   ├── ArbolAVLClientes.text
+│   │   ├── ArbolBinarioPuntos.text
+│   │   ├── NodoAVLCliente.text
+│   │   └── NodoArbolPuntos.text
 │   │
 │   ├── cola
-│   │   ├── Cola.java
-│   │   ├── ColaLlena.java
-│   │   ├── ColaPrioridad.java
-│   │   └── Nodo.java
+│   │   ├── Cola.text
+│   │   ├── ColaLlena.text
+│   │   ├── ColaPrioridad.text
+│   │   └── Nodo.text
 │   │
 │   ├── grafo
-│   │   ├── AristaGrafo.java
-│   │   └── GrafoDirigido.java
+│   │   ├── AristaGrafo.text
+│   │   └── GrafoDirigido.text
 │   │
 │   ├── listacircular
-│   │   ├── ListaCircular.java
-│   │   └── NodoCircular.java
+│   │   ├── ListaCircular.text
+│   │   └── NodoCircular.text
 │   │
 │   └── pila
-│       ├── Nodo.java
-│       └── Pila.java
+│       ├── Nodo.text
+│       └── Pila.text
 │
 ├── service
-│   ├── GestorBeneficios.java
-│   ├── GestorClientes.java
-│   ├── GestorGrafos.java
-│   ├── GestorIntegridad.java
-│   ├── GestorNotificaciones.java
-│   ├── GestorPatronesGasto.java
-│   ├── GestorProgramadas.java
-│   ├── GestorPuntos.java
-│   ├── GestorReportes.java
-│   ├── GestorReversiones.java
-│   └── GestorTransacciones.java
+│   ├── GestorBeneficios.text
+│   ├── GestorClientes.text
+│   ├── GestorGrafos.text
+│   ├── GestorIntegridad.text
+│   ├── GestorNotificaciones.text
+│   ├── GestorPatronesGasto.text
+│   ├── GestorProgramadas.text
+│   ├── GestorPuntos.text
+│   ├── GestorReportes.text
+│   ├── GestorReversiones.text
+│   └── GestorTransacciones.text
 │
 └── ui
-    ├── InterfazConsola.java
-    ├── InterfazGrafica.java
-    ├── PanelClientesMonederos.java
-    ├── PanelTransacciones.java
-    ├── PanelReversiones.java
-    ├── PanelPuntosBeneficios.java
-    ├── PanelProgramadas.java
-    ├── PanelNotificaciones.java
-    ├── PanelReportes.java
-    └── PanelEstructuras.java
+    ├── InterfazConsola.text
+    ├── InterfazGrafica.text
+    ├── PanelClientesMonederos.text
+    ├── PanelTransacciones.text
+    ├── PanelReversiones.text
+    ├── PanelPuntosBeneficios.text
+    ├── PanelProgramadas.text
+    ├── PanelNotificaciones.text
+    ├── PanelReportes.text
+    └── PanelEstructuras.text
 ```
 
-`InterfazConsola.java` permanece dentro del proyecto como una implementación alternativa.
+`InterfazConsola.text` permanece dentro del proyecto como una implementación alternativa.
 
 Sin embargo, actualmente el punto de entrada principal utiliza:
 
 ```text
-InterfazGrafica.java
+InterfazGrafica.text
 ```
 
 ---
 
 # Interfaz gráfica
 
-La interfaz principal fue construida utilizando **Java Swing**.
+La interfaz principal fue construida utilizando **text Swing**.
 
-`Main.java` inicia la aplicación mediante:
+`Main.text` inicia la aplicación mediante:
 
 ```text
 SwingUtilities.invokeLater(...)
@@ -277,7 +277,7 @@ JPanel
 JTable
 JTabbedPane
 JComboBox
-JTextField
+JtextField
 JSpinner
 JOptionPane
 CardLayout
@@ -1068,4 +1068,962 @@ El recorrido BFS sería:
 A → B → C → D
 ```
 
-Comple
+Complejidad:
+
+```text
+O(V + E)
+```
+
+donde:
+
+```text
+V = vértices
+E = aristas
+```
+
+---
+
+# HashMap
+
+Se utilizan tablas hash para realizar búsquedas mediante claves.
+
+Ejemplos:
+
+```text
+Identificación → Cliente
+
+Id monedero → Monedero
+
+Identificación → Puntos
+
+Código → Transacción programada
+
+Cliente → Beneficios
+
+Cliente → Notificaciones
+```
+
+Complejidad promedio:
+
+```text
+put()         O(1)
+get()         O(1)
+containsKey() O(1)
+```
+
+---
+
+# ArrayList
+
+Se utiliza para colecciones que requieren recorridos o almacenamiento secuencial.
+
+Ejemplo:
+
+```text
+List<Transaccion>
+```
+
+para almacenar el historial de un cliente.
+
+Complejidades aproximadas:
+
+```text
+Agregar al final
+O(1) amortizado
+
+Acceder mediante índice
+O(1)
+
+Búsqueda lineal
+O(n)
+```
+
+---
+
+# Árbol binario de búsqueda - BST
+
+La clase:
+
+```text
+ArbolBinarioPuntos
+```
+
+implementa un árbol binario de búsqueda.
+
+Cada nodo:
+
+```text
+NodoArbolPuntos
+```
+
+contiene:
+
+```text
+elemento
+hijoIzquierdo
+hijoDerecho
+padre
+```
+
+Los clientes se organizan principalmente por:
+
+```text
+puntos
+```
+
+Cuando dos clientes tienen los mismos puntos se utiliza:
+
+```text
+identificación
+```
+
+como criterio de desempate.
+
+---
+
+## Inserción
+
+Si el elemento es menor:
+
+```text
+subárbol izquierdo
+```
+
+Si es mayor:
+
+```text
+subárbol derecho
+```
+
+---
+
+## Recorridos
+
+El árbol implementa:
+
+```text
+Inorden
+Preorden
+Postorden
+```
+
+El recorrido inorden permite obtener los clientes ordenados por puntos.
+
+---
+
+## Eliminación
+
+Se consideran tres casos:
+
+```text
+1. Nodo hoja.
+
+2. Nodo con un hijo.
+
+3. Nodo con dos hijos.
+```
+
+Cuando el nodo tiene dos hijos se utiliza:
+
+```text
+máximo del subárbol izquierdo
+```
+
+para reemplazar el elemento eliminado.
+
+---
+
+## Complejidad
+
+```text
+Promedio
+O(log n)
+
+Peor caso
+O(n)
+```
+
+---
+
+# Árbol AVL
+
+La clase:
+
+```text
+ArbolAVLClientes
+```
+
+implementa un árbol binario de búsqueda balanceado.
+
+Cada nodo:
+
+```text
+NodoAVLCliente
+```
+
+almacena:
+
+```text
+elemento
+hijoIzquierdo
+hijoDerecho
+padre
+altura
+factor de equilibrio
+```
+
+---
+
+# Factor de equilibrio
+
+La convención utilizada en el proyecto es:
+
+```text
+FE =
+altura del subárbol derecho
+-
+altura del subárbol izquierdo
+```
+
+Por lo tanto:
+
+```text
+FE = -2
+árbol cargado hacia la izquierda
+
+FE = +2
+árbol cargado hacia la derecha
+```
+
+Un nodo correctamente balanceado debe tener:
+
+```text
+FE = -1
+FE = 0
+FE = 1
+```
+
+---
+
+# Rotaciones AVL
+
+El árbol contempla los cuatro casos principales:
+
+```text
+Izquierda - Izquierda
+→ rotación derecha
+
+Derecha - Derecha
+→ rotación izquierda
+
+Izquierda - Derecha
+→ rotación izquierda
+→ rotación derecha
+
+Derecha - Izquierda
+→ rotación derecha
+→ rotación izquierda
+```
+
+Después de cada operación se actualizan:
+
+```text
+altura
+factor de equilibrio
+referencia al padre
+```
+
+---
+
+# Eliminación AVL
+
+La eliminación considera:
+
+- Nodo hoja.
+- Nodo con un hijo.
+- Nodo con dos hijos.
+
+Cuando existen dos hijos se utiliza:
+
+```text
+máximo del subárbol izquierdo
+```
+
+Después de eliminar se recalculan:
+
+```text
+altura
+FE
+balance
+```
+
+y se realizan las rotaciones necesarias.
+
+---
+
+# Puntos, BST y AVL
+
+`GestorPuntos` mantiene sincronizados:
+
+```text
+Cliente
+HashMap de puntos
+BST
+AVL
+```
+
+Cuando los puntos cambian:
+
+```text
+1. Se elimina el cliente de los árboles.
+
+2. Se modifican sus puntos.
+
+3. Se actualiza el HashMap.
+
+4. Se vuelve a insertar en BST.
+
+5. Se vuelve a insertar en AVL.
+```
+
+Esto permite conservar correctamente el orden de los árboles.
+
+---
+
+# Recursividad
+
+La recursividad se utiliza principalmente en:
+
+- Inserción en árboles.
+- Búsqueda en árboles.
+- Recorridos.
+- Cálculo de altura.
+- Eliminación.
+- Verificación de integridad.
+
+---
+
+# Integridad
+
+`GestorIntegridad` verifica las transacciones del sistema.
+
+Entre las validaciones se encuentran:
+
+- Código válido.
+- Código no repetido.
+- Fecha válida.
+- Tipo válido.
+- Monto mayor que cero.
+- Comisión no negativa.
+- Cliente origen válido.
+- Monedero origen válido.
+- Datos de destino válidos.
+- Categoría válida para gastos.
+- Coherencia de puntos.
+- Coherencia de comisiones.
+
+También permite:
+
+- Verificar un cliente.
+- Verificar todo el sistema.
+- Contar transacciones válidas.
+- Encontrar la primera transacción inválida.
+
+---
+
+# Reportes
+
+## Reporte por cliente
+
+`ReporteCliente` contiene información como:
+
+- Identificación.
+- Nombre.
+- Cantidad de monederos.
+- Saldo total.
+- Cantidad de transacciones.
+- Transacciones activas.
+- Transacciones revertidas.
+- Puntos.
+- Rango.
+- Total de gastos.
+- Categoría principal.
+- Total transferido.
+- Cantidad de beneficios.
+- Cantidad de notificaciones.
+- Estado de integridad.
+
+---
+
+## Reporte general
+
+`ReporteSistema` contiene:
+
+- Cantidad de clientes.
+- Cantidad de monederos.
+- Saldo total.
+- Cantidad de transacciones únicas.
+- Transacciones activas.
+- Transacciones revertidas.
+- Total de gastos.
+- Cantidad de beneficios.
+- Cantidad de notificaciones.
+- Estado de integridad.
+
+Las transacciones que aparecen en más de un historial se identifican mediante su código para evitar contarlas dos veces.
+
+---
+
+# Estructuras de datos utilizadas
+
+| Estructura | Implementación | Uso |
+|---|---|---|
+| ArrayList | text | Historiales y colecciones |
+| HashMap | text | Búsquedas mediante claves |
+| HashSet | text | Control de elementos visitados |
+| Pila | Propia | Reversiones |
+| Cola | Propia | Notificaciones y BFS |
+| ColaPrioridad | Propia | Transacciones programadas |
+| ListaCircular | Propia | Historial de notificaciones |
+| BST | Propia | Clientes ordenados por puntos |
+| AVL | Propia | Clientes ordenados y balanceados |
+| GrafoDirigido | Propia | Clientes, monederos y patrones |
+| Recursividad | Implementación propia | Árboles e integridad |
+
+---
+
+# Complejidades principales
+
+| Operación | Complejidad aproximada |
+|---|---:|
+| Buscar en HashMap | O(1) promedio |
+| Insertar en HashMap | O(1) promedio |
+| Agregar al final de ArrayList | O(1) amortizado |
+| Búsqueda lineal | O(n) |
+| `push()` en Pila | O(1) |
+| `peek()` en Pila | O(1) |
+| `pop()` en Pila | O(1) |
+| `encolar()` en Cola | O(1) |
+| `verPrimero()` en Cola | O(1) |
+| `desencolar()` en Cola | O(1) |
+| `eliminar()` en Cola | O(n) |
+| `encolar()` en ColaPrioridad | O(n) |
+| `verPrimero()` en ColaPrioridad | O(1) |
+| `desencolar()` en ColaPrioridad | O(1) |
+| `eliminar()` en ColaPrioridad | O(n) |
+| Agregar en ListaCircular | O(1) |
+| Siguiente en ListaCircular | O(1) |
+| BST promedio | O(log n) |
+| BST peor caso | O(n) |
+| AVL búsqueda | O(log n) |
+| AVL inserción | O(log n) |
+| AVL eliminación | O(log n) |
+| Recorrido de árbol | O(n) |
+| BFS | O(V + E) |
+
+Es importante destacar que la implementación propia de:
+
+```text
+ColaPrioridad
+```
+
+mantiene los nodos ordenados durante la inserción.
+
+Por esta razón:
+
+```text
+encolar()
+```
+
+tiene una complejidad de:
+
+```text
+O(n)
+```
+
+mientras que consultar o retirar el primer elemento es:
+
+```text
+O(1)
+```
+
+---
+
+# Prueba del sistema
+
+Actualmente el proyecto utiliza una única clase de prueba integral:
+
+```text
+PruebaSistemaCompleto.text
+```
+
+Esta clase ejecuta un escenario completo utilizando las diferentes funcionalidades del sistema.
+
+Las pruebas anteriores por módulo fueron eliminadas para mantener una única validación integral del proyecto.
+
+---
+
+# Elementos comprobados
+
+`PruebaSistemaCompleto` verifica:
+
+```text
+Clientes
+Multimonedero
+Depósitos
+Retiros
+Transferencias
+Transferencias internas
+Comisiones
+Gastos
+Puntos
+Rangos
+Beneficios
+HashMap
+BST
+AVL
+Cola de prioridad
+Operaciones recurrentes
+Notificaciones
+Cola FIFO
+Lista circular
+Grafos
+BFS con cola propia
+Recursividad
+Pila LIFO
+Reversiones
+Reportes
+Integridad
+```
+
+---
+
+# Cantidad de pruebas
+
+Actualmente:
+
+```text
+98 verificaciones booleanas
++
+34 verificaciones numéricas
+=
+132 verificaciones
+```
+
+Si todas las condiciones se cumplen, la ejecución termina mostrando:
+
+```text
+PRUEBA INTEGRAL TERMINADA CORRECTAMENTE
+Pruebas superadas: 132
+```
+
+---
+
+# Escenario de la prueba integral
+
+La prueba crea:
+
+```text
+3 clientes
+4 monederos
+```
+
+y realiza operaciones como:
+
+- Depósitos.
+- Transferencias.
+- Transferencias internas.
+- Gastos.
+- Retiro.
+- Canje de beneficio.
+- Programación de transacciones.
+- Ejecución de transacciones programadas.
+- Recurrencia.
+- Notificaciones.
+- Reversiones.
+- Actualización de árboles.
+- Actualización de grafos.
+- Generación de reportes.
+
+---
+
+# Comisiones verificadas
+
+Entre las comprobaciones realizadas se encuentran:
+
+```text
+Transferencia de 1000
+→ comisión = 10
+
+Transferencia interna de 2000
+→ comisión = 20
+
+Retiro de 200
+→ comisión = 2
+
+Transferencia programada de 400
+con beneficio del 10 %
+→ comisión = 3.6
+```
+
+---
+
+# Cómo ejecutar el proyecto
+
+## Requisitos
+
+Se necesita:
+
+```text
+JDK 21
+Maven
+```
+
+Opcionalmente:
+
+```text
+IntelliJ IDEA
+```
+
+El `pom.xml` utiliza:
+
+```xml
+<maven.compiler.source>21</maven.compiler.source>
+<maven.compiler.target>21</maven.compiler.target>
+```
+
+---
+
+# Abrir el proyecto
+
+Se debe abrir la carpeta:
+
+```text
+Proyecto Final Estructuras de Datos
+```
+
+En esta carpeta se encuentra:
+
+```text
+pom.xml
+```
+
+---
+
+# Compilar
+
+Desde una terminal ubicada donde se encuentra el `pom.xml`:
+
+```bash
+mvn clean compile
+```
+
+---
+
+# Ejecutar la interfaz gráfica
+
+Ejecutar:
+
+```text
+Main.text
+```
+
+El programa iniciará:
+
+```text
+InterfazGrafica
+```
+
+utilizando text Swing.
+
+---
+
+# Ejecutar la prueba integral
+
+Ejecutar:
+
+```text
+PruebaSistemaCompleto.text
+```
+
+La ejecución debe terminar sin lanzar:
+
+```text
+AssertionError
+```
+
+y mostrar:
+
+```text
+PRUEBA INTEGRAL TERMINADA CORRECTAMENTE
+Pruebas superadas: 132
+```
+
+---
+
+# Flujo recomendado para demostrar el proyecto
+
+Durante una presentación se puede utilizar el siguiente orden:
+
+```text
+1. Registrar clientes.
+
+2. Crear monederos.
+
+3. Realizar un depósito.
+
+4. Mostrar puntos y rango.
+
+5. Realizar una transferencia.
+
+6. Mostrar la comisión.
+
+7. Realizar un retiro.
+
+8. Registrar un gasto.
+
+9. Consultar patrones de gasto.
+
+10. Canjear un beneficio.
+
+11. Mostrar el efecto del beneficio.
+
+12. Programar una transacción.
+
+13. Consultar la cola de prioridad.
+
+14. Consultar las notificaciones.
+
+15. Mostrar la cola FIFO.
+
+16. Mostrar la lista circular.
+
+17. Consultar el BST.
+
+18. Consultar el AVL.
+
+19. Mostrar relaciones del grafo.
+
+20. Mostrar el recorrido BFS.
+
+21. Consultar la pila de reversiones.
+
+22. Revertir la última transacción.
+
+23. Consultar reportes.
+
+24. Verificar la integridad del sistema.
+```
+
+---
+
+# Decisiones de diseño
+
+## Estructuras propias
+
+Para reforzar los conceptos estudiados en la asignatura se implementaron directamente:
+
+```text
+Pila
+Cola
+Cola de prioridad
+Lista circular
+BST
+AVL
+Grafo dirigido
+```
+
+De esta forma es posible observar cómo funcionan internamente las operaciones principales de cada estructura.
+
+---
+
+## Separación de responsabilidades
+
+La interfaz gráfica se encarga principalmente de:
+
+- Recibir datos.
+- Mostrar información.
+- Mostrar tablas.
+- Navegar entre módulos.
+- Mostrar mensajes.
+
+La lógica permanece en:
+
+```text
+MonederoVirtual
+```
+
+y los gestores.
+
+---
+
+## Comisión base
+
+La comisión para:
+
+```text
+RETIRO
+TRANSFERENCIA
+```
+
+es:
+
+```text
+1 %
+```
+
+---
+
+## Puntos y comisión
+
+Los puntos se calculan exclusivamente utilizando:
+
+```text
+monto
+```
+
+La comisión no genera puntos.
+
+---
+
+## Transferencias internas
+
+Las transferencias entre monederos diferentes del mismo cliente:
+
+```text
+están permitidas
+cobran comisión
+generan puntos
+se registran en el grafo de monederos
+```
+
+pero:
+
+```text
+no generan una relación en el grafo de clientes
+```
+
+---
+
+## Gastos
+
+Los gastos:
+
+```text
+no generan puntos
+no cobran comisión
+```
+
+---
+
+## Reversiones
+
+Solo se revierte la operación que se encuentra:
+
+```text
+en la cima de la pila
+```
+
+siguiendo:
+
+```text
+LIFO
+```
+
+---
+
+## Notificaciones
+
+Las pendientes siguen:
+
+```text
+FIFO
+```
+
+mientras el historial utiliza:
+
+```text
+ListaCircular
+```
+
+---
+
+## Transacciones programadas
+
+Las operaciones se ordenan mediante:
+
+```text
+fecha de ejecución
+```
+
+y, en caso de empate:
+
+```text
+código
+```
+
+---
+
+## Árbol AVL
+
+La convención utilizada es:
+
+```text
+FE =
+altura derecha
+-
+altura izquierda
+```
+
+---
+
+# Resultado
+
+El proyecto integra las estructuras de datos dentro de un mismo sistema.
+
+Una sola transferencia puede modificar:
+
+```text
+Saldo
+Comisión
+Historial
+Puntos
+Rango
+HashMap
+BST
+AVL
+Pila
+Grafos
+Notificaciones
+Reportes
+```
+
+Esto permite observar cómo diferentes estructuras pueden colaborar para resolver un problema más amplio.
+
+---
+
+# Conclusión
+
+El proyecto permitió aplicar de manera práctica los principales conceptos estudiados en la asignatura de Estructuras de Datos.
+
+Se desarrolló un monedero virtual que integra operaciones financieras con estructuras implementadas directamente dentro del proyecto, entre ellas pilas, colas, colas de prioridad, listas circulares, árboles binarios de búsqueda, árboles AVL y grafos dirigidos.
+
+Además se utilizaron estructuras estándar como `ArrayList`, `HashMap` y `HashSet` cuando su propósito era servir como apoyo al modelo del sistema.
+
+La implementación propia de las estructuras permite comprender mejor conceptos como:
+
+```text
+LIFO
+FIFO
+prioridad
+nodos enlazados
+recursividad
+recorridos
+balanceo AVL
+BFS
+grafos
+```
+
+La aplicación también incorpora una interfaz gráfica desarrollada con text Swing que permite utilizar las diferentes funcionalidades sin mezclar la presentación con la lógica del negocio.
+
+Finalmente, `PruebaSistemaCompleto.text` realiza actualmente **132 verificaciones** que comprueban el funcionamiento conjunto de las principales funcionalidades y estructuras del proyecto.
