@@ -600,8 +600,9 @@ public class PruebaSistemaCompleto {
          * Se agrega primero la operación
          * que tiene fecha posterior.
          *
-         * Así demostramos que PriorityQueue
-         * no depende del orden de inserción.
+         * Así demostramos que nuestra
+         * ColaPrioridad no depende
+         * del orden de inserción.
          */
         verificar(
                 sistema.programarTransferencia(
@@ -638,7 +639,7 @@ public class PruebaSistemaCompleto {
         verificar(
                 sistema.cantidadProgramadas()
                         == 2,
-                "PriorityQueue contiene dos programadas"
+                "Cola de prioridad contiene dos programadas"
         );
 
 
@@ -648,7 +649,7 @@ public class PruebaSistemaCompleto {
                         .equals(
                                 "TP001"
                         ),
-                "PriorityQueue prioriza la fecha más cercana"
+                "Cola de prioridad prioriza la fecha más cercana"
         );
 
 
@@ -696,7 +697,7 @@ public class PruebaSistemaCompleto {
         verificar(
                 sistema.cantidadProgramadas()
                         == 1,
-                "TP001 sale de PriorityQueue"
+                "TP001 sale de la cola de prioridad"
         );
 
 
@@ -781,7 +782,7 @@ public class PruebaSistemaCompleto {
         verificar(
                 sistema.cantidadProgramadas()
                         == 1,
-                "Transacción recurrente vuelve a PriorityQueue"
+                "Transacción recurrente vuelve a la cola de prioridad"
         );
 
 
@@ -837,7 +838,7 @@ public class PruebaSistemaCompleto {
                 sistema.cantidadNotificacionesPendientes(
                         "C001"
                 ) == 4,
-                "Queue contiene cuatro pendientes"
+                "Cola contiene cuatro pendientes"
         );
 
 
@@ -854,7 +855,7 @@ public class PruebaSistemaCompleto {
                                 ==
                                 TipoNotificacion
                                         .TRANSACCION_PROGRAMADA,
-                "Queue expone primera pendiente"
+                "Cola expone la primera pendiente"
         );
 
 
@@ -920,7 +921,7 @@ public class PruebaSistemaCompleto {
 
         verificar(
                 atendida == primeraPendiente,
-                "Queue atiende primero la más antigua"
+                "Cola FIFO atiende primero la más antigua"
         );
 
 
@@ -934,7 +935,7 @@ public class PruebaSistemaCompleto {
                 sistema.cantidadNotificacionesPendientes(
                         "C001"
                 ) == 3,
-                "Queue queda con tres pendientes"
+                "Cola queda con tres pendientes"
         );
 
 
@@ -984,7 +985,7 @@ public class PruebaSistemaCompleto {
                         "C001",
                         "C003"
                 ),
-                "Grafo alcanza C003"
+                "Grafo alcanza C003 mediante recorrido BFS con cola propia"
         );
 
 
@@ -1310,7 +1311,7 @@ public class PruebaSistemaCompleto {
         verificar(
                 ultima ==
                         transferenciaProgramada,
-                "Pila tiene TP002 en el tope"
+                "Pila propia tiene TP002 en el tope"
         );
 
 
@@ -1322,7 +1323,7 @@ public class PruebaSistemaCompleto {
         verificar(
                 revertida ==
                         transferenciaProgramada,
-                "LIFO revierte la última transacción"
+                "Pila LIFO revierte la última transacción"
         );
 
 
@@ -1441,7 +1442,7 @@ public class PruebaSistemaCompleto {
 
         verificar(
                 sistema.programadasVacia(),
-                "PriorityQueue queda vacía"
+                "Cola de prioridad queda vacía"
         );
 
 
