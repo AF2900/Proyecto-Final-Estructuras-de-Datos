@@ -1,12 +1,10 @@
 package co.edu.uniquindio.poo.service;
 
 import co.edu.uniquindio.poo.enums.TipoTransaccion;
+import co.edu.uniquindio.poo.estructuras.pila.Pila;
 import co.edu.uniquindio.poo.model.Cliente;
 import co.edu.uniquindio.poo.model.Monedero;
 import co.edu.uniquindio.poo.model.Transaccion;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 public class GestorReversiones {
 
@@ -22,7 +20,15 @@ public class GestorReversiones {
     private final GestorPatronesGasto
             gestorPatronesGasto;
 
-    private final Deque<Transaccion>
+    /*
+     * Pila propia para almacenar
+     * las transacciones reversibles.
+     *
+     * Se utiliza el principio LIFO:
+     * la última transacción registrada
+     * es la primera que puede revertirse.
+     */
+    private final Pila<Transaccion>
             pilaTransacciones;
 
 
@@ -45,9 +51,13 @@ public class GestorReversiones {
                 gestorPatronesGasto;
 
         pilaTransacciones =
-                new ArrayDeque<>();
+                new Pila<>();
     }
 
+
+    // ---------------------------------------------------------
+    // REGISTRAR TRANSACCIÓN
+    // ---------------------------------------------------------
 
     public void registrarTransaccionReversible(
             Transaccion transaccion) {
@@ -59,28 +69,42 @@ public class GestorReversiones {
         }
 
 
+        /*
+         * La nueva transacción se agrega
+         * en la cima de la pila.
+         */
         pilaTransacciones.push(
                 transaccion
         );
     }
 
 
+    // ---------------------------------------------------------
+    // CONSULTAR CIMA
+    // ---------------------------------------------------------
+
     public Transaccion
     verUltimaTransaccion() {
 
+        /*
+         * peek consulta la cima
+         * sin eliminarla.
+         */
         return pilaTransacciones.peek();
     }
 
 
     public boolean estaVacia() {
 
-        return pilaTransacciones.isEmpty();
+        return pilaTransacciones
+                .isEmpty();
     }
 
 
     public int cantidadTransacciones() {
 
-        return pilaTransacciones.size();
+        return pilaTransacciones
+                .getSize();
     }
 
 
@@ -91,16 +115,22 @@ public class GestorReversiones {
     public Transaccion
     revertirUltimaTransaccion() {
 
+        /*
+         * Primero consultamos la cima
+         * sin retirar la transacción.
+         */
         Transaccion transaccion =
                 pilaTransacciones.peek();
 
 
         if (transaccion == null) {
+
             return null;
         }
 
 
-        boolean revertida = false;
+        boolean revertida =
+                false;
 
 
         if (transaccion.getTipo() ==
@@ -137,14 +167,28 @@ public class GestorReversiones {
         }
 
 
+        /*
+         * Si la operación no pudo
+         * revertirse, permanece en
+         * la pila.
+         */
         if (!revertida) {
+
             return null;
         }
 
 
+        /*
+         * Solo después de revertir
+         * correctamente se retira
+         * de la cima.
+         */
         pilaTransacciones.pop();
 
-        transaccion.marcarRevertida();
+
+        transaccion
+                .marcarRevertida();
+
 
         return transaccion;
     }
@@ -158,25 +202,29 @@ public class GestorReversiones {
             Transaccion transaccion) {
 
         Cliente cliente =
-                gestorClientes.buscarCliente(
-                        transaccion
-                                .getIdentificacionOrigen()
-                );
+                gestorClientes
+                        .buscarCliente(
+                                transaccion
+                                        .getIdentificacionOrigen()
+                        );
 
 
         if (cliente == null) {
+
             return false;
         }
 
 
         Monedero monedero =
-                cliente.buscarMonedero(
-                        transaccion
-                                .getMonederoOrigen()
-                );
+                cliente
+                        .buscarMonedero(
+                                transaccion
+                                        .getMonederoOrigen()
+                        );
 
 
         if (monedero == null) {
+
             return false;
         }
 
@@ -189,14 +237,16 @@ public class GestorReversiones {
         }
 
 
-        if (transaccion.getPuntosGenerados()
+        if (transaccion
+                .getPuntosGenerados()
                 > 0) {
 
-            gestorPuntos.restarPuntos(
-                    cliente,
-                    transaccion
-                            .getPuntosGenerados()
-            );
+            gestorPuntos
+                    .restarPuntos(
+                            cliente,
+                            transaccion
+                                    .getPuntosGenerados()
+                    );
         }
 
 
@@ -212,25 +262,29 @@ public class GestorReversiones {
             Transaccion transaccion) {
 
         Cliente cliente =
-                gestorClientes.buscarCliente(
-                        transaccion
-                                .getIdentificacionOrigen()
-                );
+                gestorClientes
+                        .buscarCliente(
+                                transaccion
+                                        .getIdentificacionOrigen()
+                        );
 
 
         if (cliente == null) {
+
             return false;
         }
 
 
         Monedero monedero =
-                cliente.buscarMonedero(
-                        transaccion
-                                .getMonederoOrigen()
-                );
+                cliente
+                        .buscarMonedero(
+                                transaccion
+                                        .getMonederoOrigen()
+                        );
 
 
         if (monedero == null) {
+
             return false;
         }
 
@@ -258,14 +312,16 @@ public class GestorReversiones {
         }
 
 
-        if (transaccion.getPuntosGenerados()
+        if (transaccion
+                .getPuntosGenerados()
                 > 0) {
 
-            gestorPuntos.restarPuntos(
-                    cliente,
-                    transaccion
-                            .getPuntosGenerados()
-            );
+            gestorPuntos
+                    .restarPuntos(
+                            cliente,
+                            transaccion
+                                    .getPuntosGenerados()
+                    );
         }
 
 
@@ -281,17 +337,19 @@ public class GestorReversiones {
             Transaccion transaccion) {
 
         Cliente clienteOrigen =
-                gestorClientes.buscarCliente(
-                        transaccion
-                                .getIdentificacionOrigen()
-                );
+                gestorClientes
+                        .buscarCliente(
+                                transaccion
+                                        .getIdentificacionOrigen()
+                        );
 
 
         Cliente clienteDestino =
-                gestorClientes.buscarCliente(
-                        transaccion
-                                .getIdentificacionDestino()
-                );
+                gestorClientes
+                        .buscarCliente(
+                                transaccion
+                                        .getIdentificacionDestino()
+                        );
 
 
         if (clienteOrigen == null ||
@@ -302,17 +360,19 @@ public class GestorReversiones {
 
 
         Monedero monederoOrigen =
-                clienteOrigen.buscarMonedero(
-                        transaccion
-                                .getMonederoOrigen()
-                );
+                clienteOrigen
+                        .buscarMonedero(
+                                transaccion
+                                        .getMonederoOrigen()
+                        );
 
 
         Monedero monederoDestino =
-                clienteDestino.buscarMonedero(
-                        transaccion
-                                .getMonederoDestino()
-                );
+                clienteDestino
+                        .buscarMonedero(
+                                transaccion
+                                        .getMonederoDestino()
+                        );
 
 
         if (monederoOrigen == null ||
@@ -323,11 +383,8 @@ public class GestorReversiones {
 
 
         /*
-         * Del destino únicamente se retira
-         * el monto que realmente recibió.
-         *
-         * La comisión nunca fue enviada
-         * al destino.
+         * Del destino se retira únicamente
+         * el monto que recibió.
          */
         if (!monederoDestino.retirar(
                 transaccion.getMonto()
@@ -340,7 +397,7 @@ public class GestorReversiones {
         /*
          * Al origen se devuelve:
          *
-         * monto + comisión cobrada.
+         * monto + comisión.
          */
         double totalADevolver =
                 transaccion.getMonto()
@@ -353,27 +410,31 @@ public class GestorReversiones {
         )) {
 
             /*
-             * Restauración defensiva:
-             * si no se pudiera devolver
-             * el dinero al origen,
-             * se restaura el destino.
+             * Si ocurre un problema,
+             * restauramos el dinero
+             * retirado del destino.
              */
-            monederoDestino.depositar(
-                    transaccion.getMonto()
-            );
+            monederoDestino
+                    .depositar(
+                            transaccion
+                                    .getMonto()
+                    );
+
 
             return false;
         }
 
 
-        if (transaccion.getPuntosGenerados()
+        if (transaccion
+                .getPuntosGenerados()
                 > 0) {
 
-            gestorPuntos.restarPuntos(
-                    clienteOrigen,
-                    transaccion
-                            .getPuntosGenerados()
-            );
+            gestorPuntos
+                    .restarPuntos(
+                            clienteOrigen,
+                            transaccion
+                                    .getPuntosGenerados()
+                    );
         }
 
 
@@ -404,25 +465,29 @@ public class GestorReversiones {
             Transaccion transaccion) {
 
         Cliente cliente =
-                gestorClientes.buscarCliente(
-                        transaccion
-                                .getIdentificacionOrigen()
-                );
+                gestorClientes
+                        .buscarCliente(
+                                transaccion
+                                        .getIdentificacionOrigen()
+                        );
 
 
         if (cliente == null) {
+
             return false;
         }
 
 
         Monedero monedero =
-                cliente.buscarMonedero(
-                        transaccion
-                                .getMonederoOrigen()
-                );
+                cliente
+                        .buscarMonedero(
+                                transaccion
+                                        .getMonederoOrigen()
+                        );
 
 
         if (monedero == null) {
+
             return false;
         }
 
@@ -454,6 +519,7 @@ public class GestorReversiones {
             monedero.retirar(
                     transaccion.getMonto()
             );
+
 
             return false;
         }
