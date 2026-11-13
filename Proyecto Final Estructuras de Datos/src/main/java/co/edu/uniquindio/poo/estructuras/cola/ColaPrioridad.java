@@ -4,12 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Cola de prioridad implementada con un monticulo binario minimo (min-heap)
+ * guardado en una lista: el elemento de menor valor (segun compareTo) siempre
+ * esta en la posicion 0.
+ *
+ * Para el nodo en la posicion i:
+ *   - su padre esta en (i - 1) / 2
+ *   - su hijo izquierdo esta en 2 * i + 1
+ *   - su hijo derecho esta en 2 * i + 2
+ *
+ * Los elementos con la misma prioridad salen en el orden en que llegaron
+ * (FIFO), porque cada entrada guarda un numero de llegada.
+ */
 public class ColaPrioridad<T extends Comparable<T>> {
 
-    private int size;
-    private Nodo<T> nodoPrimero;
-    private Nodo<T> nodoUltimo;
-    private int limite;
+    // Entrada del monticulo: el dato y su orden de llegada (para desempatar)
+    private static class Entrada<T> {
+
+        private final T dato;
+        private final long orden;
+
+        private Entrada(T dato, long orden) {
+            this.dato = dato;
+            this.orden = orden;
+        }
+    }
+
+    private final List<Entrada<T>> monticulo;
+    private final int limite;
+    private long contadorLlegada;
 
     public ColaPrioridad(int limite) {
 
@@ -19,23 +43,23 @@ public class ColaPrioridad<T extends Comparable<T>> {
             );
         }
 
-        size = 0;
-        nodoPrimero = null;
-        nodoUltimo = null;
+        this.monticulo = new ArrayList<>();
         this.limite = limite;
+        this.contadorLlegada = 0;
     }
 
     public int getSize() {
-        return size;
+        return monticulo.size();
     }
 
     public boolean estaVacia() {
-        return size == 0;
+        return monticulo.isEmpty();
     }
 
+    // O(log n)
     public void encolar(T dato) {
 
-        if (size == limite) {
+        if (monticulo.size() == limite) {
             throw new ColaLlena(
                     "La cola de prioridad esta llena"
             );
@@ -47,67 +71,12 @@ public class ColaPrioridad<T extends Comparable<T>> {
             );
         }
 
-        Nodo<T> nuevoNodo =
-                new Nodo<>(dato);
+        monticulo.add(new Entrada<>(dato, contadorLlegada++));
 
-        if (estaVacia()) {
-
-            nodoPrimero = nuevoNodo;
-            nodoUltimo = nuevoNodo;
-
-        } else if (
-                dato.compareTo(
-                        nodoPrimero.getDato()
-                ) < 0
-        ) {
-
-            nuevoNodo.setSiguiente(
-                    nodoPrimero
-            );
-
-            nodoPrimero = nuevoNodo;
-
-        } else {
-
-            Nodo<T> auxiliar =
-                    nodoPrimero;
-
-            while (
-                    auxiliar.getSiguiente()
-                            != null
-                            &&
-                            auxiliar
-                                    .getSiguiente()
-                                    .getDato()
-                                    .compareTo(dato)
-                                    <= 0
-            ) {
-
-                auxiliar =
-                        auxiliar.getSiguiente();
-            }
-
-            nuevoNodo.setSiguiente(
-                    auxiliar.getSiguiente()
-            );
-
-            auxiliar.setSiguiente(
-                    nuevoNodo
-            );
-
-            if (
-                    nuevoNodo.getSiguiente()
-                            == null
-            ) {
-
-                nodoUltimo =
-                        nuevoNodo;
-            }
-        }
-
-        size++;
+        subir(monticulo.size() - 1);
     }
 
+    // O(log n)
     public T desencolar() {
 
         if (estaVacia()) {
@@ -116,106 +85,54 @@ public class ColaPrioridad<T extends Comparable<T>> {
             );
         }
 
-        T dato =
-                nodoPrimero.getDato();
+        T primero = monticulo.get(0).dato;
 
-        nodoPrimero =
-                nodoPrimero.getSiguiente();
+        quitarEnPosicion(0);
 
-        if (nodoPrimero == null) {
-            nodoUltimo = null;
-        }
-
-        size--;
-
-        return dato;
+        return primero;
     }
 
+    // O(1)
     public T verPrimero() {
 
         if (estaVacia()) {
             return null;
         }
 
-        return nodoPrimero.getDato();
+        return monticulo.get(0).dato;
     }
 
+    // O(n): hay que buscar el elemento dentro del monticulo
     public boolean eliminar(T dato) {
 
-        if (estaVacia()) {
+        if (dato == null) {
             return false;
         }
 
-        if (sonIguales(
-                nodoPrimero.getDato(),
-                dato
-        )) {
+        for (int i = 0; i < monticulo.size(); i++) {
 
-            desencolar();
-            return true;
-        }
-
-        Nodo<T> anterior =
-                nodoPrimero;
-
-        Nodo<T> actual =
-                nodoPrimero.getSiguiente();
-
-        while (actual != null) {
-
-            if (sonIguales(
-                    actual.getDato(),
-                    dato
-            )) {
-
-                anterior.setSiguiente(
-                        actual.getSiguiente()
-                );
-
-                if (actual == nodoUltimo) {
-                    nodoUltimo = anterior;
-                }
-
-                size--;
-
+            if (dato.equals(monticulo.get(i).dato)) {
+                quitarEnPosicion(i);
                 return true;
             }
-
-            anterior = actual;
-            actual = actual.getSiguiente();
         }
 
         return false;
     }
 
-    private boolean sonIguales(
-            T dato1,
-            T dato2
-    ) {
-
-        if (dato1 == null) {
-            return dato2 == null;
-        }
-
-        return dato1.equals(dato2);
-    }
-
+    // Devuelve los elementos ordenados de menor a mayor, O(n log n).
+    // El orden interno del monticulo no es el de salida, por eso se ordena
+    // una copia antes de devolverla.
     public List<T> obtenerElementos() {
 
-        List<T> elementos =
-                new ArrayList<>();
+        List<Entrada<T>> copia = new ArrayList<>(monticulo);
 
-        Nodo<T> auxiliar =
-                nodoPrimero;
+        copia.sort(this::comparar);
 
-        while (auxiliar != null) {
+        List<T> elementos = new ArrayList<>();
 
-            elementos.add(
-                    auxiliar.getDato()
-            );
-
-            auxiliar =
-                    auxiliar.getSiguiente();
+        for (Entrada<T> entrada : copia) {
+            elementos.add(entrada.dato);
         }
 
         return elementos;
@@ -223,17 +140,94 @@ public class ColaPrioridad<T extends Comparable<T>> {
 
     public void imprimir() {
 
-        Nodo<T> auxiliar =
-                nodoPrimero;
-
-        while (auxiliar != null) {
-
-            System.out.println(
-                    auxiliar.getDato()
-            );
-
-            auxiliar =
-                    auxiliar.getSiguiente();
+        for (T dato : obtenerElementos()) {
+            System.out.println(dato);
         }
+    }
+
+    // ---------- operaciones internas del monticulo ----------
+
+    // Quita la entrada de la posicion indicada y reacomoda el monticulo
+    private void quitarEnPosicion(int posicion) {
+
+        int ultima = monticulo.size() - 1;
+
+        Entrada<T> entradaUltima = monticulo.remove(ultima);
+
+        if (posicion == ultima) {
+            return;
+        }
+
+        // La ultima entrada ocupa el hueco y se acomoda hacia arriba o abajo
+        monticulo.set(posicion, entradaUltima);
+
+        subir(posicion);
+        bajar(posicion);
+    }
+
+    // Sube la entrada mientras sea menor que su padre
+    private void subir(int posicion) {
+
+        while (posicion > 0) {
+
+            int padre = (posicion - 1) / 2;
+
+            if (comparar(monticulo.get(posicion), monticulo.get(padre)) >= 0) {
+                break;
+            }
+
+            intercambiar(posicion, padre);
+            posicion = padre;
+        }
+    }
+
+    // Baja la entrada mientras sea mayor que alguno de sus hijos
+    private void bajar(int posicion) {
+
+        int tamano = monticulo.size();
+
+        while (true) {
+
+            int izquierdo = 2 * posicion + 1;
+            int derecho = 2 * posicion + 2;
+            int menor = posicion;
+
+            if (izquierdo < tamano
+                    && comparar(monticulo.get(izquierdo), monticulo.get(menor)) < 0) {
+                menor = izquierdo;
+            }
+
+            if (derecho < tamano
+                    && comparar(monticulo.get(derecho), monticulo.get(menor)) < 0) {
+                menor = derecho;
+            }
+
+            if (menor == posicion) {
+                break;
+            }
+
+            intercambiar(posicion, menor);
+            posicion = menor;
+        }
+    }
+
+    private void intercambiar(int i, int j) {
+
+        Entrada<T> auxiliar = monticulo.get(i);
+
+        monticulo.set(i, monticulo.get(j));
+        monticulo.set(j, auxiliar);
+    }
+
+    // Compara por valor y, si empatan, por orden de llegada
+    private int comparar(Entrada<T> a, Entrada<T> b) {
+
+        int resultado = a.dato.compareTo(b.dato);
+
+        if (resultado != 0) {
+            return resultado;
+        }
+
+        return Long.compare(a.orden, b.orden);
     }
 }

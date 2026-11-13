@@ -408,7 +408,6 @@ public class PanelReversiones extends JPanel {
         );
     }
 
-
     private void agregarDato(
             JPanel panel,
             String titulo,
